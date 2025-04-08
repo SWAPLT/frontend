@@ -1,0 +1,111 @@
+<div class="container">
+  <h2>Gestión de Usuarios</h2>
+
+  <!-- Mensaje de error -->
+  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+
+  <!-- Vista de listado -->
+  <div *ngIf="formMode === 'list'">
+    <div class="table-actions">
+      <button (click)="showCreateForm()">Nuevo Usuario</button>
+      <button (click)="loadUsers()">Recargar Lista</button>
+    </div>
+
+    <div class="table-responsive" *ngIf="!isLoading && users.length > 0">
+      <table>
+        <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Email</th>
+          <th>Rol</th>
+          <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let user of users">
+          <td>{{ user.id }}</td>
+          <td>{{ user.name }}</td>
+          <td>{{ user.email }}</td>
+          <td>
+              <span [ngClass]="{
+                'rol-admin': user.rol === 'admin',
+                'rol-user': user.rol === 'user'
+              }">
+                {{ user.rol }}
+              </span>
+          </td>
+          <td class="action-buttons">
+            <button (click)="showEditForm(user)">Editar</button>
+            <button (click)="deleteUser(user.id)">Eliminar</button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div *ngIf="!isLoading && users.length === 0" class="no-data">
+      No hay usuarios registrados.
+    </div>
+
+    <div *ngIf="isLoading" class="loading">
+      Cargando usuarios...
+    </div>
+  </div>
+
+  <!-- Vista del formulario (crear o editar) -->
+  <div *ngIf="formMode === 'create' || formMode === 'edit'">
+    <h3 *ngIf="formMode === 'create'">Crear Usuario</h3>
+    <h3 *ngIf="formMode === 'edit'">Editar Usuario</h3>
+
+    <form [formGroup]="userForm" (ngSubmit)="submitForm()">
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="name">Nombre:</label>
+          <input id="name" formControlName="name" type="text" required />
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input id="email" formControlName="email" type="email" required />
+        </div>
+
+        <div class="form-group">
+          <label for="password">Contraseña:</label>
+          <input
+            id="password"
+            formControlName="password"
+            type="password"
+            [required]="formMode === 'create'"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="password_confirmation">Confirmar Contraseña:</label>
+          <input
+            id="password_confirmation"
+            formControlName="password_confirmation"
+            type="password"
+            [required]="formMode === 'create'"
+          />
+        </div>
+
+        <div class="form-group" *ngIf="formMode === 'create'">
+          <label for="rol">Rol:</label>
+          <select id="rol" formControlName="rol">
+            <option value="user">Usuario Normal</option>
+            <option value="admin">Administrador</option>
+          </select>
+        </div>
+
+        <div class="form-actions full-width">
+          <button type="submit">
+            {{ formMode === 'create' ? 'Crear Usuario' : 'Actualizar Usuario' }}
+          </button>
+          <button type="button" (click)="cancelForm()">Cancelar</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+

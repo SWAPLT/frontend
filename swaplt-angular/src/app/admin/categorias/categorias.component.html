@@ -1,0 +1,43 @@
+<div class="container">
+  <h2>Categorías</h2>
+
+  <!-- Formulario para agregar/editar categorías -->
+  <div class="form-group">
+    <input
+      type="text"
+      [(ngModel)]="categoria.nombre"
+      class="form-control"
+      placeholder="Ingrese el nombre de la categoría"
+    />
+    <div class="form-buttons">
+      <button (click)="saveCategoria()" class="btn btn-success">
+        {{ editing ? 'Actualizar' : 'Agregar' }}
+      </button>
+      <button *ngIf="editing" (click)="cancelEdit()" class="btn btn-secondary">Cancelar</button>
+    </div>
+  </div>
+
+  <!-- Tabla de categorías -->
+  <table class="category-table">
+    <thead>
+    <tr>
+      <th class="nombre">Nombre</th>
+      <th class="acciones">Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let cat of categorias">
+      <td class="nombre">{{ cat.nombre }}</td>
+      <td class="acciones">
+        <div class="action-buttons">
+          <button (click)="editCategoria(cat)" class="btn btn-warning btn-sm">Editar</button>
+          <button (click)="deleteCategoria(cat.id)" class="btn btn-danger btn-sm">Eliminar</button>
+        </div>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- Mensaje de carga -->
+  <div *ngIf="isLoading" class="alert alert-info">Cargando categorías...</div>
+</div>

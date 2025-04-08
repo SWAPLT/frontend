@@ -1,0 +1,105 @@
+<!-- app.component.html -->
+<div class="toolbar" role="banner">
+  <!-- Left: Brand/Logo -->
+  <div class="brand-section">
+    <button class="brand-button">
+      <img alt="SWAPLT Logo" src="../assets/imgs/logo.png" />
+      <span class="app-name">SWAPLT</span>
+    </button>
+  </div>
+
+  <!-- Desktop Navigation -->
+  <div class="desktop-nav">
+    <!-- Center: Navigation Links -->
+    <div class="nav-center">
+      <div class="nav-links">
+        <a href="#" class="nav-link">Catálogo</a>
+        <a href="#" class="nav-link">Favoritos</a>
+        <a href="#" class="nav-link">Mensajes</a>
+      </div>
+    </div>
+
+    <!-- Right: Action Buttons -->
+    <div class="action-buttons">
+      <button class="sell-button">Vender</button>
+      <div class="profile-container">
+        <button class="profile-button" (click)="toggleDropdown()">
+          <span class="profile-icon">👤</span>
+        </button>
+        <div class="dropdown-menu" [class.show]="dropdownOpen">
+          <a href="/profile" class="dropdown-item">Ver Perfil</a>
+          <hr class="dropdown-divider">
+          <a href="#" class="dropdown-item" (click)="logOut()">LogOut</a>        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-------------------- Menu de botones de Movil -------------------->
+  <div class="mobile-menu-container">
+    <button class="mobile-menu-button" (click)="toggleMobileMenu()">
+      <span class="menu-icon">{{ mobileMenuOpen ? '✕' : '☰' }}</span>
+    </button>
+
+    <div class="mobile-dropdown" [class.open]="mobileMenuOpen">
+      <div class="mobile-nav-links">
+        <a href="#" class="mobile-nav-link">Catálogo</a>
+        <a href="#" class="mobile-nav-link">Favoritos</a>
+        <a href="#" class="mobile-nav-link">Mensajes</a>
+      </div>
+      <div class="mobile-action-buttons">
+        <button class="mobile-sell-button">Vender</button>
+        <button class="mobile-profile-button" (click)="toggleDropdown()">
+          <span class="profile-icon">👤</span> Mi Perfil
+        </button>
+      </div>
+      <div class="mobile-dropdown-menu" [class.show]="dropdownOpen">
+        <a routerLink="/profile" class="dropdown-item">Ver Perfil</a>
+        <hr class="dropdown-divider">
+        <a href="#" class="dropdown-item">LogOut</a>
+      </div>
+    </div>
+  </div>
+</div>
+<!-------------------------------------------------------------------->
+
+<div class="content-wrapper">
+  <router-outlet></router-outlet>
+</div>
+
+
+
+<!-------------------------- Pie de pagina -------------------------->
+<footer class="main-footer">
+  <div class="footer-content">
+    <div class="footer-section">
+      <h3 class="footer-title">Navegación</h3>
+      <ul class="footer-links">
+        <li><a href="#">Catálogo</a></li>
+        <li><a href="#">Favoritos</a></li>
+        <li><a href="#">Mensajes</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-section">
+      <h3 class="footer-title">Legal</h3>
+      <ul class="footer-links">
+        <li><a href="#">Términos de uso</a></li>
+        <li><a href="#">Política de privacidad</a></li>
+        <li><a href="#">Ayuda</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-section">
+      <h3 class="footer-title">Contacto</h3>
+      <ul class="footer-links">
+        <li>swaplt.compraventa@gmail.com</li>
+        <li>+34 693 81 96 12</li>
+      </ul>
+    </div>
+  </div>
+
+  <p class="copyright">
+    © 2025 SWAPLT. Todos los derechos reservados
+  </p>
+</footer>
+<!------------------------------------------------------------------------------>
