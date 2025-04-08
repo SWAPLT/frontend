@@ -44,4 +44,4 @@
 - **Desarrollo de Aplicaciones Web**  
   **Centro Educativo**: IES Castelar  
 
-![image](https://github.com/user-attachments/assets/6a1ec15e-b5ab-4276-ae67-b7bf89ab5062)
+![Captura de pantalla 2025-04-08 224537](https://github.com/user-attachments/assets/a063be4b-8ae8-4432-aa41-8c1f8328ed6b)
