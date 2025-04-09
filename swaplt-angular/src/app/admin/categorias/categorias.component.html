@@ -10,33 +10,38 @@
       placeholder="Ingrese el nombre de la categoría"
     />
     <div class="form-buttons">
-      <button (click)="saveCategoria()" class="btn btn-success">
+      <button (click)="saveCategoria()" class="btn btn-info">
         {{ editing ? 'Actualizar' : 'Agregar' }}
       </button>
-      <button *ngIf="editing" (click)="cancelEdit()" class="btn btn-secondary">Cancelar</button>
+      <button *ngIf="editing" (click)="cancelEdit()" class="btn btn-danger">Cancelar</button>
     </div>
   </div>
 
   <!-- Tabla de categorías -->
-  <table class="category-table">
-    <thead>
-    <tr>
-      <th class="nombre">Nombre</th>
-      <th class="acciones">Acciones</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let cat of categorias">
-      <td class="nombre">{{ cat.nombre }}</td>
-      <td class="acciones">
-        <div class="action-buttons">
-          <button (click)="editCategoria(cat)" class="btn btn-warning btn-sm">Editar</button>
-          <button (click)="deleteCategoria(cat.id)" class="btn btn-danger btn-sm">Eliminar</button>
-        </div>
-      </td>
-    </tr>
-    </tbody>
-  </table>
+  <div class="table-header">
+    <h3>Lista de Categorías</h3>
+    <table class="category-table">
+      <thead>
+      <tr>
+        <th class="id">ID</th>
+        <th class="nombre">Nombre</th>
+        <th class="acciones">Acciones</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let cat of categorias">
+        <td class="id">{{ cat.id }}</td>
+        <td class="nombre">{{ cat.nombre }}</td>
+        <td class="acciones">
+          <div class="action-buttons">
+            <button (click)="editCategoria(cat)" class="btn btn-info btn-sm">Editar</button>
+            <button (click)="deleteCategoria(cat.id)" class="btn btn-info btn-sm">Eliminar</button>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
 
   <!-- Mensaje de carga -->
   <div *ngIf="isLoading" class="alert alert-info">Cargando categorías...</div>
