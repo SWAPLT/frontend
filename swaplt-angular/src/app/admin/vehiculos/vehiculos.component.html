@@ -11,7 +11,7 @@
       <button (click)="loadVehiculos()">Recargar Lista</button>
     </div>
 
-    <div class="table-responsive" *ngIf="!isLoading && vehiculos.length > 0">
+    <div class="table-responsive" *ngIf="!isLoading && displayedVehiculos.length > 0">
       <table>
         <thead>
         <tr>
@@ -25,7 +25,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let vehiculo of vehiculos">
+        <tr *ngFor="let vehiculo of displayedVehiculos">
           <td>{{ getNombreUsuario(vehiculo.user_id) }}</td>
           <td>{{ vehiculo.marca }}</td>
           <td>{{ vehiculo.modelo }}</td>
@@ -48,13 +48,28 @@
       </table>
     </div>
 
-    <div *ngIf="!isLoading && vehiculos.length === 0" class="no-data">
+    <div *ngIf="!isLoading && displayedVehiculos.length === 0" class="no-data">
       No hay vehículos disponibles.
     </div>
 
     <div *ngIf="isLoading" class="loading">
       Cargando vehículos...
     </div>
+    
+    <!-- Mensaje de depuración -->
+    <div *ngIf="errorMessage" class="error-debug">
+      <p>Error: {{ errorMessage }}</p>
+      <button (click)="loadVehiculos()" class="retry-button">Reintentar</button>
+    </div>
+    
+    <!-- Agregar el componente de paginación -->
+    <app-pagination
+      *ngIf="!isLoading && totalItems > 0"
+      [totalItems]="totalItems"
+      [itemsPerPage]="itemsPerPage"
+      [currentPage]="currentPage"
+      (pageChange)="onPageChange($event)">
+    </app-pagination>
   </div>
 
   <!-- Vista del formulario (crear o editar) -->

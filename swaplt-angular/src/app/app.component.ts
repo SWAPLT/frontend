@@ -1,43 +1,56 @@
 import { Component, HostListener } from '@angular/core';
-  import { AuthService } from './services/auth.service';
+import { AuthService } from './services/auth.service';
 
-  @Component({
-    selector: 'app-root',
-    templateUrl: './app.component.html',
-    styleUrls: ['./app.component.css']
-  })
-  export class AppComponent {
-    dropdownOpen = false;
-    mobileMenuOpen = false;
-    isMobileView = false;
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  dropdownOpen = false;
+  mobileMenuOpen = false;
+  isMobileView = false;
+  footerVisible = false;
 
-    constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) {}
 
-    @HostListener('window:resize', ['$event'])
-    onResize() {
-      this.checkViewport();
-    }
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+    this.checkViewport();
+  }
 
-    checkViewport() {
-      this.isMobileView = window.innerWidth < 992;
-      if (!this.isMobileView) {
-        this.mobileMenuOpen = false;
-        this.dropdownOpen = false;
-      }
-    }
+  @HostListener('window:scroll', ['$event'])
+  onScroll() {
+    this.checkFooterVisibility();
+  }
 
-    toggleDropdown() {
-      this.dropdownOpen = !this.dropdownOpen;
-    }
-
-    toggleMobileMenu() {
-      this.mobileMenuOpen = !this.mobileMenuOpen;
-      if (!this.mobileMenuOpen) {
-        this.dropdownOpen = false;
-      }
-    }
-
-    logOut() {
-      this.authService.logout();
+  checkViewport() {
+    this.isMobileView = window.innerWidth < 992;
+    if (!this.isMobileView) {
+      this.mobileMenuOpen = false;
+      this.dropdownOpen = false;
     }
   }
+
+  checkFooterVisibility() {
+    const scrollPosition = window.scrollY + window.innerHeight;
+    const documentHeight = document.documentElement.scrollHeight;
+
+    this.footerVisible = scrollPosition >= documentHeight;
+  }
+
+  toggleDropdown() {
+    this.dropdownOpen = !this.dropdownOpen;
+  }
+
+  toggleMobileMenu() {
+    this.mobileMenuOpen = !this.mobileMenuOpen;
+    if (!this.mobileMenuOpen) {
+      this.dropdownOpen = false;
+    }
+  }
+
+  logOut() {
+    this.authService.logout();
+  }
+}

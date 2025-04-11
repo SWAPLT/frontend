@@ -1,14 +1,15 @@
 // src/app/admin/vehiculos/service/vehiculos.service.ts
 
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import {environment} from "../../../../environments/environment";
 
 @Injectable({
   providedIn: 'root',
 })
 export class VehiculosService {
-  private apiUrl = 'http://localhost:8000/api/vehiculos';
+  private apiUrl = `${environment.apiUrl}/vehiculos`;
 
   constructor(private http: HttpClient) {}
 
@@ -17,10 +18,14 @@ export class VehiculosService {
     return localStorage.getItem('token') || ''; // Si usas localStorage o donde guardes el token
   }
 
-  // Obtener todos los vehículos
-  getVehiculos(): Observable<any> {
+  // Obtener todos los vehículos con soporte para paginación
+  getVehiculos(page: number = 1, perPage: number = 10): Observable<any> {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${this.getAuthToken()}`);
-    return this.http.get<any[]>(this.apiUrl, { headers });
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('per_page', perPage.toString());
+      
+    return this.http.get<any[]>(this.apiUrl, { headers, params });
   }
 
   // Crear vehículo
@@ -41,9 +46,9 @@ export class VehiculosService {
     return this.http.delete<any>(`${this.apiUrl}/${id}`, { headers });
   }
 
-  // Agrega este método al final del servicio
+  // Obtener usuarios
   getUsuarios(): Observable<any> {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${this.getAuthToken()}`);
-    return this.http.get<any[]>('http://127.0.0.1:8000/api/users', { headers });
+    return this.http.get<any[]>(`${environment.apiUrl}/users`, { headers });
   }
 }

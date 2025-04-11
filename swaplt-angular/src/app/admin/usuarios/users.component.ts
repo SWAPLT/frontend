@@ -9,11 +9,18 @@ import {UsersService} from "./service/users.service";
 })
 export class UsersComponent implements OnInit {
   users: any[] = [];
+  displayedUsers: any[] = []; // Usuarios mostrados en la página actual
   formMode: 'list' | 'create' | 'edit' = 'list';
   userForm: FormGroup;
   isLoading = false;
   errorMessage = '';
   currentUserId: number | null = null;
+  
+  // Propiedades para paginación
+  currentPage: number = 1;
+  itemsPerPage: number = 6; // Cambiar a 6 usuarios por página
+  totalItems: number = 0;
+  allUsers: any[] = []; // Almacenar todos los usuarios
 
   constructor(
     private fb: FormBuilder,
@@ -39,17 +46,72 @@ export class UsersComponent implements OnInit {
 
   loadUsers() {
     this.isLoading = true;
-    this.usersService.getUsers().subscribe({
-      next: (users) => {
-        this.users = users;
-        this.isLoading = false;
+    this.usersService.getUsers(this.currentPage, this.itemsPerPage).subscribe({
+      next: (response) => {
+        // Verificar el formato de la respuesta
+        if (Array.isArray(response)) {
+          // Si la respuesta es un array directo de usuarios
+          this.allUsers = response;
+          this.totalItems = this.allUsers.length;
+          console.log('Total usuarios cargados:', this.totalItems);
+          this.applyPagination();
+          this.isLoading = false;
+        } else if (response.data && response.meta) {
+          // Si la respuesta tiene el formato esperado con paginación
+          this.displayedUsers = response.data;
+          this.users = this.displayedUsers; // Para compatibilidad
+          this.totalItems = response.meta.total;
+          this.currentPage = response.meta.current_page;
+          this.itemsPerPage = response.meta.per_page;
+          this.isLoading = false;
+          console.log('Usuarios paginados cargados:', this.users);
+        } else {
+          // Otro formato, tratar de adaptarlo
+          console.log('Formato de respuesta desconocido:', response);
+          if (response.users) {
+            this.allUsers = response.users;
+          } else {
+            this.allUsers = [];
+          }
+          this.totalItems = this.allUsers.length;
+          this.applyPagination();
+          this.isLoading = false;
+        }
       },
       error: (err) => {
         this.errorMessage = 'Error al cargar los usuarios';
         this.isLoading = false;
-        console.error(err);
+        console.error('Error al cargar usuarios:', err);
       }
     });
+  }
+  
+  // Aplicar paginación en el cliente
+  applyPagination() {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = Math.min(startIndex + this.itemsPerPage, this.allUsers.length);
+    this.displayedUsers = this.allUsers.slice(startIndex, endIndex);
+    this.users = this.displayedUsers; // Para mantener compatibilidad con el template
+    console.log(`Mostrando usuarios ${startIndex + 1} a ${endIndex} de ${this.totalItems}`);
+  }
+  
+  onPageChange(page: any): void {
+    console.log('Cambiando a página:', page);
+    // Verificar que page sea un número válido
+    const pageNumber = parseInt(page, 10);
+    if (!isNaN(pageNumber) && pageNumber > 0) {
+      this.currentPage = pageNumber;
+      
+      // Si tenemos todos los usuarios, solo aplicamos paginación local
+      if (this.allUsers.length > 0) {
+        this.applyPagination();
+      } else {
+        // Si no, hacemos una nueva petición al servidor
+        this.loadUsers();
+      }
+    } else {
+      console.error('Número de página inválido:', page);
+    }
   }
 
   showCreateForm() {

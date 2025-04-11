@@ -11,8 +11,8 @@
       <button (click)="loadUsers()">Recargar Lista</button>
     </div>
 
-    <div class="table-responsive" *ngIf="!isLoading && users.length > 0">
-      <table>
+    <div class="table-responsive" *ngIf="!isLoading && displayedUsers.length > 0">
+      <table class="tabla">
         <thead>
         <tr>
           <th>ID</th>
@@ -23,7 +23,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let user of users">
+        <tr *ngFor="let user of displayedUsers">
           <td>{{ user.id }}</td>
           <td>{{ user.name }}</td>
           <td>{{ user.email }}</td>
@@ -44,13 +44,28 @@
       </table>
     </div>
 
-    <div *ngIf="!isLoading && users.length === 0" class="no-data">
+    <div *ngIf="!isLoading && displayedUsers.length === 0" class="no-data">
       No hay usuarios registrados.
     </div>
 
     <div *ngIf="isLoading" class="loading">
       Cargando usuarios...
     </div>
+    
+    <!-- Mensaje de depuración -->
+    <div *ngIf="errorMessage" class="error-debug">
+      <p>Error: {{ errorMessage }}</p>
+      <button (click)="loadUsers()" class="retry-button">Reintentar</button>
+    </div>
+    
+    <!-- Agregar el componente de paginación -->
+    <app-pagination
+      *ngIf="!isLoading && totalItems > 0"
+      [totalItems]="totalItems"
+      [itemsPerPage]="itemsPerPage"
+      [currentPage]="currentPage"
+      (pageChange)="onPageChange($event)">
+    </app-pagination>
   </div>
 
   <!-- Vista del formulario (crear o editar) -->

@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
-import { throwError } from 'rxjs';  // Para manejar errores
+import { throwError } from 'rxjs';
+import {environment} from "../../environments/environment";  // Para manejar errores
 
 interface UserProfile {
   rol: string;
@@ -23,7 +24,10 @@ interface Vehicle {
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = 'http://127.0.0.1:8000/api'; // URL del backend en Laravel
+  getUserId() {
+    throw new Error('Method not implemented.');
+  }
+  private apiUrl = `${environment.apiUrl}`;
 
   constructor(private http: HttpClient) {}
 

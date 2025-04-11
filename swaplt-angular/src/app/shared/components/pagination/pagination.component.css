@@ -1,0 +1,111 @@
+.pagination-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.pagination-info {
+  margin-bottom: 10px;
+  color: #6c5c3c;
+  font-size: 14px;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.pagination-pages {
+  display: flex;
+  gap: 5px;
+}
+
+.pagination-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 36px;
+  padding: 0 8px;
+  background-color: white;
+  border: 1px solid #dcbc7c;
+  border-radius: 6px;
+  color: #6c5c3c;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 15px;
+}
+
+.pagination-btn:hover:not([disabled]) {
+  background-color: #f8f2e4;
+  border-color: #7c5c24;
+}
+
+.pagination-btn.active {
+  background-color: #34a4b4;
+  border-color: #34a4b4;
+  color: white;
+  font-weight: 600;
+}
+
+.pagination-btn[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination-icon {
+  font-size: 18px;
+  line-height: 0;
+}
+
+.first-page-btn,
+.last-page-btn {
+  font-weight: bold;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .pagination-container {
+    margin: 15px 0;
+  }
+  
+  .pagination-info {
+    font-size: 13px;
+  }
+  
+  .pagination-btn {
+    min-width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pagination-container {
+    margin: 10px 0;
+  }
+  
+  .pagination-controls {
+    flex-wrap: wrap;
+  }
+  
+  .pagination-info {
+    font-size: 12px;
+    text-align: center;
+  }
+  
+  .pagination-btn {
+    min-width: 30px;
+    height: 30px;
+    font-size: 13px;
+  }
+  
+  .first-page-btn,
+  .last-page-btn {
+    display: none;
+  }
+}

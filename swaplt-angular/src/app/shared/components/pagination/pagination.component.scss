@@ -1,0 +1,33 @@
+.pagination {
+  margin: 20px 0;
+  
+  .page-item {
+    .page-link {
+      color: #2e7d32;
+      border: 1px solid #ddd;
+      margin: 0 2px;
+      
+      &:hover {
+        background-color: #e8f5e9;
+        border-color: #2e7d32;
+      }
+    }
+    
+    &.active {
+      .page-link {
+        background-color: #2e7d32;
+        border-color: #2e7d32;
+        color: white;
+      }
+    }
+    
+    &.disabled {
+      .page-link {
+        color: #6c757d;
+        pointer-events: none;
+        background-color: #fff;
+        border-color: #dee2e6;
+      }
+    }
+  }
+} 

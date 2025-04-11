@@ -9,6 +9,7 @@ import { CategoriasComponent } from './categorias/categorias.component';
 import { AdminRoutingModule } from './admin-routing.module';
 import {VehiculosComponent} from "./vehiculos/vehiculos.component";
 import { AccesoDenegadoComponent } from './acceso-denegado/acceso-denegado.component';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { AccesoDenegadoComponent } from './acceso-denegado/acceso-denegado.compo
     FormsModule,
     RouterModule,
     AdminRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    SharedModule
   ]
 })
 export class AdminModule { }

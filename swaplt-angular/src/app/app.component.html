@@ -13,7 +13,7 @@
     <!-- Center: Navigation Links -->
     <div class="nav-center">
       <div class="nav-links">
-        <a href="#" class="nav-link">Catálogo</a>
+        <a routerLink="/catalogo" class="nav-link">Catálogo</a>
         <a href="#" class="nav-link">Favoritos</a>
         <a href="#" class="nav-link">Mensajes</a>
       </div>
@@ -21,7 +21,7 @@
 
     <!-- Right: Action Buttons -->
     <div class="action-buttons">
-      <button class="sell-button">Vender</button>
+      <button class="sell-button" routerLink="/vender-vehiculo">Vender</button>
       <div class="profile-container">
         <button class="profile-button" (click)="toggleDropdown()">
           <span class="profile-icon">👤</span>
@@ -47,7 +47,7 @@
         <a href="#" class="mobile-nav-link">Mensajes</a>
       </div>
       <div class="mobile-action-buttons">
-        <button class="mobile-sell-button">Vender</button>
+        <button class="mobile-sell-button" routerLink="/vender-vehiculo">Vender</button>
         <button class="mobile-profile-button" (click)="toggleDropdown()">
           <span class="profile-icon">👤</span> Mi Perfil
         </button>
@@ -69,7 +69,7 @@
 
 
 <!-------------------------- Pie de pagina -------------------------->
-<footer class="main-footer">
+<footer class="main-footer" [class.show]="footerVisible">
   <div class="footer-content">
     <div class="footer-section">
       <h3 class="footer-title">Navegación</h3>
