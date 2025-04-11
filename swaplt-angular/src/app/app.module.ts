@@ -11,7 +11,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { LoginComponent } from './pages/login/login.component';
 import { ProfileComponent } from './pages/profile/profile.component';
-import { MessagesComponent } from './pages/messages/messages.component';
 import { VehicleDetailComponent } from './pages/vehicle-detail/vehicle-detail.component';
 import { AuthInterceptor } from "./interceptors/auth.interceptor";
 import { RegisterComponent } from './pages/register/register.component';
@@ -26,7 +25,6 @@ import { AdminModule } from './admin/admin.module';
     AppComponent,
     LoginComponent,
     ProfileComponent,
-    MessagesComponent,
     VehicleDetailComponent,
     RegisterComponent,
     VenderVehiculoComponent,

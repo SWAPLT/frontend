@@ -5,33 +5,28 @@
     }} de {{ totalItems }} resultados</span>
   </div>
 
-  <nav aria-label="Paginación" *ngIf="totalPages > 1">
-    <ul class="pagination justify-content-center">
-      <li class="page-item" [class.disabled]="currentPage === 1">
-        <a class="page-link" href="#" (click)="firstPage(); $event.preventDefault()" aria-label="Primera">
-          <span aria-hidden="true">&laquo;&laquo;</span>
-        </a>
-      </li>
-      <li class="page-item" [class.disabled]="currentPage === 1">
-        <a class="page-link" href="#" (click)="prevPage(); $event.preventDefault()" aria-label="Anterior">
-          <span aria-hidden="true">&laquo;</span>
-        </a>
-      </li>
-      
-      <li class="page-item" *ngFor="let page of pages" [class.active]="page === currentPage">
-        <a class="page-link" href="#" (click)="goToPage(page); $event.preventDefault()">{{ page }}</a>
-      </li>
-      
-      <li class="page-item" [class.disabled]="currentPage === totalPages">
-        <a class="page-link" href="#" (click)="nextPage(); $event.preventDefault()" aria-label="Siguiente">
-          <span aria-hidden="true">&raquo;</span>
-        </a>
-      </li>
-      <li class="page-item" [class.disabled]="currentPage === totalPages">
-        <a class="page-link" href="#" (click)="lastPage(); $event.preventDefault()" aria-label="Última">
-          <span aria-hidden="true">&raquo;&raquo;</span>
-        </a>
-      </li>
-    </ul>
-  </nav>
+  <div class="pagination-controls" *ngIf="totalPages > 1">
+    <button class="pagination-btn first-page-btn" [disabled]="currentPage === 1" (click)="firstPage()" aria-label="Primera">
+      <span class="pagination-icon">&laquo;&laquo;</span>
+    </button>
+    <button class="pagination-btn" [disabled]="currentPage === 1" (click)="prevPage()" aria-label="Anterior">
+      <span class="pagination-icon">&laquo;</span>
+    </button>
+    
+    <div class="pagination-pages">
+      <button *ngFor="let page of pages" 
+              class="pagination-btn" 
+              [class.active]="page === currentPage"
+              (click)="goToPage(page)">
+        {{ page }}
+      </button>
+    </div>
+    
+    <button class="pagination-btn" [disabled]="currentPage === totalPages" (click)="nextPage()" aria-label="Siguiente">
+      <span class="pagination-icon">&raquo;</span>
+    </button>
+    <button class="pagination-btn last-page-btn" [disabled]="currentPage === totalPages" (click)="lastPage()" aria-label="Última">
+      <span class="pagination-icon">&raquo;&raquo;</span>
+    </button>
+  </div>
 </div>

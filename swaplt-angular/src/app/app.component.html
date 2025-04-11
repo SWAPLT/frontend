@@ -14,7 +14,7 @@
     <div class="nav-center">
       <div class="nav-links">
         <a routerLink="/catalogo" class="nav-link">Catálogo</a>
-        <a href="#" class="nav-link">Favoritos</a>
+        <a routerLink="/favoritos" class="nav-link">Favoritos</a>
         <a href="#" class="nav-link">Mensajes</a>
       </div>
     </div>
@@ -27,9 +27,10 @@
           <span class="profile-icon">👤</span>
         </button>
         <div class="dropdown-menu" [class.show]="dropdownOpen">
-          <a href="/profile" class="dropdown-item">Ver Perfil</a>
+          <a routerLink="/profile" class="dropdown-item">Ver Perfil</a>
           <hr class="dropdown-divider">
-          <a href="#" class="dropdown-item" (click)="logOut()">LogOut</a>        </div>
+          <a href="#" class="dropdown-item" (click)="logOut()">LogOut</a>
+        </div>
       </div>
     </div>
   </div>
@@ -42,8 +43,8 @@
 
     <div class="mobile-dropdown" [class.open]="mobileMenuOpen">
       <div class="mobile-nav-links">
-        <a href="#" class="mobile-nav-link">Catálogo</a>
-        <a href="#" class="mobile-nav-link">Favoritos</a>
+        <a routerLink="/catalogo" class="mobile-nav-link">Catálogo</a>
+        <a routerLink="/favoritos" class="mobile-nav-link">Favoritos</a>
         <a href="#" class="mobile-nav-link">Mensajes</a>
       </div>
       <div class="mobile-action-buttons">
@@ -55,7 +56,7 @@
       <div class="mobile-dropdown-menu" [class.show]="dropdownOpen">
         <a routerLink="/profile" class="dropdown-item">Ver Perfil</a>
         <hr class="dropdown-divider">
-        <a href="#" class="dropdown-item">LogOut</a>
+        <a href="#" class="dropdown-item" (click)="logOut()">LogOut</a>
       </div>
     </div>
   </div>
@@ -74,8 +75,8 @@
     <div class="footer-section">
       <h3 class="footer-title">Navegación</h3>
       <ul class="footer-links">
-        <li><a href="#">Catálogo</a></li>
-        <li><a href="#">Favoritos</a></li>
+        <li><a routerLink="/catalogo">Catálogo</a></li>
+        <li><a routerLink="/favoritos">Favoritos</a></li>
         <li><a href="#">Mensajes</a></li>
       </ul>
     </div>
@@ -83,9 +84,9 @@
     <div class="footer-section">
       <h3 class="footer-title">Legal</h3>
       <ul class="footer-links">
-        <li><a href="#">Términos de uso</a></li>
-        <li><a href="#">Política de privacidad</a></li>
-        <li><a href="#">Ayuda</a></li>
+        <li><a routerLink="/static/terminos">Términos de uso</a></li>
+        <li><a routerLink="/static/privacidad">Política de privacidad</a></li>
+        <li><a routerLink="/static/ayuda">Ayuda</a></li>
       </ul>
     </div>
 

@@ -1,0 +1,78 @@
+<div class="favoritos-container">
+  <h2>Mis Vehículos Favoritos</h2>
+
+  <div *ngIf="loading" class="loading">
+    <div class="spinner"></div>
+    <p>Cargando favoritos...</p>
+  </div>
+
+  <div *ngIf="error" class="error">
+    {{ error }}
+  </div>
+
+  <div *ngIf="!loading && favoritos.length === 0" class="no-favoritos">
+    <p>No tienes vehículos favoritos. ¡Agrega algunos!</p>
+  </div>
+
+  <div class="favoritos-list">
+    <div *ngFor="let favorito of paginatedFavoritos" class="favorito-card">
+      <div class="favorito-image">
+        <div *ngIf="!favorito.vehiculo.imagen" class="default-vehicle-icon">
+          <i class="fas fa-car"></i>
+        </div>
+        <img *ngIf="favorito.vehiculo.imagen" 
+             [src]="favorito.vehiculo.imagen" 
+             [alt]="favorito.vehiculo.marca + ' ' + favorito.vehiculo.modelo">
+        <button class="remove-btn" (click)="removeFavorito(favorito.id)">
+          <i class="fas fa-heart"></i>
+        </button>
+        <div class="propietario">
+          <i class="fas fa-user"></i>
+          <span>Usuario SWAPLT</span>
+        </div>
+      </div>
+      
+      <div class="favorito-info">
+        <div class="favorito-header">
+          <h3>{{ favorito.vehiculo.marca }} {{ favorito.vehiculo.modelo }}</h3>
+          <p class="precio">€{{ favorito.vehiculo.precio | number:'1.0-0' }}</p>
+        </div>
+
+        <div class="favorito-details">
+          <div class="detail-item">
+            <i class="fas fa-calendar"></i>
+            <span>{{ favorito.vehiculo.anio }}</span>
+          </div>
+          <div class="detail-item">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>{{ favorito.vehiculo.kilometros | number }} km</span>
+          </div>
+          <div class="detail-item">
+            <i class="fas fa-gas-pump"></i>
+            <span>{{ favorito.vehiculo.combustible }}</span>
+          </div>
+        </div>
+
+        <div class="favorito-footer">
+          <div class="favorito-actions">
+            <button class="ver-detalles" [routerLink]="['/vehiculo', favorito.vehiculo.id]">
+              <i class="fas fa-eye"></i> Ver Detalles
+            </button>
+            <button class="contactar" [routerLink]="['/mensajes']" [queryParams]="{vehiculo: favorito.vehiculo.id}">
+              <i class="fas fa-comment"></i> Contactar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Paginación -->
+  <app-pagination
+    *ngIf="!loading && !error && favoritos.length > 0"
+    [currentPage]="currentPage"
+    [totalItems]="totalItems"
+    [itemsPerPage]="itemsPerPage"
+    (pageChange)="onPageChange($event)">
+  </app-pagination>
+</div> 

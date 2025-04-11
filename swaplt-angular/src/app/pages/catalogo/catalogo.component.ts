@@ -2,7 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { VehiculosService } from './services/vehiculos.service';
 import { ToastrService } from 'ngx-toastr';
-import { FavoritosService } from '../../shared/services/favoritos.service';
+import { FavoritosService } from '../../services/favoritos.service';
+import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
+import { Observable, catchError, of } from 'rxjs';
 
 @Component({
   selector: 'app-catalogo',
@@ -19,12 +22,15 @@ export class CatalogoComponent implements OnInit {
   totalItems = 0;
   searchForm: FormGroup;
   filtersForm: FormGroup;
+  favoritos: number[] = [];
 
   constructor(
     private vehiculosService: VehiculosService,
     private favoritosService: FavoritosService,
     private toastr: ToastrService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router
   ) {
     this.searchForm = this.fb.group({
       query: ['']
@@ -42,6 +48,9 @@ export class CatalogoComponent implements OnInit {
   ngOnInit(): void {
     console.log('Inicializando componente de catálogo...');
     this.loadVehiculos();
+    if (this.authService.isAuthenticated()) {
+      this.loadFavoritos();
+    }
   }
 
   get paginatedVehiculos(): any[] {
@@ -117,17 +126,45 @@ export class CatalogoComponent implements OnInit {
     this.currentPage = page;
   }
 
-  toggleFavorito(vehiculo: any): void {
-    if (this.isFavorito(vehiculo.id)) {
-      this.favoritosService.removeFavorito(vehiculo.id);
-      this.toastr.success('Vehículo eliminado de favoritos', 'Éxito');
+  loadFavoritos(): void {
+    this.favoritosService.getFavoritos().pipe(
+      catchError((error: any) => {
+        console.error('Error loading favorites:', error);
+        return of([]);
+      })
+    ).subscribe((response: any[]) => {
+      this.favoritos = response.map((fav: any) => fav.vehiculo_id);
+    });
+  }
+
+  toggleFavorito(vehiculoId: number): void {
+    if (!this.authService.isAuthenticated()) {
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    if (this.isFavorito(vehiculoId)) {
+      this.favoritosService.removeFavorito(vehiculoId).pipe(
+        catchError((error: any) => {
+          console.error('Error removing favorite:', error);
+          return of(null);
+        })
+      ).subscribe(() => {
+        this.favoritos = this.favoritos.filter(id => id !== vehiculoId);
+      });
     } else {
-      this.favoritosService.addFavorito(vehiculo);
-      this.toastr.success('Vehículo agregado a favoritos', 'Éxito');
+      this.favoritosService.addFavorito(vehiculoId).pipe(
+        catchError((error: any) => {
+          console.error('Error adding favorite:', error);
+          return of(null);
+        })
+      ).subscribe(() => {
+        this.favoritos.push(vehiculoId);
+      });
     }
   }
 
   isFavorito(vehiculoId: number): boolean {
-    return this.favoritosService.isFavorito(vehiculoId);
+    return this.favoritos.includes(vehiculoId);
   }
 }

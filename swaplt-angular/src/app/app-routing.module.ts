@@ -18,7 +18,9 @@ const routes: Routes = [
   { path: 'acceso-denegado', component: AccesoDenegadoComponent },
   { path: 'profile', component: ProfileComponent }, // Asegúrate de tener la ruta para el perfil
   { path: 'vender-vehiculo', component: VenderVehiculoComponent },
-  { path: 'catalogo', loadChildren: () => import('./pages/catalogo/catalogo.module').then(m => m.CatalogoModule) },
+  { path: 'catalogo', loadChildren: () => import('./pages/catalogo/catalogo.module').then(m => m.CatalogoModule), canActivate: [AuthGuard] },
+  { path: 'favoritos', loadChildren: () => import('./pages/favoritos/favoritos.module').then(m => m.FavoritosModule), canActivate: [AuthGuard] },
+  { path: 'static', loadChildren: () => import('./pages/static/static.module').then(m => m.StaticModule) },
   { path: '**', redirectTo: '/catalogo' }  // Redirige a catálogo si la ruta no existe
 ];
 

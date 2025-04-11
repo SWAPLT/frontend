@@ -138,26 +138,63 @@
   position: absolute;
   top: 10px;
   right: 10px;
-  background: white;
+  background-color: rgba(255, 255, 255, 0.9);
   border: none;
   border-radius: 50%;
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 1.4rem;
   cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .favorito-btn:hover {
   transform: scale(1.1);
+  background-color: white;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
 }
 
 .favorito-btn i {
-  color: #7c5c24;
-  font-size: 1.2rem;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.favorito-btn:active i {
+  transform: scale(1.3);
+}
+
+.favorito-btn.favorito i {
+  color: #dc3545 !important;
+  animation: heartBeat 0.3s ease-in-out;
+}
+
+.favorito-btn:not(.favorito) i {
+  color: #dc3545 !important;
+}
+
+.favorito-btn i {
+  color: inherit;
+}
+
+@keyframes heartBeat {
+  0% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.3);
+  }
+  50% {
+    transform: scale(1);
+  }
+  75% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 .vehiculo-info {
@@ -400,7 +437,7 @@ button:hover {
 }
 
 .favorito-btn i {
-    color: #7c5c24 !important; /* color3 - marrón oscuro */
+    color: inherit !important; /* Esto permitirá que el icono use su color por defecto */
 }
 
 .vehiculo-details i {
