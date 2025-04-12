@@ -5,6 +5,4 @@ import { Component } from '@angular/core';
   templateUrl: './ayuda.component.html',
   styleUrls: ['../shared/static-pages.css']
 })
-export class AyudaComponent {
-  
-} 
+export class AyudaComponent { } 

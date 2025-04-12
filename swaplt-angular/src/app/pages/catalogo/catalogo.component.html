@@ -39,8 +39,9 @@
           <i class="fas fa-car"></i>
         </div>
         <img *ngIf="vehiculo.imagen_url" [src]="vehiculo.imagen_url" [alt]="vehiculo.marca + ' ' + vehiculo.modelo">
-        <button class="favorito-btn" (click)="toggleFavorito(vehiculo.id)" [class.favorito]="isFavorito(vehiculo.id)">
+        <button class="favorito-btn" (click)="toggleFavorito(vehiculo.id)" [class.favorito]="isFavorito(vehiculo.id)" [class.animating]="isAnimating(vehiculo.id)">
           <i [class]="isFavorito(vehiculo.id) ? 'fas fa-heart' : 'far fa-heart'"></i>
+          <i class="fas fa-heart-broken broken-heart" *ngIf="isAnimating(vehiculo.id)"></i>
         </button>
       </div>
       <div class="vehiculo-info">
@@ -49,18 +50,20 @@
           <p class="precio">${{ vehiculo.precio | number:'1.0-0' }}</p>
         </div>
         
-        <div class="vehiculo-details">
-          <div class="detail-item">
-            <i class="fas fa-calendar"></i>
-            <span>{{ vehiculo.anio }}</span>
-          </div>
-          <div class="detail-item">
-            <i class="fas fa-tachometer-alt"></i>
-            <span>{{ vehiculo.kilometraje | number }} km</span>
-          </div>
-          <div class="detail-item">
-            <i class="fas fa-cog"></i>
-            <span>{{ vehiculo.transmision }}</span>
+        <div class="vehiculo-detalles-container">
+          <div class="vehiculo-details">
+            <div class="detail-item">
+              <i class="fas fa-calendar"></i>
+              <span>{{ vehiculo.anio }}</span>
+            </div>
+            <div class="detail-item">
+              <i class="fas fa-tachometer-alt"></i>
+              <span>{{ vehiculo.kilometraje | number }} km</span>
+            </div>
+            <div class="detail-item">
+              <i class="fas fa-cog"></i>
+              <span>{{ vehiculo.transmision }}</span>
+            </div>
           </div>
         </div>
 

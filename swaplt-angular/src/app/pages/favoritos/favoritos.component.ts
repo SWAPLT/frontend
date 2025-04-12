@@ -12,9 +12,17 @@ interface Favorito {
     modelo: string;
     anio: number;
     precio: number;
-    kilometros: number;
-    combustible: string;
-    imagen: string;
+    kilometraje: number;
+    transmision: string;
+    tipo_combustible: string;
+    imagen_url: string;
+    estado: string;
+    color: string;
+    fuerza: number;
+    capacidad_motor: number;
+    numero_puertas: number;
+    plazas: number;
+    descripcion: string;
   };
 }
 
@@ -30,6 +38,7 @@ export class FavoritosComponent implements OnInit {
   currentPage = 1;
   itemsPerPage = 5;
   totalItems = 0;
+  animatingFavorites: Set<number> = new Set();
 
   constructor(
     private favoritosService: FavoritosService,
@@ -45,6 +54,12 @@ export class FavoritosComponent implements OnInit {
       return;
     }
     this.loadFavoritos();
+    
+    // Suscribirse a cambios en los favoritos
+    this.favoritosService.getFavoritosState().subscribe(favoritos => {
+      this.favoritos = favoritos;
+      this.totalItems = this.favoritos.length;
+    });
   }
 
   get paginatedFavoritos(): Favorito[] {
@@ -63,40 +78,55 @@ export class FavoritosComponent implements OnInit {
         this.loading = false;
       },
       error: (error) => {
-        this.error = 'Error al cargar los favoritos. Por favor, intente nuevamente.';
-        this.loading = false;
-        console.error('Error loading favorites:', error);
-        if (error.status === 401) {
-          this.authService.logout();
-          this.router.navigate(['/login']);
-          this.toastr.warning('Tu sesión ha expirado. Por favor inicia sesión nuevamente.');
+        if (error.status === 404) {
+          // Si no hay favoritos, mostramos la lista vacía
+          this.favoritos = [];
+          this.totalItems = 0;
+          this.loading = false;
+        } else {
+          this.error = 'Error al cargar los favoritos. Por favor, intente nuevamente.';
+          this.loading = false;
+          console.error('Error loading favorites:', error);
+          if (error.status === 401) {
+            this.authService.logout();
+            this.router.navigate(['/login']);
+            this.toastr.warning('Tu sesión ha expirado. Por favor inicia sesión nuevamente.');
+          }
         }
       }
     });
   }
 
   removeFavorito(favoritoId: number): void {
-    this.favoritosService.removeFavorito(favoritoId).subscribe({
+    this.animatingFavorites.add(favoritoId);
+    this.favoritosService.removeFavoritoById(favoritoId).subscribe({
       next: () => {
-        this.favoritos = this.favoritos.filter(f => f.id !== favoritoId);
-        this.totalItems = this.favoritos.length;
-        this.toastr.success('Vehículo eliminado de favoritos');
-        
-        // Ajustar la página actual si es necesario
-        const maxPage = Math.ceil(this.totalItems / this.itemsPerPage);
-        if (this.currentPage > maxPage && maxPage > 0) {
-          this.currentPage = maxPage;
-        }
+        setTimeout(() => {
+          this.animatingFavorites.delete(favoritoId);
+          this.toastr.success('Vehículo eliminado de favoritos');
+        }, 2000);
       },
       error: (error) => {
-        this.toastr.error('Error al eliminar de favoritos');
-        console.error('Error removing favorite:', error);
+        this.animatingFavorites.delete(favoritoId);
+        if (error.status === 404) {
+          // Si el favorito ya no existe, lo eliminamos de la lista local
+          this.favoritos = this.favoritos.filter(f => f.id !== favoritoId);
+          this.totalItems = this.favoritos.length;
+          this.toastr.success('Vehículo eliminado de favoritos');
+        } else {
+          this.toastr.error('Error al eliminar de favoritos');
+          console.error('Error removing favorite:', error);
+        }
       }
     });
   }
 
+  isAnimating(favoritoId: number): boolean {
+    return this.animatingFavorites.has(favoritoId);
+  }
+
   goToVehicleDetail(vehiculoId: number): void {
-    this.router.navigate(['/vehicle', vehiculoId]);
+    this.router.navigate(['/vehiculo', vehiculoId]);
   }
 
   onPageChange(page: number): void {

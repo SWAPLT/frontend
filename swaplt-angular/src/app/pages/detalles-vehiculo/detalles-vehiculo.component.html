@@ -1,0 +1,151 @@
+<div class="container">
+  <!-- Estado de carga -->
+  <div *ngIf="loading" class="loading">
+    <div class="spinner"></div>
+    <p>Cargando detalles del vehículo...</p>
+  </div>
+
+  <!-- Mensaje de error -->
+  <div *ngIf="error" class="error">
+    <p>Error al cargar los detalles del vehículo</p>
+    <button (click)="loadVehiculo(vehiculo.id)" class="retry-button">Reintentar</button>
+  </div>
+
+  <!-- Detalles del vehículo -->
+  <div *ngIf="!loading && !error && vehiculo">
+    <!-- Galería de imágenes -->
+    <div class="gallery">
+      <div class="main-image">
+        <div *ngIf="!vehiculo.imagen_url" class="default-vehicle-icon">
+          <i class="fas fa-car"></i>
+        </div>
+        <img *ngIf="vehiculo.imagen_url" [src]="vehiculo.imagen_url" [alt]="vehiculo.marca + ' ' + vehiculo.modelo">
+      </div>
+      <!-- Aquí irían las miniaturas si hubiera más imágenes -->
+      <div class="thumbnails" *ngIf="vehiculo.imagenes?.length > 1">
+        <div class="thumbnail" *ngFor="let imagen of vehiculo.imagenes; let i = index" 
+             [class.active]="i === selectedImageIndex"
+             (click)="selectImage(i)">
+          <img [src]="imagen" [alt]="vehiculo.marca + ' ' + vehiculo.modelo + ' imagen ' + (i + 1)">
+        </div>
+      </div>
+    </div>
+
+    <!-- Información principal del vehículo -->
+    <div class="vehicle-info">
+      <div class="vehicle-header">
+        <h1 class="vehicle-title">{{ vehiculo.marca }} {{ vehiculo.modelo }}</h1>
+        <p class="vehicle-price">€{{ vehiculo.precio | number:'1.0-0' }}</p>
+      </div>
+      
+      <div class="vehicle-actions">
+        <button class="favorito-btn" (click)="toggleFavorito()" [class.favorito]="isFavorito()" [class.animating]="animating">
+          <i [class]="isFavorito() ? 'fas fa-heart' : 'far fa-heart'"></i>
+          {{ isFavorito() ? 'Guardado en favoritos' : 'Agregar a favoritos' }}
+        </button>
+        <button class="contactar" (click)="contactar()">
+          <i class="fas fa-comment"></i> Contactar vendedor
+        </button>
+      </div>
+    </div>
+
+    <!-- Sección: Información Básica -->
+    <div class="details-section">
+      <h2>Información Básica</h2>
+      <div class="details-grid">
+        <div class="detail-item">
+          <i class="fas fa-calendar"></i>
+          <span>Año: {{ vehiculo.anio }}</span>
+        </div>
+        <div class="detail-item">
+          <i class="fas fa-tachometer-alt"></i>
+          <span>Kilometraje: {{ vehiculo.kilometraje | number }} km</span>
+        </div>
+        <div class="detail-item">
+          <i class="fas fa-gas-pump"></i>
+          <span>Combustible: {{ vehiculo.tipo_combustible }}</span>
+        </div>
+        <div class="detail-item">
+          <i class="fas fa-cog"></i>
+          <span>Transmisión: {{ vehiculo.transmision }}</span>
+        </div>
+        <div class="detail-item">
+          <i class="fas fa-car"></i>
+          <span>Estado: {{ vehiculo.estado }}</span>
+        </div>
+        <div class="detail-item">
+          <i class="fas fa-paint-brush"></i>
+          <span>Color: {{ vehiculo.color }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección: Características Técnicas -->
+    <div class="details-section">
+      <h2>Características Técnicas</h2>
+      <div class="details-grid">
+        <div class="detail-item">
+          <i class="fas fa-bolt"></i>
+          <span>Potencia: {{ vehiculo.fuerza }} CV</span>
+        </div>
+        <div class="detail-item">
+          <i class="fas fa-engine"></i>
+          <span>Motor: {{ vehiculo.capacidad_motor }}L</span>
+        </div>
+        <div class="detail-item">
+          <i class="fas fa-door-open"></i>
+          <span>Puertas: {{ vehiculo.numero_puertas }}</span>
+        </div>
+        <div class="detail-item">
+          <i class="fas fa-id-card"></i>
+          <span>Matrícula: {{ vehiculo.matricula }}</span>
+        </div>
+        <div class="detail-item">
+          <i class="fas fa-barcode"></i>
+          <span>Número de Serie: {{ vehiculo.numero_serie }}</span>
+        </div>
+        <div class="detail-item">
+          <i class="fas fa-map-marker-alt"></i>
+          <span>Ubicación: {{ vehiculo.ubicacion }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección: Estado Legal -->
+    <div class="details-section">
+      <h2>Estado Legal</h2>
+      <div class="details-grid">
+        <div class="detail-item">
+          <i class="fas fa-car-crash"></i>
+          <span>Libre de Accidentes: {{ vehiculo.vehiculo_libre_accidentes === 'si' ? 'Sí' : 'No' }}</span>
+        </div>
+        <div class="detail-item">
+          <i class="fas fa-shield-alt"></i>
+          <span>Vehículo Robado: {{ vehiculo.vehiculo_robado === 'si' ? 'Sí' : 'No' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección: Descripción -->
+    <div class="details-section">
+      <h2>Descripción</h2>
+      <div class="description-content">
+        <p>{{ vehiculo.descripcion }}</p>
+      </div>
+    </div>
+
+    <!-- Sección: Información del Vendedor -->
+    <div class="details-section">
+      <h2>Información del Vendedor</h2>
+      <div class="seller-info">
+        <div class="seller-avatar">
+          <i class="fas fa-user"></i>
+        </div>
+        <div class="seller-details">
+          <h3>{{ vehiculo.propietario?.nombre || 'Usuario SWAPLT' }}</h3>
+          <p>Miembro desde: {{ vehiculo.propietario?.fecha_registro || 'Fecha no disponible' }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

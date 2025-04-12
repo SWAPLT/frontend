@@ -1,1 +1,215 @@
 /* You can add global styles to this file, and also import other style files */
+@import '@fortawesome/fontawesome-free/css/all.css';
+@import 'bootstrap/dist/css/bootstrap.min.css';
+
+/* Variables de color para el tema claro */
+:root {
+  --primary-color: #34a4b4;
+  --secondary-color: #dcbc7c;
+  --tertiary-color: #7c5c24;
+  --quaternary-color: #6c5c3c;
+  --background-color: #f5f5f5;
+  --card-background: #ffffff;
+  --card-details-background: #ffffff;
+  --input-background: #ffffff;
+  --text-color: #333333;
+  --border-color: #e0e0e0;
+  --hover-color: #f1f1f1;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --placeholder-color: #666666;
+}
+
+/* Variables de color para el tema oscuro */
+.dark-theme {
+  --primary-color: #4db8c7;
+  --secondary-color: #e8c989;
+  --tertiary-color: #9c7c44;
+  --quaternary-color: #8c7c5c;
+  --background-color: #2a2a2a;
+  --card-background: #3a3a3a;
+  --card-details-background: #454545;
+  --input-background: #454545;
+  --text-color: #e0e0e0;
+  --border-color: #505050;
+  --hover-color: #404040;
+  --shadow-color: rgba(0, 0, 0, 0.2);
+  --placeholder-color: #888888;
+}
+
+/* Estilos base */
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  transition: all 0.3s ease;
+  min-height: 100vh;
+}
+
+/* Estilos para componentes comunes */
+.container {
+  background-color: var(--card-background);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 2px 4px var(--shadow-color);
+}
+
+/* Estilos para inputs y campos de búsqueda */
+input[type="text"],
+input[type="number"],
+input[type="search"],
+.form-control {
+  background-color: var(--input-background);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+}
+
+input[type="text"]::placeholder,
+input[type="number"]::placeholder,
+input[type="search"]::placeholder,
+.form-control::placeholder {
+  color: var(--placeholder-color);
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="search"]:focus,
+.form-control:focus {
+  background-color: var(--input-background);
+  color: var(--text-color);
+  border-color: var(--primary-color);
+}
+
+/* Estilos para botones */
+.btn-primary,
+.btn-success,
+button[type="submit"] {
+  background-color: var(--primary-color);
+  border: none;
+  color: white;
+}
+
+.btn-primary:hover,
+.btn-success:hover,
+button[type="submit"]:hover {
+  background-color: var(--quaternary-color);
+}
+
+/* Estilos específicos para el catálogo y favoritos */
+.vehiculo-card {
+  background-color: var(--card-background);
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+}
+
+.vehiculo-card:hover {
+  border-color: var(--primary-color);
+}
+
+.vehiculo-info {
+  padding: 1rem;
+  background-color: var(--card-background);
+}
+
+/* Nuevo estilo para la imagen del vehículo */
+.vehiculo-card .imagen-vehiculo {
+  background-color: var(--card-background);
+}
+
+/* Estilo para los detalles del vehículo (año, km, etc) */
+.vehiculo-detalles-container {
+  background-color: var(--card-details-background);
+  padding: 1rem;
+  border-radius: 4px;
+  margin: 0.5rem 0;
+}
+
+.vehiculo-info h3 {
+  color: var(--text-color);
+}
+
+.precio {
+  color: var(--primary-color);
+  font-weight: bold;
+}
+
+.vehiculo-details {
+  color: var(--text-color);
+  background-color: var(--input-background);
+  padding: 0.5rem;
+  border-radius: 4px;
+}
+
+.vehiculo-details i {
+  color: var(--secondary-color);
+}
+
+/* Estilos para la barra de navegación */
+.toolbar {
+  background-color: var(--primary-color);
+  box-shadow: 0 2px 4px var(--shadow-color);
+}
+
+.nav-link {
+  color: var(--text-color);
+}
+
+.nav-link:hover {
+  color: var(--secondary-color);
+}
+
+/* Estilos para botones de acción */
+.ver-detalles,
+.contactar {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.ver-detalles:hover,
+.contactar:hover {
+  background-color: var(--quaternary-color);
+}
+
+/* Estilos para el footer */
+.main-footer {
+  background-color: var(--card-background);
+  color: var(--text-color);
+}
+
+.footer-links a {
+  color: var(--text-color);
+}
+
+.footer-links a:hover {
+  color: var(--secondary-color);
+}
+
+/* Botón de tema oscuro */
+.theme-toggle {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 4px var(--shadow-color);
+  transition: all 0.3s ease;
+}
+
+.theme-toggle:hover {
+  background-color: var(--quaternary-color);
+}
+
+.theme-toggle i {
+  font-size: 1.5rem;
+}

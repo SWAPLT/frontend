@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from "./pages/register/register.component";
-import { VehicleDetailComponent } from './pages/vehicle-detail/vehicle-detail.component';
+import { DetallesVehiculoComponent } from './pages/detalles-vehiculo/detalles-vehiculo.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { AuthGuard } from './guards/auth.guard';
 import {AccesoDenegadoComponent} from "./admin/acceso-denegado/acceso-denegado.component";
@@ -12,7 +12,7 @@ const routes: Routes = [
   { path: '', redirectTo: '/catalogo', pathMatch: 'full' }, // Redirigir a catálogo por defecto
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
-  { path: 'vehicle/:id', component: VehicleDetailComponent },
+  { path: 'vehiculo/:id', component: DetallesVehiculoComponent },
   { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
   { path: 'admin', loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule) },
   { path: 'acceso-denegado', component: AccesoDenegadoComponent },

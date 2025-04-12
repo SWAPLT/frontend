@@ -11,7 +11,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { LoginComponent } from './pages/login/login.component';
 import { ProfileComponent } from './pages/profile/profile.component';
-import { VehicleDetailComponent } from './pages/vehicle-detail/vehicle-detail.component';
+import { DetallesVehiculoComponent } from './pages/detalles-vehiculo/detalles-vehiculo.component';
 import { AuthInterceptor } from "./interceptors/auth.interceptor";
 import { RegisterComponent } from './pages/register/register.component';
 import { AdminRoutingModule } from "./admin/admin-routing.module";
@@ -19,15 +19,18 @@ import { SharedModule } from './shared/shared.module';
 import { VenderVehiculoComponent } from './pages/vender-vehiculo/vender-vehiculo.component';
 import { CatalogoModule } from './pages/catalogo/catalogo.module';
 import { AdminModule } from './admin/admin.module';
+import { ToastrModule } from 'ngx-toastr';
+import { ThemeToggleComponent } from './components/theme-toggle/theme-toggle.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     ProfileComponent,
-    VehicleDetailComponent,
+    DetallesVehiculoComponent,
     RegisterComponent,
     VenderVehiculoComponent,
+    ThemeToggleComponent
   ],
   imports: [
     BrowserModule,
@@ -40,7 +43,8 @@ import { AdminModule } from './admin/admin.module';
     AdminRoutingModule,
     SharedModule,
     CatalogoModule,
-    AdminModule
+    AdminModule,
+    ToastrModule.forRoot()
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }

@@ -23,6 +23,7 @@ export class CatalogoComponent implements OnInit {
   searchForm: FormGroup;
   filtersForm: FormGroup;
   favoritos: number[] = [];
+  animatingVehicles: Set<number> = new Set();
 
   constructor(
     private vehiculosService: VehiculosService,
@@ -50,6 +51,9 @@ export class CatalogoComponent implements OnInit {
     this.loadVehiculos();
     if (this.authService.isAuthenticated()) {
       this.loadFavoritos();
+      this.favoritosService.getFavoritosState().subscribe(favoritos => {
+        this.favoritos = favoritos.map(fav => fav.vehiculo_id);
+      });
     }
   }
 
@@ -60,7 +64,6 @@ export class CatalogoComponent implements OnInit {
 
   loadVehiculos(): void {
     this.loading = true;
-    console.log('Cargando vehículos...');
     this.vehiculosService.getVehiculos()
       .subscribe({
         next: (response: any[]) => {
@@ -68,7 +71,6 @@ export class CatalogoComponent implements OnInit {
           this.vehiculosFiltrados = [...this.vehiculos];
           this.totalItems = this.vehiculos.length;
           this.loading = false;
-          console.log('Vehículos cargados:', this.vehiculos);
         },
         error: (error: any) => {
           console.error('Error al cargar vehículos:', error);
@@ -129,7 +131,12 @@ export class CatalogoComponent implements OnInit {
   loadFavoritos(): void {
     this.favoritosService.getFavoritos().pipe(
       catchError((error: any) => {
+        if (error.status === 404) {
+          console.log('No hay vehículos en favoritos');
+          return of([]);
+        }
         console.error('Error loading favorites:', error);
+        this.toastr.error('Error al cargar los favoritos');
         return of([]);
       })
     ).subscribe((response: any[]) => {
@@ -140,31 +147,48 @@ export class CatalogoComponent implements OnInit {
   toggleFavorito(vehiculoId: number): void {
     if (!this.authService.isAuthenticated()) {
       this.router.navigate(['/login']);
+      this.toastr.warning('Por favor inicia sesión para agregar a favoritos');
       return;
     }
 
     if (this.isFavorito(vehiculoId)) {
+      this.animatingVehicles.add(vehiculoId);
       this.favoritosService.removeFavorito(vehiculoId).pipe(
         catchError((error: any) => {
           console.error('Error removing favorite:', error);
+          this.animatingVehicles.delete(vehiculoId);
+          if (error.message === 'Favorito no encontrado') {
+            this.favoritos = this.favoritos.filter(id => id !== vehiculoId);
+            this.toastr.success('Vehículo eliminado de favoritos');
+          } else {
+            this.toastr.error('Error al eliminar de favoritos');
+          }
           return of(null);
         })
       ).subscribe(() => {
-        this.favoritos = this.favoritos.filter(id => id !== vehiculoId);
+        setTimeout(() => {
+          this.animatingVehicles.delete(vehiculoId);
+        }, 1000);
+        this.toastr.success('Vehículo eliminado de favoritos');
       });
     } else {
       this.favoritosService.addFavorito(vehiculoId).pipe(
         catchError((error: any) => {
           console.error('Error adding favorite:', error);
+          this.toastr.error('Error al agregar a favoritos');
           return of(null);
         })
       ).subscribe(() => {
-        this.favoritos.push(vehiculoId);
+        this.toastr.success('Vehículo agregado a favoritos');
       });
     }
   }
 
   isFavorito(vehiculoId: number): boolean {
     return this.favoritos.includes(vehiculoId);
+  }
+
+  isAnimating(vehiculoId: number): boolean {
+    return this.animatingVehicles.has(vehiculoId);
   }
 }
