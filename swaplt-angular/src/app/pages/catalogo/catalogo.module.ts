@@ -5,6 +5,7 @@ import { CatalogoComponent } from './catalogo.component';
 import { CatalogoRoutingModule } from './catalogo-routing.module';
 import { SharedModule } from '../../shared/shared.module';
 import { ToastrModule } from 'ngx-toastr';
+import { DetallesVehiculoComponent } from '../detalles-vehiculo/detalles-vehiculo.component';
 
 @NgModule({
   declarations: [

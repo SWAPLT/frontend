@@ -13,7 +13,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { LoginComponent } from './pages/login/login.component';
 import { ProfileComponent } from './pages/profile/profile.component';
-import { DetallesVehiculoComponent } from './pages/detalles-vehiculo/detalles-vehiculo.component';
 import { AuthInterceptor } from "./interceptors/auth.interceptor";
 import { RegisterComponent } from './pages/register/register.component';
 import { AdminRoutingModule } from "./admin/admin-routing.module";
@@ -25,18 +24,19 @@ import { ThemeToggleComponent } from './components/theme-toggle/theme-toggle.com
 import { MisVehiculosComponent } from './pages/mis-vehiculos/mis-vehiculos.component';
 import { EditarVehiculoComponent } from './pages/editar-vehiculo/editar-vehiculo.component';
 import { AuthGuard } from './guards/auth.guard';
+import { DetallesVehiculoComponent } from './pages/detalles-vehiculo/detalles-vehiculo.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     ProfileComponent,
-    DetallesVehiculoComponent,
     RegisterComponent,
     VenderVehiculoComponent,
     ThemeToggleComponent,
     MisVehiculosComponent,
-    EditarVehiculoComponent
+    EditarVehiculoComponent,
+    DetallesVehiculoComponent
   ],
   imports: [
     BrowserModule,
@@ -57,6 +57,10 @@ import { AuthGuard } from './guards/auth.guard';
         component: EditarVehiculoComponent,
         canActivate: [AuthGuard]
       },
+      {
+        path: 'vehiculo/:id',
+        component: DetallesVehiculoComponent
+      }
     ])
   ],
   providers: [

@@ -55,6 +55,15 @@
     </div>
   </div>
 
+  <!-- Paginación -->
+  <app-pagination
+    *ngIf="!loading && !error && totalItems > 0"
+    [currentPage]="currentPage"
+    [totalItems]="totalItems"
+    [itemsPerPage]="itemsPerPage"
+    (pageChange)="onPageChange($event)">
+  </app-pagination>
+
   <!-- Mensaje cuando no hay vehículos -->
   <div *ngIf="!loading && !error && vehiculos.length === 0" class="no-vehicles">
     <p>No tienes ningún vehículo publicado.</p>
