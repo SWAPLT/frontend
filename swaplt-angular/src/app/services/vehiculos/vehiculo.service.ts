@@ -2,9 +2,10 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { map, catchError } from 'rxjs/operators';
 
 export interface Vehiculo {
-  id?: number;
+  id: number;
   user_id: number;
   categoria_id: number;
   marca: string;
@@ -25,6 +26,7 @@ export interface Vehiculo {
   descripcion: string;
   vehiculo_robado: string;
   vehiculo_libre_accidentes: string;
+  imagenes?: any[];
 }
 
 @Injectable({
@@ -51,8 +53,29 @@ export class VehiculoService {
   }
 
   // Actualizar un vehículo
-  actualizar(id: number, vehiculo: Vehiculo): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/${id}`, vehiculo);
+  actualizarVehiculo(id: number, vehiculo: Vehiculo): Observable<any> {
+    return this.http.put<any>(`${environment.apiUrl}/vehiculos/${id}`, vehiculo).pipe(
+      map(response => {
+        if (response.success === false) {
+          throw new Error(response.message);
+        }
+        return response;
+      }),
+      catchError(error => {
+        console.error('Error al actualizar el vehículo:', error);
+        throw error;
+      })
+    );
+  }
+
+  // Obtener un vehículo por ID
+  obtenerVehiculoPorId(id: number): Observable<Vehiculo> {
+    return this.http.get<Vehiculo>(`${environment.apiUrl}/vehiculos/${id}`).pipe(
+      catchError(error => {
+        console.error('Error al obtener el vehículo:', error);
+        throw error;
+      })
+    );
   }
 
   // Eliminar un vehículo

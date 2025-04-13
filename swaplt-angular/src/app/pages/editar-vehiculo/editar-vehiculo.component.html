@@ -1,0 +1,125 @@
+<div class="editar-vehiculo-container">
+  <h2>Editar Vehículo</h2>
+
+  <div *ngIf="loading" class="loading">
+    <div class="spinner"></div>
+    <p>Cargando...</p>
+  </div>
+
+  <form *ngIf="!loading" [formGroup]="vehiculoForm" (ngSubmit)="onSubmit()" class="vehiculo-form">
+    <div class="form-grid">
+      <!-- Información básica -->
+      <div class="form-section">
+        <h3>Información Básica</h3>
+        <div class="form-group">
+          <label for="marca">Marca</label>
+          <input id="marca" type="text" formControlName="marca">
+          <div class="error-message" *ngIf="vehiculoForm.get('marca')?.errors?.['required'] && vehiculoForm.get('marca')?.touched">
+            La marca es requerida
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="modelo">Modelo</label>
+          <input id="modelo" type="text" formControlName="modelo">
+          <div class="error-message" *ngIf="vehiculoForm.get('modelo')?.errors?.['required'] && vehiculoForm.get('modelo')?.touched">
+            El modelo es requerido
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="precio">Precio</label>
+          <input id="precio" type="number" formControlName="precio">
+          <div class="error-message" *ngIf="vehiculoForm.get('precio')?.errors?.['required'] && vehiculoForm.get('precio')?.touched">
+            El precio es requerido
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="anio">Año</label>
+          <input id="anio" type="number" formControlName="anio">
+          <div class="error-message" *ngIf="vehiculoForm.get('anio')?.errors?.['required'] && vehiculoForm.get('anio')?.touched">
+            El año es requerido
+          </div>
+        </div>
+      </div>
+
+      <!-- Características técnicas -->
+      <div class="form-section">
+        <h3>Características Técnicas</h3>
+        <div class="form-group">
+          <label for="estado">Estado</label>
+          <select id="estado" formControlName="estado">
+            <option value="nuevo">Nuevo</option>
+            <option value="usado">Usado</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="transmision">Transmisión</label>
+          <input id="transmision" type="text" formControlName="transmision">
+        </div>
+
+        <div class="form-group">
+          <label for="tipo_combustible">Tipo de Combustible</label>
+          <input id="tipo_combustible" type="text" formControlName="tipo_combustible">
+        </div>
+
+        <div class="form-group">
+          <label for="kilometraje">Kilometraje</label>
+          <input id="kilometraje" type="number" formControlName="kilometraje">
+        </div>
+      </div>
+
+      <!-- Detalles adicionales -->
+      <div class="form-section">
+        <h3>Detalles Adicionales</h3>
+        <div class="form-group">
+          <label for="color">Color</label>
+          <input id="color" type="text" formControlName="color">
+        </div>
+
+        <div class="form-group">
+          <label for="ubicacion">Ubicación</label>
+          <input id="ubicacion" type="text" formControlName="ubicacion">
+        </div>
+
+        <div class="form-group">
+          <label for="descripcion">Descripción</label>
+          <textarea id="descripcion" formControlName="descripcion" rows="3"></textarea>
+        </div>
+      </div>
+
+      <!-- Información legal -->
+      <div class="form-section">
+        <h3>Información Legal</h3>
+        <div class="form-group">
+          <label for="matricula">Matrícula</label>
+          <input id="matricula" type="text" formControlName="matricula">
+        </div>
+
+        <div class="form-group">
+          <label for="numero_serie">Número de Serie</label>
+          <input id="numero_serie" type="text" formControlName="numero_serie">
+        </div>
+
+        <div class="form-group">
+          <label for="vehiculo_robado">Estado de Robo</label>
+          <input id="vehiculo_robado" type="text" formControlName="vehiculo_robado">
+        </div>
+
+        <div class="form-group">
+          <label for="vehiculo_libre_accidentes">Estado de Accidentes</label>
+          <input id="vehiculo_libre_accidentes" type="text" formControlName="vehiculo_libre_accidentes">
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn-cancelar" (click)="cancelar()">Cancelar</button>
+      <button type="submit" class="btn-guardar" [disabled]="vehiculoForm.invalid || loading">
+        {{ loading ? 'Guardando...' : 'Guardar Cambios' }}
+      </button>
+    </div>
+  </form>
+</div> 

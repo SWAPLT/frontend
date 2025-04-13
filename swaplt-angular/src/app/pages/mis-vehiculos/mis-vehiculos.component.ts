@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { VehiculoService } from '../../services/vehiculos/vehiculo.service';
-import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
+import { VehiculoService, Vehiculo } from '../../services/vehiculos/vehiculo.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-mis-vehiculos',
@@ -9,14 +9,14 @@ import { Router } from '@angular/router';
   styleUrls: ['./mis-vehiculos.component.css']
 })
 export class MisVehiculosComponent implements OnInit {
-  vehiculos: any[] = [];
-  loading = true;
+  vehiculos: Vehiculo[] = [];
+  loading = false;
   error = false;
 
   constructor(
     private vehiculoService: VehiculoService,
-    private toastr: ToastrService,
-    private router: Router
+    private router: Router,
+    private toastr: ToastrService
   ) { }
 
   ngOnInit(): void {
@@ -25,30 +25,36 @@ export class MisVehiculosComponent implements OnInit {
 
   loadVehiculos(): void {
     this.loading = true;
+    this.error = false;
+
     this.vehiculoService.getUserVehicles().subscribe({
       next: (response: any) => {
         if (response.success) {
           this.vehiculos = response.data;
         } else {
-          this.toastr.error(response.message || 'Error al cargar los vehículos');
           this.error = true;
+          this.toastr.error(response.message || 'Error al cargar los vehículos');
         }
         this.loading = false;
       },
       error: (error) => {
         console.error('Error al cargar vehículos:', error);
-        this.toastr.error('Error al cargar los vehículos');
         this.error = true;
         this.loading = false;
+        this.toastr.error('Error al cargar los vehículos');
       }
     });
   }
 
-  verDetalles(vehiculoId: number): void {
-    this.router.navigate(['/vehiculo', vehiculoId]);
+  verDetalles(id: number): void {
+    if (id) {
+      this.router.navigate(['/vehiculo', id]);
+    }
   }
 
-  editarVehiculo(vehiculoId: number): void {
-    this.router.navigate(['/editar-vehiculo', vehiculoId]);
+  editarVehiculo(id: number): void {
+    if (id) {
+      this.router.navigate(['/editar-vehiculo', id]);
+    }
   }
 } 

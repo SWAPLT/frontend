@@ -8,6 +8,7 @@ import { AuthGuard } from './guards/auth.guard';
 import {AccesoDenegadoComponent} from "./admin/acceso-denegado/acceso-denegado.component";
 import { VenderVehiculoComponent } from './pages/vender-vehiculo/vender-vehiculo.component';
 import { MisVehiculosComponent } from './pages/mis-vehiculos/mis-vehiculos.component';
+import { EditarVehiculoComponent } from './pages/editar-vehiculo/editar-vehiculo.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/catalogo', pathMatch: 'full' }, // Redirigir a catálogo por defecto
@@ -23,6 +24,7 @@ const routes: Routes = [
   { path: 'catalogo', loadChildren: () => import('./pages/catalogo/catalogo.module').then(m => m.CatalogoModule), canActivate: [AuthGuard] },
   { path: 'favoritos', loadChildren: () => import('./pages/favoritos/favoritos.module').then(m => m.FavoritosModule), canActivate: [AuthGuard] },
   { path: 'static', loadChildren: () => import('./pages/static/static.module').then(m => m.StaticModule) },
+  { path: 'editar-vehiculo/:id', component: EditarVehiculoComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: '/catalogo' }  // Redirige a catálogo si la ruta no existe
 ];
 

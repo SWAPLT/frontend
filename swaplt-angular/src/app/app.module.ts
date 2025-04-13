@@ -3,6 +3,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { RouterModule } from '@angular/router';
+import { ToastrModule } from 'ngx-toastr';
 
 import { AppComponent } from './app.component';
 import { RouterOutlet } from "@angular/router";
@@ -19,9 +21,10 @@ import { SharedModule } from './shared/shared.module';
 import { VenderVehiculoComponent } from './pages/vender-vehiculo/vender-vehiculo.component';
 import { CatalogoModule } from './pages/catalogo/catalogo.module';
 import { AdminModule } from './admin/admin.module';
-import { ToastrModule } from 'ngx-toastr';
 import { ThemeToggleComponent } from './components/theme-toggle/theme-toggle.component';
 import { MisVehiculosComponent } from './pages/mis-vehiculos/mis-vehiculos.component';
+import { EditarVehiculoComponent } from './pages/editar-vehiculo/editar-vehiculo.component';
+import { AuthGuard } from './guards/auth.guard';
 
 @NgModule({
   declarations: [
@@ -32,7 +35,8 @@ import { MisVehiculosComponent } from './pages/mis-vehiculos/mis-vehiculos.compo
     RegisterComponent,
     VenderVehiculoComponent,
     ThemeToggleComponent,
-    MisVehiculosComponent
+    MisVehiculosComponent,
+    EditarVehiculoComponent
   ],
   imports: [
     BrowserModule,
@@ -46,7 +50,14 @@ import { MisVehiculosComponent } from './pages/mis-vehiculos/mis-vehiculos.compo
     SharedModule,
     CatalogoModule,
     AdminModule,
-    ToastrModule.forRoot()
+    ToastrModule.forRoot(),
+    RouterModule.forRoot([
+      { 
+        path: 'editar-vehiculo/:id', 
+        component: EditarVehiculoComponent,
+        canActivate: [AuthGuard]
+      },
+    ])
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
