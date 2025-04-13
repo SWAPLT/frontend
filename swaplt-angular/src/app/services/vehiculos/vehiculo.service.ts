@@ -89,6 +89,6 @@ export class VehiculoService {
   }
 
   getUserVehicles(): Observable<Vehiculo[]> {
-    return this.http.get<Vehiculo[]>(`${environment.apiUrl}/user/vehicles`);
+    return this.http.get<Vehiculo[]>(`${environment.apiUrl}/user/vehiculos`);
   }
 } 

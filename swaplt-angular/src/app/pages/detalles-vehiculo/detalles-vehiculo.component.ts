@@ -74,17 +74,28 @@ export class DetallesVehiculoComponent implements OnInit {
 
     this.animating = true;
     if (this.isFavorito()) {
-      // Buscar el ID del favorito correspondiente a este vehículo
-      const favoritoId = this.vehiculo.favorito_id;
-      this.favoritosService.removeFavoritoById(favoritoId).subscribe({
-        next: () => {
-          this.loadFavoritos();
-          this.toastr.success('Vehículo eliminado de favoritos');
-          setTimeout(() => this.animating = false, 1000);
+      // Obtener el ID del favorito correspondiente a este vehículo
+      this.favoritosService.getFavoritos().subscribe({
+        next: (favoritos) => {
+          const favorito = favoritos.find(f => f.vehiculo_id === this.vehiculo.id);
+          if (favorito) {
+            this.favoritosService.removeFavoritoById(favorito.id).subscribe({
+              next: () => {
+                this.loadFavoritos();
+                this.toastr.success('Vehículo eliminado de favoritos');
+                setTimeout(() => this.animating = false, 1000);
+              },
+              error: (error: unknown) => {
+                console.error('Error al eliminar de favoritos:', error);
+                this.toastr.error('Error al eliminar de favoritos');
+                this.animating = false;
+              }
+            });
+          }
         },
         error: (error: unknown) => {
-          console.error('Error al eliminar de favoritos:', error);
-          this.toastr.error('Error al eliminar de favoritos');
+          console.error('Error al obtener favoritos:', error);
+          this.toastr.error('Error al obtener favoritos');
           this.animating = false;
         }
       });
