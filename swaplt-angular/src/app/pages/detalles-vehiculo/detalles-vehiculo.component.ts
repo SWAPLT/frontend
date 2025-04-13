@@ -5,6 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { FavoritosService } from '../../services/favoritos.service';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
+import { VehiculoReporteService } from '../../services/vehiculo-reporte.service';
 
 @Component({
   selector: 'app-detalles-vehiculo',
@@ -25,7 +26,8 @@ export class DetallesVehiculoComponent implements OnInit {
     private favoritosService: FavoritosService,
     private toastr: ToastrService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private reporteService: VehiculoReporteService
   ) {}
 
   ngOnInit(): void {
@@ -134,5 +136,40 @@ export class DetallesVehiculoComponent implements OnInit {
     if (this.vehiculo.imagenes && this.vehiculo.imagenes.length > index) {
       this.vehiculo.imagen_url = this.vehiculo.imagenes[index];
     }
+  }
+
+  descargarReporte(): void {
+    if (!this.vehiculo) {
+      this.toastr.error('No hay vehículo seleccionado');
+      return;
+    }
+
+    this.reporteService.generarReporte(this.vehiculo.id).subscribe({
+      next: (blob) => {
+        // Crear un blob URL
+        const blobUrl = window.URL.createObjectURL(blob);
+        
+        // Crear un elemento <a> temporal
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = `reporte_vehiculo_${this.vehiculo.id}.pdf`;
+        
+        // Añadir el elemento al DOM
+        document.body.appendChild(link);
+        
+        // Simular el clic
+        link.click();
+        
+        // Limpiar
+        window.URL.revokeObjectURL(blobUrl);
+        document.body.removeChild(link);
+        
+        this.toastr.success('Reporte descargado exitosamente');
+      },
+      error: (error) => {
+        console.error('Error al descargar el reporte:', error);
+        this.toastr.error('Error al descargar el reporte');
+      }
+    });
   }
 } 

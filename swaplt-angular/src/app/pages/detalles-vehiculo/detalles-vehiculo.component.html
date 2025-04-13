@@ -46,6 +46,9 @@
         <button class="contactar" (click)="contactar()">
           <i class="fas fa-comment"></i> Contactar vendedor
         </button>
+        <button class="reporte-btn" (click)="descargarReporte()">
+          <i class="fas fa-file-pdf"></i> Descargar Reporte
+        </button>
       </div>
     </div>
 
@@ -111,20 +114,6 @@
       </div>
     </div>
 
-    <!-- Sección: Estado Legal -->
-    <div class="details-section">
-      <h2>Estado Legal</h2>
-      <div class="details-grid">
-        <div class="detail-item">
-          <i class="fas fa-car-crash"></i>
-          <span>Libre de Accidentes: {{ vehiculo.vehiculo_libre_accidentes === 'si' ? 'Sí' : 'No' }}</span>
-        </div>
-        <div class="detail-item">
-          <i class="fas fa-shield-alt"></i>
-          <span>Vehículo Robado: {{ vehiculo.vehiculo_robado === 'si' ? 'Sí' : 'No' }}</span>
-        </div>
-      </div>
-    </div>
 
     <!-- Sección: Descripción -->
     <div class="details-section">
