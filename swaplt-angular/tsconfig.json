@@ -42,6 +42,10 @@
     "dist",
     "src/**/*.spec.ts",
     "src/test.ts",
-    "src/environments/environment.prod.ts"
+    "src/environments/environment.prod.ts",
+    "src/app/services/user/user.service.ts",
+    "src/app/services/vehicle.service.ts",
+    "src/app/shared/services/favoritos.service.ts",
+    "src/app/pages/favoritos/services/favoritos.service.ts"
   ]
 }

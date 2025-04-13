@@ -70,7 +70,7 @@
         <div class="vehiculo-footer">
           <div class="propietario">
             <i class="fas fa-user"></i>
-            <span>{{ vehiculo.propietario?.nombre || 'Usuario SWAPLT' }}</span>
+            <span>{{ vehiculo.propietario?.nombre }}</span>
           </div>
           <div class="vehiculo-actions">
             <button class="ver-detalles" [routerLink]="['/vehiculo', vehiculo.id]">

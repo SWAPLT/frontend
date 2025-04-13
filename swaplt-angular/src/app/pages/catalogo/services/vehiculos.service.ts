@@ -1,16 +1,21 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpErrorResponse } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Observable, throwError, forkJoin, BehaviorSubject, of } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { catchError } from 'rxjs/operators';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { UsersService } from '../../../admin/usuarios/service/users.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class VehiculosService {
   private apiUrl = `${environment.apiUrl}/vehiculos`;
+  private vehiculosConPropietarios = new BehaviorSubject<any[]>([]);
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private usersService: UsersService
+  ) { }
 
   private handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {
@@ -27,7 +32,46 @@ export class VehiculosService {
   }
 
   getVehiculos(): Observable<any[]> {
+    // Primero obtenemos los vehículos
     return this.http.get<any[]>(this.apiUrl).pipe(
+      tap(vehiculos => {
+        // Inicializamos los vehículos con propietario por defecto
+        const vehiculosIniciales = vehiculos.map(vehiculo => ({
+          ...vehiculo,
+          propietario: { nombre: 'Cargando...', id: vehiculo.user_id }
+        }));
+        this.vehiculosConPropietarios.next(vehiculosIniciales);
+
+        // Cargamos los propietarios progresivamente
+        vehiculos.forEach((vehiculo, index) => {
+          this.usersService.getUser(vehiculo.user_id).subscribe({
+            next: (propietario) => {
+              const vehiculosActuales = this.vehiculosConPropietarios.value;
+              vehiculosActuales[index] = {
+                ...vehiculosActuales[index],
+                propietario: {
+                  nombre: propietario?.name || 'Usuario SWAPLT',
+                  id: propietario?.id
+                }
+              };
+              this.vehiculosConPropietarios.next([...vehiculosActuales]);
+            },
+            error: (error) => {
+              console.error('Error al cargar propietario:', error);
+              const vehiculosActuales = this.vehiculosConPropietarios.value;
+              vehiculosActuales[index] = {
+                ...vehiculosActuales[index],
+                propietario: {
+                  nombre: 'Usuario SWAPLT',
+                  id: vehiculo.user_id
+                }
+              };
+              this.vehiculosConPropietarios.next([...vehiculosActuales]);
+            }
+          });
+        });
+      }),
+      switchMap(() => this.vehiculosConPropietarios.asObservable()),
       catchError(this.handleError)
     );
   }
@@ -59,6 +103,31 @@ export class VehiculosService {
 
   getVehiculoById(id: number): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/${id}`).pipe(
+      switchMap(vehiculo => {
+        // Inicializamos con propietario por defecto
+        const vehiculoInicial = {
+          ...vehiculo,
+          propietario: { nombre: 'Cargando...', id: vehiculo.user_id }
+        };
+
+        // Cargamos el propietario
+        return this.usersService.getUser(vehiculo.user_id).pipe(
+          map(propietario => ({
+            ...vehiculo,
+            propietario: {
+              nombre: propietario?.name || 'Usuario SWAPLT',
+              id: propietario?.id
+            }
+          })),
+          catchError(() => of({
+            ...vehiculo,
+            propietario: {
+              nombre: 'Usuario SWAPLT',
+              id: vehiculo.user_id
+            }
+          }))
+        );
+      }),
       catchError(this.handleError)
     );
   }
