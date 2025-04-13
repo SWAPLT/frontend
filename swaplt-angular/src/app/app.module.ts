@@ -21,6 +21,7 @@ import { CatalogoModule } from './pages/catalogo/catalogo.module';
 import { AdminModule } from './admin/admin.module';
 import { ToastrModule } from 'ngx-toastr';
 import { ThemeToggleComponent } from './components/theme-toggle/theme-toggle.component';
+import { MisVehiculosComponent } from './pages/mis-vehiculos/mis-vehiculos.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { ThemeToggleComponent } from './components/theme-toggle/theme-toggle.com
     DetallesVehiculoComponent,
     RegisterComponent,
     VenderVehiculoComponent,
-    ThemeToggleComponent
+    ThemeToggleComponent,
+    MisVehiculosComponent
   ],
   imports: [
     BrowserModule,

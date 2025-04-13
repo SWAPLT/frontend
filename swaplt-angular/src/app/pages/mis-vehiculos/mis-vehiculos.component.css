@@ -1,0 +1,276 @@
+.mis-vehiculos-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: var(--background-color);
+}
+
+.titulo-seccion {
+  color: var(--primary-color);
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.vehiculos-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  padding: 20px;
+}
+
+.vehiculo-card {
+  display: flex;
+  flex-direction: row;
+  background-color: var(--card-background);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.3s, box-shadow 0.3s;
+  width: 100%;
+}
+
+.vehiculo-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.vehiculo-image {
+  position: relative;
+  width: 300px;
+  min-width: 300px;
+  height: 200px;
+  background-color: var(--card-background);
+}
+
+.vehiculo-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.default-vehicle-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background-color: var(--card-background);
+}
+
+.default-vehicle-icon i {
+  font-size: 3rem;
+  color: var(--border-color);
+}
+
+.vehiculo-info {
+  padding: 25px 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  flex: 1;
+  position: relative;
+}
+
+.vehicle-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.vehicle-title h3 {
+  margin: 0;
+  font-size: 1.4rem;
+  color: #6c5c3c;
+  font-weight: 600;
+}
+
+.vehicle-price {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #34a4b4;
+  margin: 0;
+}
+
+.vehicle-info-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 20px;
+  background-color: var(--card-details-background);
+  border-radius: 8px;
+  margin: 15px 0;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-color);
+}
+
+.info-item i {
+  font-size: 1.2rem;
+  color: #dcbc7c;
+}
+
+.info-item span {
+  font-size: 1rem;
+  color: var(--text-color);
+}
+
+.action-buttons {
+  display: flex;
+  gap: 15px;
+  margin-top: auto;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-color);
+}
+
+.action-button {
+  flex: 1;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s;
+  white-space: nowrap;
+}
+
+.view-details {
+  background-color: #34a4b4;
+  color: white;
+}
+
+.edit-vehicle {
+  background-color: #dcbc7c;
+  color: white;
+}
+
+.action-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.action-button i {
+  font-size: 16px;
+}
+
+/* Estados de carga y error */
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #34a4b4;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading p {
+  margin-top: 20px;
+  color: #666;
+}
+
+.error {
+  text-align: center;
+  padding: 20px;
+  color: #d32f2f;
+  background-color: #ffebee;
+  border-radius: 4px;
+}
+
+.no-vehicles {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+  .mis-vehiculos-container {
+    padding: 15px;
+  }
+
+  .vehiculos-grid {
+    gap: 15px;
+    padding: 15px;
+  }
+
+  .vehiculo-image {
+    width: 250px;
+    min-width: 250px;
+  }
+
+  .vehicle-title h3 {
+    font-size: 1.1rem;
+  }
+
+  .vehicle-price {
+    font-size: 1.1rem;
+  }
+
+  .vehicle-info-container {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .mis-vehiculos-container {
+    padding: 10px;
+  }
+
+  .vehiculos-grid {
+    gap: 10px;
+    padding: 10px;
+  }
+
+  .vehiculo-card {
+    flex-direction: column;
+  }
+
+  .vehiculo-image {
+    width: 100%;
+    min-width: 100%;
+  }
+
+  .vehicle-title {
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .vehicle-title h3,
+  .vehicle-price {
+    font-size: 1rem;
+  }
+
+  .info-item {
+    font-size: 0.9rem;
+  }
+
+  .action-buttons {
+    width: 100%;
+  }
+} 

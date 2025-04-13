@@ -1,0 +1,65 @@
+<div class="mis-vehiculos-container">
+  <h2 class="titulo-seccion">Mis Vehículos</h2>
+
+  <!-- Estado de carga -->
+  <div *ngIf="loading" class="loading">
+    <div class="spinner"></div>
+    <p>Cargando vehículos...</p>
+  </div>
+
+  <!-- Estado de error -->
+  <div *ngIf="error && !loading" class="error">
+    <p>Error al cargar los vehículos. Por favor, intente nuevamente.</p>
+    <button (click)="loadVehiculos()">Reintentar</button>
+  </div>
+
+  <!-- Lista de vehículos -->
+  <div *ngIf="!loading && !error" class="vehiculos-grid">
+    <div *ngFor="let vehiculo of vehiculos" class="vehiculo-card">
+      <div class="vehiculo-image">
+        <div *ngIf="!vehiculo.imagenes || vehiculo.imagenes.length === 0" class="default-vehicle-icon">
+          <i class="fas fa-car"></i>
+        </div>
+        <img *ngIf="vehiculo.imagenes && vehiculo.imagenes.length > 0" [src]="vehiculo.imagenes[0].url" [alt]="vehiculo.marca + ' ' + vehiculo.modelo">
+      </div>
+      <div class="vehiculo-info">
+        <div class="vehicle-title">
+          <h3>{{ vehiculo.marca }} {{ vehiculo.modelo }}</h3>
+          <span class="vehicle-price">${{ vehiculo.precio | number:'1.0-0' }}</span>
+        </div>
+        
+        <div class="vehicle-info-container">
+          <div class="info-item">
+            <i class="fas fa-calendar"></i>
+            <span>{{ vehiculo.anio }}</span>
+          </div>
+          <div class="info-item">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>{{ vehiculo.kilometraje | number }} km</span>
+          </div>
+          <div class="info-item">
+            <i class="fas fa-cog"></i>
+            <span>{{ vehiculo.transmision }}</span>
+          </div>
+        </div>
+
+        <div class="action-buttons">
+          <button class="action-button view-details" (click)="verDetalles(vehiculo.id)">
+            <i class="fas fa-eye"></i> Ver Detalles
+          </button>
+          <button class="action-button edit-vehicle" (click)="editarVehiculo(vehiculo.id)">
+            <i class="fas fa-edit"></i> Editar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mensaje cuando no hay vehículos -->
+  <div *ngIf="!loading && !error && vehiculos.length === 0" class="no-vehicles">
+    <p>No tienes ningún vehículo publicado.</p>
+    <button class="action-button view-details" routerLink="/vender-vehiculo">
+      <i class="fas fa-plus"></i> Publicar un vehículo
+    </button>
+  </div>
+</div> 

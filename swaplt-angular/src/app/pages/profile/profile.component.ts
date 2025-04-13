@@ -66,4 +66,9 @@ export class ProfileComponent implements OnInit {
   goToAdminPanel() {
     this.router.navigate(['/admin']); // Asumiendo que tienes una ruta para el panel de administración
   }
+
+  // Redirigir a la vista de mis vehículos
+  goToMyVehicles() {
+    this.router.navigate(['/mis-vehiculos']);
+  }
 }

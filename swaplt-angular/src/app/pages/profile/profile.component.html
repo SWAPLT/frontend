@@ -30,6 +30,11 @@
     <!-- Botón de administración solo visible para admins -->
     <button *ngIf="isAdmin" (click)="goToAdminPanel()" class="admin-panel-button">Panel de Administración</button>
 
+    <!-- Botón para ver mis vehículos -->
+    <button (click)="goToMyVehicles()" class="my-vehicles-button">
+      <i class="fas fa-car"></i> Mis Vehículos
+    </button>
+
     <button (click)="enableEdit()" class="edit-button">Editar Perfil</button>
   </div>
 

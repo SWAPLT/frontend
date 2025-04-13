@@ -64,4 +64,8 @@ export class VehiculoService {
   obtenerCategorias(): Observable<any[]> {
     return this.http.get<any[]>(`${environment.apiUrl}/categorias`);
   }
+
+  getUserVehicles(): Observable<Vehiculo[]> {
+    return this.http.get<Vehiculo[]>(`${environment.apiUrl}/user/vehicles`);
+  }
 } 

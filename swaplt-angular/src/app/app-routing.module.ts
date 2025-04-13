@@ -7,6 +7,7 @@ import { ProfileComponent } from './pages/profile/profile.component';
 import { AuthGuard } from './guards/auth.guard';
 import {AccesoDenegadoComponent} from "./admin/acceso-denegado/acceso-denegado.component";
 import { VenderVehiculoComponent } from './pages/vender-vehiculo/vender-vehiculo.component';
+import { MisVehiculosComponent } from './pages/mis-vehiculos/mis-vehiculos.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/catalogo', pathMatch: 'full' }, // Redirigir a catálogo por defecto
@@ -18,6 +19,7 @@ const routes: Routes = [
   { path: 'acceso-denegado', component: AccesoDenegadoComponent },
   { path: 'profile', component: ProfileComponent }, // Asegúrate de tener la ruta para el perfil
   { path: 'vender-vehiculo', component: VenderVehiculoComponent },
+  { path: 'mis-vehiculos', component: MisVehiculosComponent, canActivate: [AuthGuard] },
   { path: 'catalogo', loadChildren: () => import('./pages/catalogo/catalogo.module').then(m => m.CatalogoModule), canActivate: [AuthGuard] },
   { path: 'favoritos', loadChildren: () => import('./pages/favoritos/favoritos.module').then(m => m.FavoritosModule), canActivate: [AuthGuard] },
   { path: 'static', loadChildren: () => import('./pages/static/static.module').then(m => m.StaticModule) },
