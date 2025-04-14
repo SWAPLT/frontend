@@ -170,6 +170,10 @@ export class MensajesComponent implements OnInit, OnDestroy {
         .subscribe(mensajes => {
           this.mensajes = mensajes;
           this.marcarMensajesComoLeidos();
+          
+          // Ordenar la lista de usuarios por el último mensaje
+          this.ordenarUsuariosPorUltimoMensaje();
+          
           // Hacer scroll al último mensaje
           setTimeout(() => {
             const container = document.querySelector('.messages-container');
@@ -179,6 +183,24 @@ export class MensajesComponent implements OnInit, OnDestroy {
           }, 100);
         });
     }
+  }
+
+  ordenarUsuariosPorUltimoMensaje(): void {
+    // Crear un mapa para almacenar la fecha del último mensaje de cada usuario
+    const ultimosMensajes = new Map<number, Date>();
+    
+    // Obtener la fecha del último mensaje para el usuario actual
+    if (this.usuarioSeleccionado && this.mensajes.length > 0) {
+      const ultimoMensaje = this.mensajes[this.mensajes.length - 1];
+      ultimosMensajes.set(this.usuarioSeleccionado.id, new Date(ultimoMensaje.created_at));
+    }
+    
+    // Ordenar la lista de usuarios
+    this.usuarios.sort((a, b) => {
+      const fechaA = ultimosMensajes.get(a.id) || new Date(0);
+      const fechaB = ultimosMensajes.get(b.id) || new Date(0);
+      return fechaB.getTime() - fechaA.getTime();
+    });
   }
 
   enviarMensaje(): void {
@@ -195,7 +217,13 @@ export class MensajesComponent implements OnInit, OnDestroy {
             // Agregar el usuario a la lista de conversaciones si no estaba
             if (!this.tieneConversacion(this.usuarioSeleccionado!.id)) {
               this.usuariosConConversacion.add(this.usuarioSeleccionado!.id);
+              
+              // Si el usuario no está en la lista de usuarios, lo agregamos
+              if (!this.usuarios.find(u => u.id === this.usuarioSeleccionado!.id)) {
+                this.usuarios.push(this.usuarioSeleccionado!);
+              }
             }
+            
             // Cargar todos los mensajes nuevamente para asegurar la sincronización
             this.cargarMensajes(this.usuarioSeleccionado!.id);
             this.nuevoMensaje = '';
