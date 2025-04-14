@@ -3,28 +3,7 @@ import { FavoritosService } from '../../services/favoritos.service';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-
-interface Favorito {
-  id: number;
-  vehiculo: {
-    id: number;
-    marca: string;
-    modelo: string;
-    anio: number;
-    precio: number;
-    kilometraje: number;
-    transmision: string;
-    tipo_combustible: string;
-    imagen_url: string;
-    estado: string;
-    color: string;
-    fuerza: number;
-    capacidad_motor: number;
-    numero_puertas: number;
-    plazas: number;
-    descripcion: string;
-  };
-}
+import { Favorito } from '../../models/favorito.model';
 
 @Component({
   selector: 'app-favoritos',
@@ -131,5 +110,22 @@ export class FavoritosComponent implements OnInit {
 
   onPageChange(page: number): void {
     this.currentPage = page;
+  }
+
+  contactar(favorito: Favorito): void {
+    if (!this.authService.isAuthenticated()) {
+      this.router.navigate(['/login']);
+      this.toastr.warning('Por favor inicia sesión para contactar al vendedor');
+      return;
+    }
+
+    if (!favorito || !favorito.vehiculo.user_id) {
+      this.toastr.error('No se pudo obtener la información del vendedor');
+      return;
+    }
+
+    console.log('Redirigiendo al chat con el usuario:', favorito.vehiculo.user_id);
+    this.router.navigate(['/mensajes', favorito.vehiculo.user_id]);
+    this.toastr.success('Redirigiendo al chat con el vendedor');
   }
 } 

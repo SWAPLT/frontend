@@ -25,6 +25,7 @@ import { MisVehiculosComponent } from './pages/mis-vehiculos/mis-vehiculos.compo
 import { EditarVehiculoComponent } from './pages/editar-vehiculo/editar-vehiculo.component';
 import { AuthGuard } from './guards/auth.guard';
 import { DetallesVehiculoComponent } from './pages/detalles-vehiculo/detalles-vehiculo.component';
+import { MensajesComponent } from './pages/mensajes/mensajes.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { DetallesVehiculoComponent } from './pages/detalles-vehiculo/detalles-ve
     ThemeToggleComponent,
     MisVehiculosComponent,
     EditarVehiculoComponent,
-    DetallesVehiculoComponent
+    DetallesVehiculoComponent,
+    MensajesComponent
   ],
   imports: [
     BrowserModule,
@@ -60,6 +62,16 @@ import { DetallesVehiculoComponent } from './pages/detalles-vehiculo/detalles-ve
       {
         path: 'vehiculo/:id',
         component: DetallesVehiculoComponent
+      },
+      {
+        path: 'mensajes',
+        component: MensajesComponent,
+        canActivate: [AuthGuard]
+      },
+      {
+        path: 'mensajes/:usuarioId',
+        component: MensajesComponent,
+        canActivate: [AuthGuard]
       }
     ])
   ],

@@ -119,7 +119,7 @@
 }
 
 /* Botones */
-.edit-button, .admin-panel-button {
+.edit-button, .admin-panel-button, .my-vehicles-button {
   background-color: var(--primary-color);
   color: white;
   border: none;
@@ -129,10 +129,22 @@
   transition: background-color 0.3s;
   font-size: 0.95rem;
   margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
-.edit-button:hover, .admin-panel-button:hover {
+.edit-button:hover, .admin-panel-button:hover, .my-vehicles-button:hover {
   background-color: var(--quaternary-color);
+}
+
+.my-vehicles-button {
+  background-color: #34a4b4;
+}
+
+.my-vehicles-button:hover {
+  background-color: #2d8d9c;
 }
 
 .btn {

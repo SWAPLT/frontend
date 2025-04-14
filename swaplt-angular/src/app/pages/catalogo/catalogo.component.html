@@ -76,7 +76,7 @@
             <button class="ver-detalles" [routerLink]="['/vehiculo', vehiculo.id]">
               <i class="fas fa-eye"></i> Ver Detalles
             </button>
-            <button class="contactar" [routerLink]="['/mensajes']" [queryParams]="{vehiculo: vehiculo.id}">
+            <button class="contactar" (click)="contactar(vehiculo)">
               <i class="fas fa-comment"></i> Contactar
             </button>
           </div>

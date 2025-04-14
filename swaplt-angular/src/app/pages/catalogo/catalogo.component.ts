@@ -191,4 +191,21 @@ export class CatalogoComponent implements OnInit {
   isAnimating(vehiculoId: number): boolean {
     return this.animatingVehicles.has(vehiculoId);
   }
+
+  contactar(vehiculo: any): void {
+    if (!this.authService.isAuthenticated()) {
+      this.router.navigate(['/login']);
+      this.toastr.warning('Por favor inicia sesión para contactar al vendedor');
+      return;
+    }
+
+    if (!vehiculo || !vehiculo.user_id) {
+      this.toastr.error('No se pudo obtener la información del vendedor');
+      return;
+    }
+
+    console.log('Redirigiendo al chat con el usuario:', vehiculo.user_id);
+    this.router.navigate(['/mensajes', vehiculo.user_id]);
+    this.toastr.success('Redirigiendo al chat con el vendedor');
+  }
 }

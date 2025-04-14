@@ -209,10 +209,18 @@
 .contactar {
   background-color: #dcbc7c;
   color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.3s;
 }
 
 .contactar:hover {
-  background-color: #c5a86c;
+  background-color: #c4a666;
 }
 
 /* Media Queries */
@@ -552,5 +560,10 @@ button:hover {
 
 .vehiculo-details {
     color: var(--text-color); /* color4 - marrón medio */
+}
+
+.contact-button,
+.contact-icon {
+  display: none;
 }
 

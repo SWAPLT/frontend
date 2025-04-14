@@ -127,7 +127,15 @@ export class DetallesVehiculoComponent implements OnInit {
       this.toastr.warning('Por favor inicia sesión para contactar al vendedor');
       return;
     }
-    this.router.navigate(['/mensajes'], { queryParams: { vehiculo: this.vehiculo.id } });
+
+    if (!this.vehiculo || !this.vehiculo.user_id) {
+      this.toastr.error('No se pudo obtener la información del vendedor');
+      return;
+    }
+
+    console.log('Redirigiendo al chat con el usuario:', this.vehiculo.user_id);
+    this.router.navigate(['/mensajes', this.vehiculo.user_id]);
+    this.toastr.success('Redirigiendo al chat con el vendedor');
   }
 
   // Método para seleccionar una imagen de la galería

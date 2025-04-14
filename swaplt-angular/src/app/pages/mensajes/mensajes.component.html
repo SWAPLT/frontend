@@ -1,0 +1,70 @@
+<div class="chat-container">
+  <!-- Lista de chats -->
+  <div class="chat-list">
+    <div class="chat-header">
+      <h2>Mensajes</h2>
+    </div>
+    <div class="chat-users">
+      <div *ngFor="let usuario of usuarios" 
+           class="user-item" 
+           [class.active]="usuarioSeleccionado?.id === usuario.id"
+           (click)="seleccionarUsuario(usuario.id)">
+        <div class="user-avatar">
+          <span class="avatar-icon">👤</span>
+        </div>
+        <div class="user-info">
+          <div class="user-name">{{ usuario.name }}</div>
+          <div class="user-email">{{ usuario.email }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Área de chat -->
+  <div class="chat-area" *ngIf="usuarioSeleccionado">
+    <div class="chat-header">
+      <div class="chat-user-info">
+        <div class="user-avatar">
+          <span class="avatar-icon">👤</span>
+        </div>
+        <div class="user-details">
+          <h3>{{ usuarioSeleccionado.name }}</h3>
+          <div class="user-email">{{ usuarioSeleccionado.email }}</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="messages-container">
+      <div *ngFor="let mensaje of mensajes" 
+           [class.message-sent]="esMensajePropio(mensaje)"
+           [class.message-received]="!esMensajePropio(mensaje)">
+        <div class="message-content">
+          {{ mensaje.contenido }}
+        </div>
+        <div class="message-time">
+          {{ mensaje.created_at | date:'shortTime' }}
+          <span *ngIf="esMensajePropio(mensaje) && mensaje.leido" class="read-status">✓✓</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="message-input">
+      <input type="text" 
+             [(ngModel)]="nuevoMensaje" 
+             placeholder="Escribe un mensaje..."
+             (keyup.enter)="enviarMensaje()">
+      <button (click)="enviarMensaje()" [disabled]="!nuevoMensaje.trim()">
+        <span class="send-icon">📤</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Vista cuando no hay chat seleccionado -->
+  <div class="no-chat-selected" *ngIf="!usuarioSeleccionado">
+    <div class="empty-state">
+      <span class="empty-icon">💬</span>
+      <h3>Selecciona un chat</h3>
+      <p>Elige un usuario de la lista para comenzar a conversar</p>
+    </div>
+  </div>
+</div> 
