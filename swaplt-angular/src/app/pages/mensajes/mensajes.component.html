@@ -63,8 +63,8 @@
          [style.left.px]="menuContextual.x"
          [style.top.px]="menuContextual.y">
       <div class="menu-item estado-lectura" *ngIf="menuContextual.mensaje && esMensajePropio(menuContextual.mensaje)">
-        <i class="fas" [class.fa-check-double]="menuContextual.mensaje?.leido" [class.fa-check]="!menuContextual.mensaje?.leido"></i>
-        {{ menuContextual.mensaje?.leido ? 'Leído' : 'No leído' }}
+        <i class="fas" [class.fa-check-double]="menuContextual.mensaje.leido" [class.fa-check]="!menuContextual.mensaje.leido"></i>
+        {{ menuContextual.mensaje.leido ? 'Leído' : 'No leído' }}
       </div>
       <div class="menu-item eliminar" *ngIf="menuContextual.mensaje" (click)="eliminarMensaje(menuContextual.mensaje)">
         <i class="fas fa-trash"></i> Eliminar mensaje
