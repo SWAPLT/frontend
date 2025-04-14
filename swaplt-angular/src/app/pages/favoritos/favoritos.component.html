@@ -11,10 +11,10 @@
   </div>
 
   <div *ngIf="!loading && favoritos.length === 0" class="no-favoritos">
-    <p>No tienes vehículos favoritos. ¡Agrega algunos!</p>
+    <p>No tienes vehículos favoritos. ¡Agrega algunos desde el catálogo!</p>
   </div>
 
-  <div class="vehiculos-grid">
+  <div *ngIf="!loading && favoritos.length > 0" class="vehiculos-grid">
     <div *ngFor="let favorito of paginatedFavoritos" class="vehiculo-card">
       <div class="vehiculo-image">
         <div *ngIf="!favorito.vehiculo.imagen_url" class="default-vehicle-icon">
@@ -60,16 +60,11 @@
             <button class="ver-detalles" [routerLink]="['/vehiculo', favorito.vehiculo.id]">
               <i class="fas fa-eye"></i> Ver Detalles
             </button>
-            <button class="contactar" [routerLink]="['/mensajes']" [queryParams]="{vehiculo: favorito.vehiculo.id}">
+            <button class="contactar" [routerLink]="['/mensajes', favorito.vehiculo.user_id]">
               <i class="fas fa-comment"></i> Contactar
             </button>
           </div>
         </div>
-
-        <button class="contact-button" (click)="contactar(favorito)">
-          <span class="contact-icon">💬</span>
-          Contactar
-        </button>
       </div>
     </div>
   </div>

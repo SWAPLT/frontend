@@ -140,10 +140,18 @@ h2 {
 .contactar {
   background-color: #dcbc7c;
   color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.3s;
 }
 
 .contactar:hover {
-  background-color: #c5a86c;
+  background-color: #c4a666;
 }
 
 /* Estilos para el botón de favoritos */
@@ -159,7 +167,7 @@ h2 {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #dc3545;
+  color: #666;
   font-size: 1.2rem;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -173,16 +181,12 @@ h2 {
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
 }
 
-.favorito-btn.animating {
-  animation: shake 0.5s ease-in-out;
+.favorito-btn.favorito {
+  color: #dc3545;
 }
 
-.broken-heart {
-  position: absolute;
-  color: #dc3545;
-  font-size: 1.4rem;
-  animation: break 2s ease-in-out;
-  opacity: 0;
+.favorito-btn.animating {
+  animation: shake 0.5s ease-in-out;
 }
 
 @keyframes shake {
@@ -193,23 +197,37 @@ h2 {
   100% { transform: rotate(0deg); }
 }
 
-@keyframes break {
-  0% {
-    transform: scale(1);
-    opacity: 0;
-  }
-  20% {
-    transform: scale(1.5);
-    opacity: 1;
-  }
-  80% {
-    transform: scale(1.5);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 0;
-  }
+/* Estados de carga y error */
+.loading, .error {
+  text-align: center;
+  padding: 40px;
+  background-color: var(--card-background);
+  border-radius: 8px;
+  margin: 20px 0;
+}
+
+.spinner {
+  border: 4px solid var(--border-color);
+  border-top: 4px solid var(--primary-color);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.no-favoritos {
+  text-align: center;
+  padding: 40px;
+  background-color: var(--card-background);
+  border-radius: 8px;
+  margin: 20px 0;
+  color: var(--text-color);
 }
 
 /* Estilos para el icono de vehículo por defecto */
@@ -227,48 +245,17 @@ h2 {
   color: var(--border-color);
 }
 
-/* Estados de carga y error */
-.loading {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 40px;
-}
-
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid var(--border-color);
-  border-top: 4px solid var(--primary-color);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-.loading p {
-  margin-top: 20px;
-  color: var(--text-color);
-}
-
-.error {
-  text-align: center;
-  padding: 20px;
-  color: #d32f2f;
-  background-color: var(--error-background);
-  border-radius: 4px;
-}
-
-.no-favoritos {
-  text-align: center;
-  padding: 40px;
-  color: var(--text-color);
-  background-color: var(--card-details-background);
-  border-radius: 8px;
-  margin: 20px;
-}
-
-/* Responsive */
+/* Media Queries */
 @media (max-width: 768px) {
+  .favoritos-container {
+    padding: 15px;
+  }
+
+  .vehiculos-grid {
+    gap: 15px;
+    padding: 15px;
+  }
+
   .vehiculo-image {
     width: 250px;
     min-width: 250px;
@@ -297,6 +284,15 @@ h2 {
 }
 
 @media (max-width: 480px) {
+  .favoritos-container {
+    padding: 10px;
+  }
+
+  .vehiculos-grid {
+    gap: 10px;
+    padding: 10px;
+  }
+
   .vehiculo-card {
     flex-direction: column;
   }
@@ -332,30 +328,4 @@ h2 {
   .vehiculo-actions {
     width: 100%;
   }
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.contact-button {
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: background-color 0.3s;
-}
-
-.contact-button:hover {
-  background-color: #45a049;
-}
-
-.contact-icon {
-  font-size: 16px;
 } 

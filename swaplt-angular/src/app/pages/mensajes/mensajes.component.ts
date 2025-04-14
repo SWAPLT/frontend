@@ -22,6 +22,7 @@ export class MensajesComponent implements OnInit, OnDestroy {
   private actualizarMensajesSubscription?: Subscription;
   private ultimoMensajeId: number = 0;
   usuariosConConversacion: Set<number> = new Set();
+  mostrarChat: boolean = false;
 
   constructor(
     private mensajeService: MensajeService,
@@ -99,6 +100,7 @@ export class MensajesComponent implements OnInit, OnDestroy {
     const usuario = this.usuarios.find(u => u.id === usuarioId);
     if (usuario) {
       this.usuarioSeleccionado = usuario;
+      this.mostrarChat = true;
       this.cargarMensajes(usuarioId);
       this.iniciarActualizacionAutomatica(usuarioId);
     } else {
@@ -106,6 +108,7 @@ export class MensajesComponent implements OnInit, OnDestroy {
       this.usuariosService.getUsuarioById(usuarioId).subscribe({
         next: (usuario: Usuario) => {
           this.usuarioSeleccionado = usuario;
+          this.mostrarChat = true;
           if (!this.usuarios.find(u => u.id === usuario.id)) {
             this.usuarios.push(usuario);
           }
@@ -206,5 +209,11 @@ export class MensajesComponent implements OnInit, OnDestroy {
 
   tieneConversacion(usuarioId: number): boolean {
     return this.usuariosConConversacion.has(usuarioId);
+  }
+
+  volverALista(): void {
+    this.usuarioSeleccionado = null;
+    this.mostrarChat = false;
+    this.router.navigate(['/mensajes']);
   }
 } 
