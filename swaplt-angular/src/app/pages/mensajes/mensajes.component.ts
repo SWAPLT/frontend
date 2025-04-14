@@ -80,18 +80,29 @@ export class MensajesComponent implements OnInit, OnDestroy {
         this.usuarios = usuarios.filter(u => u.id !== this.usuarioActual?.id);
         
         // Para cada usuario, verificamos si hay mensajes
-        this.usuarios.forEach(usuario => {
-          this.mensajeService.getMensajes(this.usuarioActual!.id, usuario.id).subscribe({
-            next: (mensajes: Mensaje[]) => {
-              if (mensajes.length > 0) {
-                this.usuariosConConversacion.add(usuario.id);
-              }
-            }
-          });
+        const promesas = this.usuarios.map(usuario => 
+          new Promise<void>((resolve) => {
+            this.mensajeService.getMensajes(this.usuarioActual!.id, usuario.id).subscribe({
+              next: (mensajes: Mensaje[]) => {
+                if (mensajes.length > 0) {
+                  this.usuariosConConversacion.add(usuario.id);
+                }
+                resolve();
+              },
+              error: () => resolve()
+            });
+          })
+        );
+
+        // Esperamos a que todas las verificaciones terminen
+        Promise.all(promesas).then(() => {
+          // Actualizamos la lista de usuarios para mostrar solo los que tienen conversación
+          this.usuarios = this.usuarios.filter(u => this.tieneConversacion(u.id));
         });
       },
       error: (error: any) => {
         console.error('Error al cargar usuarios:', error);
+        this.toastr.error('Error al cargar la lista de conversaciones');
       }
     });
   }
@@ -181,6 +192,10 @@ export class MensajesComponent implements OnInit, OnDestroy {
       this.mensajeService.enviarMensaje(mensaje)
         .subscribe({
           next: (mensajeEnviado) => {
+            // Agregar el usuario a la lista de conversaciones si no estaba
+            if (!this.tieneConversacion(this.usuarioSeleccionado!.id)) {
+              this.usuariosConConversacion.add(this.usuarioSeleccionado!.id);
+            }
             // Cargar todos los mensajes nuevamente para asegurar la sincronización
             this.cargarMensajes(this.usuarioSeleccionado!.id);
             this.nuevoMensaje = '';

@@ -5,17 +5,19 @@
       <h2>Mensajes</h2>
     </div>
     <div class="chat-users">
-      <div *ngFor="let usuario of usuarios" 
-           class="user-item" 
-           [class.active]="usuarioSeleccionado?.id === usuario.id"
-           (click)="seleccionarUsuario(usuario.id)">
-        <div class="user-avatar">
-          <span class="avatar-icon">👤</span>
+      <ng-container *ngFor="let usuario of usuarios">
+        <div class="user-item" 
+             [class.active]="usuarioSeleccionado?.id === usuario.id"
+             (click)="seleccionarUsuario(usuario.id)"
+             *ngIf="tieneConversacion(usuario.id)">
+          <div class="user-avatar">
+            <span class="avatar-icon">👤</span>
+          </div>
+          <div class="user-info">
+            <div class="user-name">{{ usuario.name }}</div>
+          </div>
         </div>
-        <div class="user-info">
-          <div class="user-name">{{ usuario.name }}</div>
-        </div>
-      </div>
+      </ng-container>
     </div>
   </div>
 
