@@ -14,7 +14,10 @@
             <span class="avatar-icon">👤</span>
           </div>
           <div class="user-info">
-            <div class="user-name">{{ usuario.name }}</div>
+            <div class="user-name">
+              <span>{{ usuario.name }}</span>
+              <span class="unread-indicator" *ngIf="tieneMensajesNoLeidos(usuario.id)"></span>
+            </div>
           </div>
         </div>
       </ng-container>
@@ -41,7 +44,9 @@
     <div class="messages-container">
       <div *ngFor="let mensaje of mensajes" 
            [class.message-sent]="esMensajePropio(mensaje)"
-           [class.message-received]="!esMensajePropio(mensaje)">
+           [class.message-received]="!esMensajePropio(mensaje)"
+           (contextmenu)="mostrarMenuContextual($event, mensaje)"
+           [id]="'mensaje-' + mensaje.id">
         <div class="message-content">
           {{ mensaje.contenido }}
         </div>
@@ -49,6 +54,20 @@
           {{ mensaje.created_at | date:'shortTime' }}
           <span *ngIf="esMensajePropio(mensaje) && mensaje.leido" class="read-status">✓✓</span>
         </div>
+      </div>
+    </div>
+
+    <!-- Menú contextual -->
+    <div class="context-menu" 
+         [style.display]="menuContextual.mostrar ? 'block' : 'none'"
+         [style.left.px]="menuContextual.x"
+         [style.top.px]="menuContextual.y">
+      <div class="menu-item estado-lectura" *ngIf="menuContextual.mensaje && esMensajePropio(menuContextual.mensaje)">
+        <i class="fas" [class.fa-check-double]="menuContextual.mensaje?.leido" [class.fa-check]="!menuContextual.mensaje?.leido"></i>
+        {{ menuContextual.mensaje?.leido ? 'Leído' : 'No leído' }}
+      </div>
+      <div class="menu-item eliminar" *ngIf="menuContextual.mensaje" (click)="eliminarMensaje(menuContextual.mensaje)">
+        <i class="fas fa-trash"></i> Eliminar mensaje
       </div>
     </div>
 

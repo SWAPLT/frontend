@@ -23,6 +23,13 @@ export class MensajesComponent implements OnInit, OnDestroy {
   private ultimoMensajeId: number = 0;
   usuariosConConversacion: Set<number> = new Set();
   mostrarChat: boolean = false;
+  menuContextual = {
+    mostrar: false,
+    x: 0,
+    y: 0,
+    mensaje: null as Mensaje | null
+  };
+  mensajesNoLeidos: Map<number, number> = new Map(); // userId -> cantidad de mensajes no leídos
 
   constructor(
     private mensajeService: MensajeService,
@@ -31,7 +38,12 @@ export class MensajesComponent implements OnInit, OnDestroy {
     private router: Router,
     private usuariosService: UsuariosService,
     private toastr: ToastrService
-  ) {}
+  ) {
+    // Cerrar el menú contextual al hacer clic fuera
+    document.addEventListener('click', () => {
+      this.menuContextual.mostrar = false;
+    });
+  }
 
   ngOnInit(): void {
     this.usuarioActual = this.authService.getCurrentUser();
@@ -68,6 +80,10 @@ export class MensajesComponent implements OnInit, OnDestroy {
     if (this.actualizarMensajesSubscription) {
       this.actualizarMensajesSubscription.unsubscribe();
     }
+    // Eliminar el event listener al destruir el componente
+    document.removeEventListener('click', () => {
+      this.menuContextual.mostrar = false;
+    });
   }
 
   cargarUsuariosConConversacion(): void {
@@ -86,6 +102,13 @@ export class MensajesComponent implements OnInit, OnDestroy {
               next: (mensajes: Mensaje[]) => {
                 if (mensajes.length > 0) {
                   this.usuariosConConversacion.add(usuario.id);
+                  // Contar mensajes no leídos
+                  const noLeidos = mensajes.filter(m => 
+                    !m.leido && m.receptor_id === this.usuarioActual?.id
+                  ).length;
+                  if (noLeidos > 0) {
+                    this.mensajesNoLeidos.set(usuario.id, noLeidos);
+                  }
                 }
                 resolve();
               },
@@ -149,7 +172,19 @@ export class MensajesComponent implements OnInit, OnDestroy {
               const nuevos = mensajes.filter(m => !this.mensajes.find(existente => existente.id === m.id));
               if (nuevos.length > 0) {
                 this.mensajes = mensajes;
-                this.marcarMensajesComoLeidos();
+                // Si el chat está abierto, marcar como leídos
+                if (this.usuarioSeleccionado?.id === receptor_id) {
+                  this.marcarMensajesComoLeidos();
+                } else {
+                  // Si el chat no está abierto, incrementar contador de no leídos
+                  const mensajesNoLeidos = nuevos.filter(m => 
+                    !m.leido && m.receptor_id === this.usuarioActual?.id
+                  ).length;
+                  if (mensajesNoLeidos > 0) {
+                    const totalNoLeidos = (this.mensajesNoLeidos.get(receptor_id) || 0) + mensajesNoLeidos;
+                    this.mensajesNoLeidos.set(receptor_id, totalNoLeidos);
+                  }
+                }
                 // Hacer scroll al último mensaje
                 setTimeout(() => {
                   const container = document.querySelector('.messages-container');
@@ -169,9 +204,17 @@ export class MensajesComponent implements OnInit, OnDestroy {
       this.mensajeService.getMensajes(this.usuarioActual.id, receptor_id)
         .subscribe(mensajes => {
           this.mensajes = mensajes;
-          this.marcarMensajesComoLeidos();
           
-          // Ordenar la lista de usuarios por el último mensaje
+          // Contar mensajes no leídos antes de marcarlos como leídos
+          const mensajesNoLeidos = mensajes.filter(m => 
+            !m.leido && m.receptor_id === this.usuarioActual?.id
+          ).length;
+          
+          if (mensajesNoLeidos > 0) {
+            this.mensajesNoLeidos.set(receptor_id, mensajesNoLeidos);
+          }
+          
+          this.marcarMensajesComoLeidos();
           this.ordenarUsuariosPorUltimoMensaje();
           
           // Hacer scroll al último mensaje
@@ -237,16 +280,24 @@ export class MensajesComponent implements OnInit, OnDestroy {
   }
 
   marcarMensajesComoLeidos(): void {
-    if (this.usuarioActual) {
-      this.mensajes.forEach(mensaje => {
-        if (!mensaje.leido && mensaje.receptor_id === this.usuarioActual?.id) {
-          this.mensajeService.marcarLeido(mensaje.id).subscribe();
-        }
+    if (this.usuarioActual && this.usuarioSeleccionado) {
+      const mensajesNoLeidos = this.mensajes.filter(mensaje => 
+        !mensaje.leido && mensaje.receptor_id === this.usuarioActual?.id
+      );
+
+      mensajesNoLeidos.forEach(mensaje => {
+        this.mensajeService.marcarLeido(mensaje.id).subscribe(() => {
+          mensaje.leido = true;
+        });
       });
+
+      // Limpiar el contador de mensajes no leídos para este usuario
+      this.mensajesNoLeidos.delete(this.usuarioSeleccionado.id);
     }
   }
 
-  esMensajePropio(mensaje: Mensaje): boolean {
+  esMensajePropio(mensaje: Mensaje | null): boolean {
+    if (!mensaje) return false;
     return mensaje.emisor_id === this.usuarioActual?.id;
   }
 
@@ -254,9 +305,78 @@ export class MensajesComponent implements OnInit, OnDestroy {
     return this.usuariosConConversacion.has(usuarioId);
   }
 
+  tieneMensajesNoLeidos(usuarioId: number): boolean {
+    const cantidad = this.mensajesNoLeidos.get(usuarioId) || 0;
+    return cantidad > 0;
+  }
+
   volverALista(): void {
     this.usuarioSeleccionado = null;
     this.mostrarChat = false;
     this.router.navigate(['/mensajes']);
+  }
+
+  mostrarMenuContextual(event: MouseEvent, mensaje: Mensaje): void {
+    event.preventDefault(); // Prevenir el menú contextual por defecto
+    
+    // Solo mostrar el menú para mensajes propios
+    if (!this.esMensajePropio(mensaje)) {
+      return;
+    }
+
+    this.menuContextual = {
+      mostrar: true,
+      x: event.clientX,
+      y: event.clientY,
+      mensaje: mensaje
+    };
+
+    // Ajustar posición si el menú se sale de la pantalla
+    setTimeout(() => {
+      const menu = document.querySelector('.context-menu') as HTMLElement;
+      if (menu) {
+        const rect = menu.getBoundingClientRect();
+        const viewportHeight = window.innerHeight;
+        const viewportWidth = window.innerWidth;
+
+        if (rect.bottom > viewportHeight) {
+          this.menuContextual.y = event.clientY - rect.height;
+        }
+        if (rect.right > viewportWidth) {
+          this.menuContextual.x = event.clientX - rect.width;
+        }
+      }
+    });
+  }
+
+  eliminarMensaje(mensaje: Mensaje | null): void {
+    if (!mensaje) return;
+
+    this.mensajeService.eliminarMensaje(mensaje.id).subscribe({
+      next: () => {
+        // Eliminar el mensaje de la lista local
+        this.mensajes = this.mensajes.filter(m => m.id !== mensaje.id);
+        this.menuContextual.mostrar = false;
+        this.toastr.success('Mensaje eliminado');
+
+        // Si no quedan mensajes con este usuario, actualizar la lista de conversaciones
+        const tieneOtrosMensajes = this.mensajes.some(m => 
+          (m.emisor_id === this.usuarioSeleccionado?.id && m.receptor_id === this.usuarioActual?.id) ||
+          (m.emisor_id === this.usuarioActual?.id && m.receptor_id === this.usuarioSeleccionado?.id)
+        );
+
+        if (!tieneOtrosMensajes && this.usuarioSeleccionado) {
+          this.usuariosConConversacion.delete(this.usuarioSeleccionado.id);
+          this.usuarios = this.usuarios.filter(u => this.tieneConversacion(u.id));
+          if (this.usuarios.length === 0) {
+            this.volverALista();
+          }
+        }
+      },
+      error: (error) => {
+        console.error('Error al eliminar mensaje:', error);
+        this.toastr.error('Error al eliminar el mensaje');
+      }
+    });
   }
 } 
