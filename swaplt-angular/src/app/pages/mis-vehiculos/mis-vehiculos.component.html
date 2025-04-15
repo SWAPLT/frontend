@@ -15,7 +15,7 @@
 
   <!-- Lista de vehículos -->
   <div *ngIf="!loading && !error" class="vehiculos-grid">
-    <div *ngFor="let vehiculo of vehiculos" class="vehiculo-card">
+    <div *ngFor="let vehiculo of vehiculosPaginados" class="vehiculo-card">
       <div class="vehiculo-image">
         <div *ngIf="!vehiculo.imagenes || vehiculo.imagenes.length === 0" class="default-vehicle-icon">
           <i class="fas fa-car"></i>

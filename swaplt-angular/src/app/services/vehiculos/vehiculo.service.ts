@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { map, catchError } from 'rxjs/operators';
@@ -39,7 +39,16 @@ export class VehiculoService {
 
   // Crear un nuevo vehículo
   crear(vehiculo: Vehiculo): Observable<any> {
-    return this.http.post<any>(this.apiUrl, vehiculo);
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('token')}`);
+    return this.http.post<any>(this.apiUrl, vehiculo, { headers }).pipe(
+      catchError(error => {
+        console.error('Error detallado:', error);
+        if (error.error) {
+          console.error('Mensaje de error del servidor:', error.error);
+        }
+        throw error;
+      })
+    );
   }
 
   // Obtener todos los vehículos
@@ -89,6 +98,19 @@ export class VehiculoService {
   }
 
   getUserVehicles(): Observable<Vehiculo[]> {
-    return this.http.get<Vehiculo[]>(`${environment.apiUrl}/user/vehiculos`);
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('token')}`);
+    return this.http.get<any>(`${environment.apiUrl}/user/vehiculos`, { headers }).pipe(
+      map(response => {
+        if (response.success) {
+          return response.data;
+        } else {
+          throw new Error(response.message || 'Error al obtener los vehículos');
+        }
+      }),
+      catchError(error => {
+        console.error('Error al obtener los vehículos del usuario:', error);
+        throw error;
+      })
+    );
   }
 } 

@@ -10,6 +10,7 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class MisVehiculosComponent implements OnInit {
   vehiculos: Vehiculo[] = [];
+  vehiculosPaginados: Vehiculo[] = [];
   loading = false;
   error = false;
   
@@ -33,22 +34,17 @@ export class MisVehiculosComponent implements OnInit {
     this.error = false;
 
     this.vehiculoService.getUserVehicles().subscribe({
-      next: (response: any) => {
-        if (response.success) {
-          this.vehiculos = response.data;
-          this.totalItems = this.vehiculos.length;
-          this.applyPagination();
-        } else {
-          this.error = true;
-          this.toastr.error(response.message || 'Error al cargar los vehículos');
-        }
+      next: (vehiculos: Vehiculo[]) => {
+        this.vehiculos = vehiculos;
+        this.totalItems = vehiculos.length;
+        this.applyPagination();
         this.loading = false;
       },
       error: (error) => {
         console.error('Error al cargar vehículos:', error);
         this.error = true;
         this.loading = false;
-        this.toastr.error('Error al cargar los vehículos');
+        this.toastr.error('Error al cargar los vehículos. Por favor, intente nuevamente.');
       }
     });
   }
@@ -57,13 +53,13 @@ export class MisVehiculosComponent implements OnInit {
   applyPagination(): void {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     const endIndex = Math.min(startIndex + this.itemsPerPage, this.vehiculos.length);
-    this.vehiculos = this.vehiculos.slice(startIndex, endIndex);
+    this.vehiculosPaginados = this.vehiculos.slice(startIndex, endIndex);
   }
 
   // Manejar cambio de página
   onPageChange(page: number): void {
     this.currentPage = page;
-    this.loadVehiculos();
+    this.applyPagination();
   }
 
   verDetalles(id: number): void {

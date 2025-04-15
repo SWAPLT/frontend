@@ -166,6 +166,9 @@
       <div *ngIf="f['descripcion'].touched && f['descripcion'].errors?.['minlength']" class="validation-error">
         La descripción debe tener al menos 50 caracteres
       </div>
+      <div *ngIf="f['descripcion'].touched && f['descripcion'].errors?.['maxlength']" class="validation-error">
+        La descripción no puede exceder los 255 caracteres
+      </div>
     </div>
   </form>
 </div>
