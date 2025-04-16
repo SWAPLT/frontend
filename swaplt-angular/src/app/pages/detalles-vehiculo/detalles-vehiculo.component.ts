@@ -7,18 +7,55 @@ import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { VehiculoReporteService } from '../../services/vehiculo-reporte.service';
 
+interface Imagen {
+  id: number;
+  url: string;
+  orden: number;
+  vehiculo_id: number;
+  preview_url: string;
+}
+
+interface Vehiculo {
+  id: number;
+  user_id: number;
+  categoria_id: number;
+  marca: string;
+  modelo: string;
+  precio: number;
+  anio: number;
+  estado: string;
+  transmision: string;
+  tipo_combustible: string;
+  kilometraje: number;
+  fuerza: number;
+  capacidad_motor: number;
+  color: string;
+  ubicacion: string;
+  matricula: string;
+  numero_serie: string;
+  numero_puertas: number;
+  descripcion: string;
+  vehiculo_robado: string;
+  vehiculo_libre_accidentes: string;
+  imagenes: Imagen[];
+  propietario: {
+    nombre: string;
+    id: number;
+  };
+}
+
 @Component({
   selector: 'app-detalles-vehiculo',
   templateUrl: './detalles-vehiculo.component.html',
   styleUrls: ['./detalles-vehiculo.component.css']
 })
 export class DetallesVehiculoComponent implements OnInit {
-  vehiculo: any;
+  vehiculo: Vehiculo | null = null;
   loading = true;
   error = false;
   favoritos: number[] = [];
   animating = false;
-  selectedImageIndex = 0; // Índice de la imagen seleccionada actualmente
+  selectedImageIndex = 0;
 
   constructor(
     private route: ActivatedRoute,
@@ -74,12 +111,17 @@ export class DetallesVehiculoComponent implements OnInit {
       return;
     }
 
+    if (!this.vehiculo?.id) {
+      this.toastr.error('No se puede agregar a favoritos: vehículo no disponible');
+      return;
+    }
+
     this.animating = true;
     if (this.isFavorito()) {
       // Obtener el ID del favorito correspondiente a este vehículo
       this.favoritosService.getFavoritos().subscribe({
         next: (favoritos) => {
-          const favorito = favoritos.find(f => f.vehiculo_id === this.vehiculo.id);
+          const favorito = favoritos.find(f => f.vehiculo_id === this.vehiculo?.id);
           if (favorito) {
             this.favoritosService.removeFavoritoById(favorito.id).subscribe({
               next: () => {
@@ -118,7 +160,7 @@ export class DetallesVehiculoComponent implements OnInit {
   }
 
   isFavorito(): boolean {
-    return this.vehiculo && this.favoritos.includes(this.vehiculo.id);
+    return this.vehiculo?.id !== undefined && this.favoritos.includes(this.vehiculo.id);
   }
 
   contactar(): void {
@@ -138,16 +180,21 @@ export class DetallesVehiculoComponent implements OnInit {
     this.toastr.success('Redirigiendo al chat con el vendedor');
   }
 
-  // Método para seleccionar una imagen de la galería
   selectImage(index: number): void {
-    this.selectedImageIndex = index;
-    if (this.vehiculo.imagenes && this.vehiculo.imagenes.length > index) {
-      this.vehiculo.imagen_url = this.vehiculo.imagenes[index];
+    if (this.vehiculo && this.vehiculo.imagenes && this.vehiculo.imagenes.length > index) {
+      this.selectedImageIndex = index;
     }
   }
 
+  getSelectedImage(): string | null {
+    if (this.vehiculo && this.vehiculo.imagenes && this.vehiculo.imagenes.length > this.selectedImageIndex) {
+      return this.vehiculo.imagenes[this.selectedImageIndex].preview_url || this.vehiculo.imagenes[this.selectedImageIndex].url;
+    }
+    return null;
+  }
+
   descargarReporte(): void {
-    if (!this.vehiculo) {
+    if (!this.vehiculo?.id) {
       this.toastr.error('No hay vehículo seleccionado');
       return;
     }
@@ -160,7 +207,7 @@ export class DetallesVehiculoComponent implements OnInit {
         // Crear un elemento <a> temporal
         const link = document.createElement('a');
         link.href = blobUrl;
-        link.download = `reporte_vehiculo_${this.vehiculo.id}.pdf`;
+        link.download = `reporte_vehiculo_${this.vehiculo?.id}.pdf`;
         
         // Añadir el elemento al DOM
         document.body.appendChild(link);

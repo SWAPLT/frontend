@@ -8,7 +8,7 @@
   <!-- Mensaje de error -->
   <div *ngIf="error" class="error">
     <p>Error al cargar los detalles del vehículo</p>
-    <button (click)="loadVehiculo(vehiculo.id)" class="retry-button">Reintentar</button>
+    <button *ngIf="vehiculo?.id" (click)="loadVehiculo(vehiculo!.id)" class="retry-button">Reintentar</button>
   </div>
 
   <!-- Detalles del vehículo -->
@@ -16,17 +16,17 @@
     <!-- Galería de imágenes -->
     <div class="gallery">
       <div class="main-image">
-        <div *ngIf="!vehiculo.imagen_url" class="default-vehicle-icon">
+        <div *ngIf="!getSelectedImage()" class="default-vehicle-icon">
           <i class="fas fa-car"></i>
         </div>
-        <img *ngIf="vehiculo.imagen_url" [src]="vehiculo.imagen_url" [alt]="vehiculo.marca + ' ' + vehiculo.modelo">
+        <img *ngIf="getSelectedImage()" [src]="getSelectedImage()" [alt]="vehiculo.marca + ' ' + vehiculo.modelo">
       </div>
-      <!-- Aquí irían las miniaturas si hubiera más imágenes -->
-      <div class="thumbnails" *ngIf="vehiculo.imagenes?.length > 1">
+      <!-- Miniaturas -->
+      <div class="thumbnails" *ngIf="vehiculo.imagenes && vehiculo.imagenes.length > 1">
         <div class="thumbnail" *ngFor="let imagen of vehiculo.imagenes; let i = index" 
              [class.active]="i === selectedImageIndex"
              (click)="selectImage(i)">
-          <img [src]="imagen" [alt]="vehiculo.marca + ' ' + vehiculo.modelo + ' imagen ' + (i + 1)">
+          <img [src]="imagen.preview_url || imagen.url" [alt]="vehiculo.marca + ' ' + vehiculo.modelo + ' imagen ' + (i + 1)">
         </div>
       </div>
     </div>
@@ -114,6 +114,20 @@
       </div>
     </div>
 
+    <!-- Sección: Estado del Vehículo -->
+    <div class="details-section">
+      <h2>Estado del Vehículo</h2>
+      <div class="details-grid">
+        <div class="detail-item">
+          <i class="fas fa-shield-alt"></i>
+          <span>Reporte de Robo: {{ vehiculo.vehiculo_robado }}</span>
+        </div>
+        <div class="detail-item">
+          <i class="fas fa-car-crash"></i>
+          <span>Historial de Accidentes: {{ vehiculo.vehiculo_libre_accidentes }}</span>
+        </div>
+      </div>
+    </div>
 
     <!-- Sección: Descripción -->
     <div class="details-section">
@@ -132,7 +146,7 @@
         </div>
         <div class="seller-details">
           <h3>{{ vehiculo.propietario?.nombre }}</h3>
-          <p>Miembro desde: {{ vehiculo.propietario?.fecha_registro || 'Fecha no disponible' }}</p>
+          <p>ID de Usuario: 0000{{ vehiculo.propietario?.id }}</p>
         </div>
       </div>
     </div>

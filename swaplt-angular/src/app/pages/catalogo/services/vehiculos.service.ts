@@ -103,7 +103,8 @@ export class VehiculosService {
 
   getVehiculoById(id: number): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/${id}`).pipe(
-      switchMap(vehiculo => {
+      switchMap(response => {
+        const vehiculo = response.vehiculo;
         // Inicializamos con propietario por defecto
         const vehiculoInicial = {
           ...vehiculo,
@@ -117,14 +118,28 @@ export class VehiculosService {
             propietario: {
               nombre: propietario?.name || 'Usuario SWAPLT',
               id: propietario?.id
-            }
+            },
+            imagenes: vehiculo.imagenes.map((img: any) => ({
+              id: img.id,
+              url: img.url,
+              orden: img.orden,
+              vehiculo_id: img.vehiculo_id,
+              preview_url: img.preview_url
+            }))
           })),
           catchError(() => of({
             ...vehiculo,
             propietario: {
               nombre: 'Usuario SWAPLT',
               id: vehiculo.user_id
-            }
+            },
+            imagenes: vehiculo.imagenes.map((img: any) => ({
+              id: img.id,
+              url: img.url,
+              orden: img.orden,
+              vehiculo_id: img.vehiculo_id,
+              preview_url: img.preview_url
+            }))
           }))
         );
       }),
