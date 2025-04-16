@@ -6,6 +6,7 @@ import { FavoritosService } from '../../services/favoritos.service';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { VehiculoReporteService } from '../../services/vehiculo-reporte.service';
+import { VehiculoImagenService } from '../../services/vehiculo-imagen.service';
 
 interface Imagen {
   id: number;
@@ -56,15 +57,19 @@ export class DetallesVehiculoComponent implements OnInit {
   favoritos: number[] = [];
   animating = false;
   selectedImageIndex = 0;
+  selectedFiles: File[] = [];
+  isUploading = false;
+  esPropietario = false;
 
   constructor(
     private route: ActivatedRoute,
     private vehiculosService: VehiculosService,
     private favoritosService: FavoritosService,
     private toastr: ToastrService,
-    private authService: AuthService,
+    public authService: AuthService,
     private router: Router,
-    private reporteService: VehiculoReporteService
+    private reporteService: VehiculoReporteService,
+    private vehiculoImagenService: VehiculoImagenService
   ) {}
 
   ngOnInit(): void {
@@ -82,6 +87,12 @@ export class DetallesVehiculoComponent implements OnInit {
     this.vehiculosService.getVehiculoById(id).subscribe({
       next: (response) => {
         this.vehiculo = response;
+        // Verificar si el usuario actual es el propietario
+        const userStr = localStorage.getItem('user');
+        if (userStr) {
+          const user = JSON.parse(userStr);
+          this.esPropietario = user.id === this.vehiculo?.user_id;
+        }
         this.loading = false;
       },
       error: (error: unknown) => {
@@ -226,5 +237,59 @@ export class DetallesVehiculoComponent implements OnInit {
         this.toastr.error('Error al descargar el reporte');
       }
     });
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files) {
+      this.selectedFiles = Array.from(input.files);
+    }
+  }
+
+  subirImagenes(): void {
+    if (!this.vehiculo?.id) {
+      this.toastr.error('No hay vehículo seleccionado');
+      return;
+    }
+
+    if (this.selectedFiles.length === 0) {
+      this.toastr.warning('Por favor seleccione al menos una imagen');
+      return;
+    }
+
+    this.isUploading = true;
+    this.vehiculoImagenService.subirImagenes(this.vehiculo.id, this.selectedFiles).subscribe({
+      next: (response) => {
+        this.toastr.success('Imágenes subidas con éxito');
+        this.loadVehiculo(this.vehiculo!.id);
+        this.selectedFiles = [];
+        this.isUploading = false;
+      },
+      error: (error) => {
+        console.error('Error al subir imágenes:', error);
+        this.toastr.error('Error al subir las imágenes');
+        this.isUploading = false;
+      }
+    });
+  }
+
+  eliminarImagen(imagenId: number): void {
+    if (!this.vehiculo?.id) {
+      this.toastr.error('No hay vehículo seleccionado');
+      return;
+    }
+
+    if (confirm('¿Está seguro de que desea eliminar esta imagen?')) {
+      this.vehiculoImagenService.eliminarImagen(this.vehiculo.id, imagenId).subscribe({
+        next: () => {
+          this.toastr.success('Imagen eliminada con éxito');
+          this.loadVehiculo(this.vehiculo!.id);
+        },
+        error: (error) => {
+          console.error('Error al eliminar la imagen:', error);
+          this.toastr.error('Error al eliminar la imagen');
+        }
+      });
+    }
   }
 } 

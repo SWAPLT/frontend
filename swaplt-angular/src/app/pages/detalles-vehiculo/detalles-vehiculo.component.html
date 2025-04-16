@@ -22,11 +22,58 @@
         <img *ngIf="getSelectedImage()" [src]="getSelectedImage()" [alt]="vehiculo.marca + ' ' + vehiculo.modelo">
       </div>
       <!-- Miniaturas -->
-      <div class="thumbnails" *ngIf="vehiculo.imagenes && vehiculo.imagenes.length > 1">
+      <div class="thumbnails" *ngIf="vehiculo.imagenes && vehiculo.imagenes.length > 0">
         <div class="thumbnail" *ngFor="let imagen of vehiculo.imagenes; let i = index" 
              [class.active]="i === selectedImageIndex"
              (click)="selectImage(i)">
           <img [src]="imagen.preview_url || imagen.url" [alt]="vehiculo.marca + ' ' + vehiculo.modelo + ' imagen ' + (i + 1)">
+          <button class="delete-image-btn" 
+                  (click)="eliminarImagen(imagen.id)" 
+                  *ngIf="esPropietario"
+                  (click)="$event.stopPropagation()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Formulario de subida de imágenes -->
+      <div class="upload-section" *ngIf="esPropietario">
+        <div class="file-upload">
+          <!-- Botón de selección de archivos (oculto) -->
+          <input type="file" 
+                 id="imagenes" 
+                 name="imagenes" 
+                 multiple 
+                 accept="image/*"
+                 (change)="onFileSelected($event)"
+                 [disabled]="isUploading"
+                 style="display: none;">
+          
+          <!-- Si no hay archivos seleccionados, mostrar botón de selección -->
+          <div *ngIf="selectedFiles.length === 0">
+            <label for="imagenes" class="upload-label">
+              <i class="fas fa-cloud-upload-alt"></i>
+              Seleccionar imágenes
+            </label>
+          </div>
+
+          <!-- Si hay archivos seleccionados, mostrar información y botones -->
+          <div class="selected-files-container" *ngIf="selectedFiles.length > 0">
+            <div class="selected-files-info">
+              <i class="fas fa-images"></i>
+              <span>{{ selectedFiles.length }} {{ selectedFiles.length === 1 ? 'archivo seleccionado' : 'archivos seleccionados' }}</span>
+            </div>
+            <div class="upload-actions">
+              <button class="upload-btn" (click)="subirImagenes()" [disabled]="isUploading">
+                <i class="fas fa-upload"></i>
+                {{ isUploading ? 'Subiendo...' : 'Subir imágenes' }}
+              </button>
+              <label for="imagenes" class="change-files-btn" [class.disabled]="isUploading">
+                <i class="fas fa-exchange-alt"></i>
+                Cambiar selección
+              </label>
+            </div>
+          </div>
         </div>
       </div>
     </div>
