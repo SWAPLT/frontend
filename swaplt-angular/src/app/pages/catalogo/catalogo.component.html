@@ -35,10 +35,10 @@
   <div *ngIf="!loading && !error" class="vehiculos-grid">
     <div *ngFor="let vehiculo of paginatedVehiculos" class="vehiculo-card">
       <div class="vehiculo-image">
-        <div *ngIf="!vehiculo.imagen_url" class="default-vehicle-icon">
+        <div *ngIf="!getVehiculoImagen(vehiculo.id)" class="default-vehicle-icon">
           <i class="fas fa-car"></i>
         </div>
-        <img *ngIf="vehiculo.imagen_url" [src]="vehiculo.imagen_url" [alt]="vehiculo.marca + ' ' + vehiculo.modelo">
+        <img *ngIf="getVehiculoImagen(vehiculo.id)" [src]="getVehiculoImagen(vehiculo.id)" [alt]="vehiculo.marca + ' ' + vehiculo.modelo">
         <button class="favorito-btn" (click)="toggleFavorito(vehiculo.id)" [class.favorito]="isFavorito(vehiculo.id)" [class.animating]="isAnimating(vehiculo.id)">
           <i [class]="isFavorito(vehiculo.id) ? 'fas fa-heart' : 'far fa-heart'"></i>
           <i class="fas fa-heart-broken broken-heart" *ngIf="isAnimating(vehiculo.id)"></i>

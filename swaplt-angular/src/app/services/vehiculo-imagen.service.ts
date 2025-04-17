@@ -35,4 +35,8 @@ export class VehiculoImagenService {
   obtenerUrlImagen(imagenId: number): string {
     return `${this.apiUrl}/imagenes/${imagenId}`;
   }
+
+  getPrimeraImagen(vehiculoId: number): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/${vehiculoId}/primera-imagen`, { responseType: 'blob' });
+  }
 } 

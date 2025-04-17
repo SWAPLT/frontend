@@ -6,6 +6,8 @@ import { FavoritosService } from '../../services/favoritos.service';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { Observable, catchError, of } from 'rxjs';
+import { VehiculoImagenService } from '../../services/vehiculo-imagen.service';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-catalogo',
@@ -24,14 +26,17 @@ export class CatalogoComponent implements OnInit {
   filtersForm: FormGroup;
   favoritos: number[] = [];
   animatingVehicles: Set<number> = new Set();
+  imagenesCache: Map<number, SafeUrl> = new Map();
 
   constructor(
     private vehiculosService: VehiculosService,
+    private vehiculoImagenService: VehiculoImagenService,
     private favoritosService: FavoritosService,
     private toastr: ToastrService,
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private sanitizer: DomSanitizer
   ) {
     this.searchForm = this.fb.group({
       query: ['']
@@ -71,6 +76,7 @@ export class CatalogoComponent implements OnInit {
           this.vehiculosFiltrados = [...this.vehiculos];
           this.totalItems = this.vehiculos.length;
           this.loading = false;
+          this.loadVehiculosImagenes();
         },
         error: (error: any) => {
           console.error('Error al cargar vehículos:', error);
@@ -79,6 +85,27 @@ export class CatalogoComponent implements OnInit {
           this.toastr.error('Error al cargar los vehículos', 'Error');
         }
       });
+  }
+  loadVehiculosImagenes(): void {
+    this.paginatedVehiculos.forEach(vehiculo => {
+      if (!this.imagenesCache.has(vehiculo.id)) {
+        this.vehiculoImagenService.getPrimeraImagen(vehiculo.id)
+          .pipe(
+            catchError(() => of(null))
+          )
+          .subscribe(blob => {
+            if (blob) {
+              const imageUrl = URL.createObjectURL(blob);
+              const safeUrl = this.sanitizer.bypassSecurityTrustUrl(imageUrl);
+              this.imagenesCache.set(vehiculo.id, safeUrl);
+            }
+          });
+      }
+    });
+  }
+
+  getVehiculoImagen(vehiculoId: number): SafeUrl | null {
+    return this.imagenesCache.get(vehiculoId) || null;
   }
 
   onSearch(): void {
@@ -94,6 +121,7 @@ export class CatalogoComponent implements OnInit {
     }
     this.totalItems = this.vehiculosFiltrados.length;
     this.currentPage = 1;
+    this.loadVehiculosImagenes();
   }
 
   onFilter(): void {
@@ -122,10 +150,12 @@ export class CatalogoComponent implements OnInit {
     
     this.totalItems = this.vehiculosFiltrados.length;
     this.currentPage = 1;
+    this.loadVehiculosImagenes();
   }
 
   onPageChange(page: number): void {
     this.currentPage = page;
+    this.loadVehiculosImagenes();
   }
 
   loadFavoritos(): void {
