@@ -63,7 +63,13 @@ export class VehiculoService {
 
   // Actualizar un vehículo
   actualizarVehiculo(id: number, vehiculo: Vehiculo): Observable<any> {
-    return this.http.put<any>(`${environment.apiUrl}/vehiculos/${id}`, vehiculo).pipe(
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+
+    return this.http.put<any>(`${this.apiUrl}/${id}`, vehiculo, { headers }).pipe(
       map(response => {
         if (response.success === false) {
           throw new Error(response.message);
@@ -79,7 +85,23 @@ export class VehiculoService {
 
   // Obtener un vehículo por ID
   obtenerVehiculoPorId(id: number): Observable<Vehiculo> {
-    return this.http.get<Vehiculo>(`${environment.apiUrl}/vehiculos/${id}`).pipe(
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+
+    return this.http.get<any>(`${this.apiUrl}/${id}`, { headers }).pipe(
+      map(response => {
+        console.log('Respuesta completa del servidor:', response);
+        if (response.vehiculo) {
+          return response.vehiculo;
+        } else if (response.data) {
+          return response.data;
+        } else {
+          return response;
+        }
+      }),
       catchError(error => {
         console.error('Error al obtener el vehículo:', error);
         throw error;

@@ -157,6 +157,11 @@
   color: white;
 }
 
+.delete-vehicle {
+  background-color: #dc3545;
+  color: white;
+}
+
 .action-button:hover {
   transform: translateY(-2px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);

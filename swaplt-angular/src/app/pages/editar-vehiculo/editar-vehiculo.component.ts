@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { VehiculoService, Vehiculo } from '../../services/vehiculos/vehiculo.service';
 import { ToastrService } from 'ngx-toastr';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-editar-vehiculo',
@@ -13,13 +14,15 @@ export class EditarVehiculoComponent implements OnInit {
   vehiculoForm: FormGroup;
   loading = false;
   vehiculoId = 0;
+  errorMessage = '';
 
   constructor(
     private fb: FormBuilder,
     private vehiculoService: VehiculoService,
     private route: ActivatedRoute,
     private router: Router,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private authService: AuthService
   ) {
     this.vehiculoForm = this.fb.group({
       user_id: ['', Validators.required],
@@ -46,14 +49,44 @@ export class EditarVehiculoComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.vehiculoId = +this.route.snapshot.params['id'];
-    this.cargarVehiculo();
+    this.vehiculoId = Number(this.route.snapshot.paramMap.get('id'));
+    if (this.vehiculoId) {
+      this.cargarVehiculo();
+    } else {
+      this.toastr.error('ID de vehículo no válido');
+      this.router.navigate(['/mis-vehiculos']);
+    }
   }
 
   cargarVehiculo(): void {
     this.loading = true;
     this.vehiculoService.obtenerVehiculoPorId(this.vehiculoId).subscribe({
       next: (vehiculo) => {
+        console.log('Vehículo completo recibido:', vehiculo);
+        
+        if (!vehiculo || !vehiculo.user_id) {
+          console.error('El vehículo no tiene user_id definido:', vehiculo);
+          this.toastr.error('Error al cargar los datos del vehículo');
+          this.router.navigate(['/mis-vehiculos']);
+          return;
+        }
+
+        const userId = this.authService.getUserId();
+        console.log('ID del usuario autenticado:', userId);
+        console.log('ID del propietario del vehículo:', vehiculo.user_id);
+        
+        if (userId === null) {
+          this.toastr.error('No se pudo verificar tu identidad');
+          this.router.navigate(['/login']);
+          return;
+        }
+
+        if (vehiculo.user_id !== userId) {
+          this.toastr.error('No tienes permiso para editar este vehículo');
+          this.router.navigate(['/mis-vehiculos']);
+          return;
+        }
+        
         this.vehiculoForm.patchValue(vehiculo);
         this.loading = false;
       },
@@ -69,6 +102,7 @@ export class EditarVehiculoComponent implements OnInit {
   onSubmit(): void {
     if (this.vehiculoForm.valid) {
       this.loading = true;
+      this.errorMessage = '';
       const vehiculoData = this.vehiculoForm.value;
 
       this.vehiculoService.actualizarVehiculo(this.vehiculoId, vehiculoData).subscribe({
@@ -78,12 +112,20 @@ export class EditarVehiculoComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error al actualizar el vehículo:', error);
-          this.toastr.error(error.message || 'Error al actualizar el vehículo');
+          this.errorMessage = error.error?.message || 'Error al actualizar el vehículo';
+          this.toastr.error(this.errorMessage);
           this.loading = false;
         }
       });
     } else {
-      this.toastr.error('Por favor, complete todos los campos requeridos correctamente');
+      this.errorMessage = 'Por favor, complete todos los campos requeridos correctamente';
+      this.toastr.error(this.errorMessage);
+      Object.keys(this.vehiculoForm.controls).forEach(key => {
+        const control = this.vehiculoForm.get(key);
+        if (control?.invalid) {
+          control.markAsTouched();
+        }
+      });
     }
   }
 

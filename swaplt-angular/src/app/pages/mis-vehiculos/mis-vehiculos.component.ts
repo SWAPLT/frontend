@@ -103,4 +103,23 @@ export class MisVehiculosComponent implements OnInit {
       this.router.navigate(['/editar-vehiculo', id]);
     }
   }
+
+  eliminarVehiculo(id: number): void {
+    if (id) {
+      if (confirm('¿Estás seguro de que deseas eliminar este vehículo? Esta acción no se puede deshacer.')) {
+        this.loading = true;
+        this.vehiculoService.eliminar(id).subscribe({
+          next: () => {
+            this.toastr.success('Vehículo eliminado con éxito');
+            this.loadVehiculos(); // Recargar la lista de vehículos
+          },
+          error: (error) => {
+            console.error('Error al eliminar el vehículo:', error);
+            this.toastr.error('Error al eliminar el vehículo');
+            this.loading = false;
+          }
+        });
+      }
+    }
+  }
 } 

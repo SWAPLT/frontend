@@ -47,6 +47,9 @@
           <button class="action-button edit-vehicle" (click)="editarVehiculo(vehiculo.id!)" [disabled]="!vehiculo.id">
             <i class="fas fa-edit"></i> Editar
           </button>
+          <button class="action-button delete-vehicle" (click)="eliminarVehiculo(vehiculo.id!)" [disabled]="!vehiculo.id">
+            <i class="fas fa-trash"></i> Eliminar
+          </button>
         </div>
       </div>
     </div>
