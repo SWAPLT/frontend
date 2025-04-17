@@ -241,7 +241,7 @@ export class DetallesVehiculoComponent implements OnInit {
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
-    if (input.files) {
+    if (input.files && input.files.length > 0) {
       this.selectedFiles = Array.from(input.files);
     }
   }

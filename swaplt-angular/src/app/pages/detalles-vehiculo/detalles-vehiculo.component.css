@@ -382,10 +382,11 @@
 
 /* Estilos para la sección de subida de imágenes */
 .upload-section {
-  margin: 20px 0;
+  margin-top: 20px;
   padding: 20px;
-  border-radius: 8px;
   background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px dashed #dee2e6;
 }
 
 .file-upload {
@@ -396,14 +397,14 @@
 }
 
 .upload-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 24px;
+  padding: 15px 30px;
   background-color: #007bff;
   color: white;
   border-radius: 6px;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   transition: background-color 0.3s;
 }
 
@@ -413,24 +414,16 @@
 
 .selected-files-container {
   width: 100%;
-  max-width: 500px;
-  padding: 15px;
-  border: 2px dashed #dee2e6;
-  border-radius: 8px;
-  background-color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
 .selected-files-info {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 15px;
   color: #495057;
-}
-
-.selected-files-info i {
-  font-size: 1.5em;
-  color: #007bff;
 }
 
 .upload-actions {
