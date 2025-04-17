@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { VehiculoService, Vehiculo } from '../../services/vehiculos/vehiculo.service';
 import { ToastrService } from 'ngx-toastr';
+import { VehiculoImagenService } from '../../services/vehiculo-imagen.service';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { catchError, of } from 'rxjs';
 
 @Component({
   selector: 'app-mis-vehiculos',
@@ -13,6 +16,7 @@ export class MisVehiculosComponent implements OnInit {
   vehiculosPaginados: Vehiculo[] = [];
   loading = false;
   error = false;
+  imagenesCache: Map<number, SafeUrl> = new Map();
   
   // Propiedades para paginación
   currentPage = 1;
@@ -22,7 +26,9 @@ export class MisVehiculosComponent implements OnInit {
   constructor(
     private vehiculoService: VehiculoService,
     private router: Router,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private vehiculoImagenService: VehiculoImagenService,
+    private sanitizer: DomSanitizer
   ) { }
 
   ngOnInit(): void {
@@ -39,6 +45,7 @@ export class MisVehiculosComponent implements OnInit {
         this.totalItems = vehiculos.length;
         this.applyPagination();
         this.loading = false;
+        this.loadVehiculosImagenes();
       },
       error: (error) => {
         console.error('Error al cargar vehículos:', error);
@@ -47,6 +54,28 @@ export class MisVehiculosComponent implements OnInit {
         this.toastr.error('Error al cargar los vehículos. Por favor, intente nuevamente.');
       }
     });
+  }
+
+  loadVehiculosImagenes(): void {
+    this.vehiculosPaginados.forEach(vehiculo => {
+      if (vehiculo.id && !this.imagenesCache.has(vehiculo.id)) {
+        this.vehiculoImagenService.getPrimeraImagen(vehiculo.id)
+          .pipe(
+            catchError(() => of(null))
+          )
+          .subscribe(blob => {
+            if (blob) {
+              const imageUrl = URL.createObjectURL(blob);
+              const safeUrl = this.sanitizer.bypassSecurityTrustUrl(imageUrl);
+              this.imagenesCache.set(vehiculo.id, safeUrl);
+            }
+          });
+      }
+    });
+  }
+
+  getVehiculoImagen(vehiculoId: number): SafeUrl | null {
+    return this.imagenesCache.get(vehiculoId) || null;
   }
 
   // Aplicar paginación
@@ -60,6 +89,7 @@ export class MisVehiculosComponent implements OnInit {
   onPageChange(page: number): void {
     this.currentPage = page;
     this.applyPagination();
+    this.loadVehiculosImagenes();
   }
 
   verDetalles(id: number): void {

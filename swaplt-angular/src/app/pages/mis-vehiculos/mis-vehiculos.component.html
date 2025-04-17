@@ -17,7 +17,7 @@
   <div *ngIf="!loading && !error" class="vehiculos-grid">
     <div *ngFor="let vehiculo of vehiculosPaginados" class="vehiculo-card">
       <div class="vehiculo-image">
-        <img [src]="vehiculo.imagenes && vehiculo.imagenes.length > 0 ? vehiculo.imagenes[0].url : '/assets/imgs/no-imagen.jpeg'" [alt]="vehiculo.marca + ' ' + vehiculo.modelo">
+        <img [src]="getVehiculoImagen(vehiculo.id!) || '/assets/imgs/no-imagen.jpeg'" [alt]="vehiculo.marca + ' ' + vehiculo.modelo">
       </div>
       <div class="vehiculo-info">
         <div class="vehicle-title">

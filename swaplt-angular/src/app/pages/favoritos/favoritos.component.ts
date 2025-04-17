@@ -4,6 +4,9 @@ import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Favorito } from '../../models/favorito.model';
+import { VehiculoImagenService } from '../../services/vehiculo-imagen.service';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { catchError, of } from 'rxjs';
 
 @Component({
   selector: 'app-favoritos',
@@ -18,12 +21,15 @@ export class FavoritosComponent implements OnInit {
   itemsPerPage = 5;
   totalItems = 0;
   animatingFavorites: Set<number> = new Set();
+  imagenesCache: Map<number, SafeUrl> = new Map();
 
   constructor(
     private favoritosService: FavoritosService,
     private authService: AuthService,
     private router: Router,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private vehiculoImagenService: VehiculoImagenService,
+    private sanitizer: DomSanitizer
   ) { }
 
   ngOnInit(): void {
@@ -38,6 +44,7 @@ export class FavoritosComponent implements OnInit {
     this.favoritosService.getFavoritosState().subscribe(favoritos => {
       this.favoritos = favoritos;
       this.totalItems = this.favoritos.length;
+      this.loadFavoritosImagenes();
     });
   }
 
@@ -55,6 +62,7 @@ export class FavoritosComponent implements OnInit {
         this.favoritos = response;
         this.totalItems = this.favoritos.length;
         this.loading = false;
+        this.loadFavoritosImagenes();
       },
       error: (error) => {
         if (error.status === 404) {
@@ -74,6 +82,28 @@ export class FavoritosComponent implements OnInit {
         }
       }
     });
+  }
+
+  loadFavoritosImagenes(): void {
+    this.paginatedFavoritos.forEach(favorito => {
+      if (!this.imagenesCache.has(favorito.vehiculo.id)) {
+        this.vehiculoImagenService.getPrimeraImagen(favorito.vehiculo.id)
+          .pipe(
+            catchError(() => of(null))
+          )
+          .subscribe(blob => {
+            if (blob) {
+              const imageUrl = URL.createObjectURL(blob);
+              const safeUrl = this.sanitizer.bypassSecurityTrustUrl(imageUrl);
+              this.imagenesCache.set(favorito.vehiculo.id, safeUrl);
+            }
+          });
+      }
+    });
+  }
+
+  getVehiculoImagen(vehiculoId: number): SafeUrl | null {
+    return this.imagenesCache.get(vehiculoId) || null;
   }
 
   removeFavorito(favoritoId: number): void {
@@ -110,6 +140,7 @@ export class FavoritosComponent implements OnInit {
 
   onPageChange(page: number): void {
     this.currentPage = page;
+    this.loadFavoritosImagenes();
   }
 
   contactar(favorito: Favorito): void {
