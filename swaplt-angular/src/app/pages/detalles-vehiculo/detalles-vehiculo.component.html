@@ -16,10 +16,7 @@
     <!-- Galería de imágenes -->
     <div class="gallery">
       <div class="main-image">
-        <div *ngIf="!getSelectedImage()" class="default-vehicle-icon">
-          <i class="fas fa-car"></i>
-        </div>
-        <img *ngIf="getSelectedImage()" [src]="getSelectedImage()" [alt]="vehiculo.marca + ' ' + vehiculo.modelo">
+        <img [src]="getSelectedImage() || '/assets/imgs/no-imagen.jpeg'" [alt]="vehiculo.marca + ' ' + vehiculo.modelo">
       </div>
       <!-- Miniaturas -->
       <div class="thumbnails" *ngIf="vehiculo.imagenes && vehiculo.imagenes.length > 0">

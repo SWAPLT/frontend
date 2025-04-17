@@ -17,11 +17,7 @@
   <div *ngIf="!loading && favoritos.length > 0" class="vehiculos-grid">
     <div *ngFor="let favorito of paginatedFavoritos" class="vehiculo-card">
       <div class="vehiculo-image">
-        <div *ngIf="!favorito.vehiculo.imagen_url" class="default-vehicle-icon">
-          <i class="fas fa-car"></i>
-        </div>
-        <img *ngIf="favorito.vehiculo.imagen_url" 
-             [src]="favorito.vehiculo.imagen_url" 
+        <img [src]="favorito.vehiculo.imagen_url || '/assets/imgs/no-imagen.jpeg'" 
              [alt]="favorito.vehiculo.marca + ' ' + favorito.vehiculo.modelo">
         <button class="favorito-btn" 
                 (click)="removeFavorito(favorito.id)"

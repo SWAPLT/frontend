@@ -17,10 +17,7 @@
   <div *ngIf="!loading && !error" class="vehiculos-grid">
     <div *ngFor="let vehiculo of vehiculosPaginados" class="vehiculo-card">
       <div class="vehiculo-image">
-        <div *ngIf="!vehiculo.imagenes || vehiculo.imagenes.length === 0" class="default-vehicle-icon">
-          <i class="fas fa-car"></i>
-        </div>
-        <img *ngIf="vehiculo.imagenes && vehiculo.imagenes.length > 0" [src]="vehiculo.imagenes[0].url" [alt]="vehiculo.marca + ' ' + vehiculo.modelo">
+        <img [src]="vehiculo.imagenes && vehiculo.imagenes.length > 0 ? vehiculo.imagenes[0].url : '/assets/imgs/no-imagen.jpeg'" [alt]="vehiculo.marca + ' ' + vehiculo.modelo">
       </div>
       <div class="vehiculo-info">
         <div class="vehicle-title">
