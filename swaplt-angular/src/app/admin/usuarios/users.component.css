@@ -1,10 +1,10 @@
-/* Estilos base (igual que en vehiculos) */
+/* Estilos base */
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #f5f5f5;
-  color: #333;
+  background-color: var(--background-color);
+  color: var(--text-color);
 }
 
 .container {
@@ -12,15 +12,15 @@ body {
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
-  background-color: white;
+  background-color: var(--card-background);
   box-sizing: border-box;
 }
 
 h2, h3 {
-  color: #7c5c24;
+  color: var(--tertiary-color);
   margin-bottom: 20px;
   padding-bottom: 10px;
-  border-bottom: 2px solid #dcbc7c;
+  border-bottom: 2px solid var(--secondary-color);
 }
 
 .table-actions {
@@ -28,11 +28,10 @@ h2, h3 {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  
 }
 
 button {
-  background-color: #34a4b4;
+  background-color: var(--primary-color);
   color: white;
   border: none;
   padding: 10px 18px;
@@ -44,14 +43,14 @@ button {
 }
 
 button:hover {
-  background-color: #2c8c9a;
+  background-color: var(--quaternary-color);
   transform: translateY(-1px);
 }
 
 .error {
-  background-color: #fdd;
-  border: 1px solid #f99;
-  color: #a00;
+  background-color: rgba(220, 53, 69, 0.1);
+  border: 1px solid rgba(220, 53, 69, 0.3);
+  color: #dc3545;
   padding: 10px;
   margin-bottom: 20px;
   border-radius: 6px;
@@ -60,19 +59,19 @@ button:hover {
 .error-debug {
   margin: 20px 0;
   padding: 15px;
-  background-color: #fff8f8;
-  border: 1px solid #ffdddd;
+  background-color: var(--card-background);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
 }
 
 .retry-button {
   margin-top: 10px;
-  background-color: #6c5c3c;
+  background-color: var(--quaternary-color);
   color: white;
 }
 
 .retry-button:hover {
-  background-color: #7c5c24;
+  background-color: var(--tertiary-color);
 }
 
 .table-responsive {
@@ -80,7 +79,7 @@ button:hover {
   overflow-x: auto;
   margin-top: 20px;
   -webkit-overflow-scrolling: touch;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 6px var(--shadow-color);
   border-radius: 8px;
 }
 
@@ -88,19 +87,19 @@ table {
   width: 100%;
   min-width: 600px;
   border-collapse: collapse;
-  background-color: white;
+  background-color: var(--card-background);
 }
 
 th, td {
   padding: 14px 10px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--border-color);
   text-align: center;
   vertical-align: middle;
   word-wrap: break-word;
 }
 
 th {
-  background-color: #6c5c3c;
+  background-color: var(--quaternary-color);
   color: white;
   font-weight: 600;
   position: sticky;
@@ -108,11 +107,11 @@ th {
 }
 
 tr:nth-child(even) {
-  background-color: #fafafa;
+  background-color: var(--hover-color);
 }
 
 tr:hover {
-  background-color: #f1f1f1;
+  background-color: var(--hover-color);
 }
 
 .action-buttons {
@@ -125,10 +124,10 @@ tr:hover {
 .no-data, .loading {
   text-align: center;
   padding: 20px;
-  background-color: white;
+  background-color: var(--card-background);
   border-radius: 8px;
   margin-top: 20px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 6px var(--shadow-color);
 }
 
 /* Estilos específicos para roles */
@@ -178,21 +177,23 @@ tr:hover {
 label {
   font-weight: 600;
   margin-bottom: 6px;
-  color: #6c5c3c;
+  color: var(--tertiary-color);
 }
 
 input, select, textarea {
   padding: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-color);
   border-radius: 6px;
   font-size: 14px;
   transition: border-color 0.3s;
   width: 100%;
   box-sizing: border-box;
+  background-color: var(--input-background);
+  color: var(--text-color);
 }
 
 input:focus, select:focus, textarea:focus {
-  border-color: #34a4b4;
+  border-color: var(--primary-color);
   outline: none;
 }
 
