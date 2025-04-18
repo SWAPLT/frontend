@@ -10,6 +10,8 @@ import { VenderVehiculoComponent } from './pages/vender-vehiculo/vender-vehiculo
 import { MisVehiculosComponent } from './pages/mis-vehiculos/mis-vehiculos.component';
 import { EditarVehiculoComponent } from './pages/editar-vehiculo/editar-vehiculo.component';
 import { MensajesComponent } from './pages/mensajes/mensajes.component';
+import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
+import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/catalogo', pathMatch: 'full' }, // Redirigir a catálogo por defecto
@@ -28,6 +30,8 @@ const routes: Routes = [
   { path: 'editar-vehiculo/:id', component: EditarVehiculoComponent, canActivate: [AuthGuard] },
   { path: 'mensajes', component: MensajesComponent, canActivate: [AuthGuard] },
   { path: 'mensajes/:usuarioId', component: MensajesComponent, canActivate: [AuthGuard] },
+  { path: 'forgot-password', component: ForgotPasswordComponent },
+  { path: 'reset-password', component: ResetPasswordComponent },
   { path: '**', redirectTo: '/catalogo' }  // Redirige a catálogo si la ruta no existe
 ];
 

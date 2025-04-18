@@ -26,6 +26,8 @@ import { EditarVehiculoComponent } from './pages/editar-vehiculo/editar-vehiculo
 import { AuthGuard } from './guards/auth.guard';
 import { DetallesVehiculoComponent } from './pages/detalles-vehiculo/detalles-vehiculo.component';
 import { MensajesComponent } from './pages/mensajes/mensajes.component';
+import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
+import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +40,9 @@ import { MensajesComponent } from './pages/mensajes/mensajes.component';
     MisVehiculosComponent,
     EditarVehiculoComponent,
     DetallesVehiculoComponent,
-    MensajesComponent
+    MensajesComponent,
+    ResetPasswordComponent,
+    ForgotPasswordComponent
   ],
   imports: [
     BrowserModule,

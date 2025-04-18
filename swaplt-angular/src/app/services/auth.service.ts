@@ -104,6 +104,27 @@ export class AuthService {
     return user ? JSON.parse(user) : null;
   }
 
+  requestPasswordReset(email: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/password/reset-request`, { email }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  resetPassword(token: string, password: string, password_confirmation: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/password/reset/${token}`, {
+      password,
+      password_confirmation
+    }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  validateResetToken(token: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/password/reset/${token}`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
   private getAuthHeaders() {
     const token = this.getToken();
     return {
