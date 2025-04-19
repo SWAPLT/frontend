@@ -159,4 +159,10 @@ export class FavoritosComponent implements OnInit {
     this.router.navigate(['/mensajes', favorito.vehiculo.user_id]);
     this.toastr.success('Redirigiendo al chat con el vendedor');
   }
+
+  verDetalles(id: number): void {
+    if (id) {
+      window.open(`/vehiculo/${id}`, '_blank');
+    }
+  }
 } 

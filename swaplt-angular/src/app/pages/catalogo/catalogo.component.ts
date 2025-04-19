@@ -238,4 +238,10 @@ export class CatalogoComponent implements OnInit {
     this.router.navigate(['/mensajes', vehiculo.user_id]);
     this.toastr.success('Redirigiendo al chat con el vendedor');
   }
+
+  verDetalles(id: number): void {
+    if (id) {
+      window.open(`/vehiculo/${id}`, '_blank');
+    }
+  }
 }

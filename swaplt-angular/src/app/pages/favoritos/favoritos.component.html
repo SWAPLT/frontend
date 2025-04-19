@@ -53,7 +53,7 @@
 
         <div class="vehiculo-footer">
           <div class="vehiculo-actions">
-            <button class="ver-detalles" [routerLink]="['/vehiculo', favorito.vehiculo.id]">
+            <button class="ver-detalles" (click)="verDetalles(favorito.vehiculo.id)">
               <i class="fas fa-eye"></i> Ver Detalles
             </button>
             <button class="contactar" [routerLink]="['/mensajes', favorito.vehiculo.user_id]">

@@ -94,7 +94,7 @@ export class MisVehiculosComponent implements OnInit {
 
   verDetalles(id: number): void {
     if (id) {
-      this.router.navigate(['/vehiculo', id]);
+      window.open(`/vehiculo/${id}`, '_blank');
     }
   }
 

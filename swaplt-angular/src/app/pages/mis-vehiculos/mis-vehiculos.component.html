@@ -41,7 +41,7 @@
         </div>
 
         <div class="action-buttons">
-          <button class="action-button view-details" (click)="verDetalles(vehiculo.id!)" [disabled]="!vehiculo.id">
+          <button class="action-button view-details" (click)="verDetalles(vehiculo.id!)" [disabled]="!vehiculo.id" target="_blank">
             <i class="fas fa-eye"></i> Ver Detalles
           </button>
           <button class="action-button edit-vehicle" (click)="editarVehiculo(vehiculo.id!)" [disabled]="!vehiculo.id">
