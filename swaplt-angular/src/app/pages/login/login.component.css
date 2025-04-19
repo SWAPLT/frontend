@@ -15,7 +15,7 @@ body {
   border-radius: 12px;
   box-shadow: 0 2px 8px var(--shadow-color);
   width: 100%;
-  max-width: 300px;
+  max-width: 400px;
   margin: 100px auto;
 }
 
@@ -50,7 +50,7 @@ body {
 }
 
 .input-group input {
-  width: 92%;
+  width: 100%;
   padding: 0.75rem;
   border: 2px solid var(--border-color);
   border-radius: 6px;
@@ -58,6 +58,7 @@ body {
   transition: border-color 0.2s;
   background-color: var(--input-background);
   color: var(--text-color);
+  box-sizing: border-box;
 }
 
 .input-group input:focus {
@@ -126,6 +127,7 @@ body {
   .container {
     padding: 1.5rem;
     margin: 100px auto;
+    max-width: 300px;
     box-shadow: 0 2px 8px var(--shadow-color);
     border: 1px solid var(--border-color);
   }

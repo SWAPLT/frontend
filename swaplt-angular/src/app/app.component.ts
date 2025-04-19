@@ -1,5 +1,6 @@
 import { Component, HostListener } from '@angular/core';
 import { AuthService } from './services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -12,7 +13,10 @@ export class AppComponent {
   isMobileView = false;
   footerVisible = false;
 
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
   @HostListener('window:resize', ['$event'])
   onResize() {
@@ -52,5 +56,13 @@ export class AppComponent {
 
   logOut() {
     this.authService.logout();
+  }
+
+  navigateToHome() {
+    if (this.authService.isAuthenticated()) {
+      this.router.navigate(['/catalogo']);
+    } else {
+      this.router.navigate(['/login']);
+    }
   }
 }
