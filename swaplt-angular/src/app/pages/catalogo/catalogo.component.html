@@ -33,7 +33,7 @@
 
   <!-- Lista de vehículos -->
   <div *ngIf="!loading && !error" class="vehiculos-grid">
-    <div *ngFor="let vehiculo of paginatedVehiculos" class="vehiculo-card">
+    <div *ngFor="let vehiculo of vehiculos" class="vehiculo-card">
       <div class="vehiculo-image">
         <img [src]="getVehiculoImagen(vehiculo.id) || '/assets/imgs/no-imagen.jpeg'" [alt]="vehiculo.marca + ' ' + vehiculo.modelo">
         <button class="favorito-btn" (click)="toggleFavorito(vehiculo.id)" [class.favorito]="isFavorito(vehiculo.id)" [class.animating]="isAnimating(vehiculo.id)">
@@ -84,7 +84,7 @@
 
   <!-- Paginación -->
   <app-pagination
-    *ngIf="!loading && !error && vehiculosFiltrados.length > 0"
+    *ngIf="!loading && !error && totalItems > 0"
     [currentPage]="currentPage"
     [totalItems]="totalItems"
     [itemsPerPage]="itemsPerPage"

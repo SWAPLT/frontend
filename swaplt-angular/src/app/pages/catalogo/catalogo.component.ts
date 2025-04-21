@@ -4,7 +4,7 @@ import { VehiculosService } from './services/vehiculos.service';
 import { ToastrService } from 'ngx-toastr';
 import { FavoritosService } from '../../services/favoritos.service';
 import { AuthService } from '../../services/auth.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, catchError, of } from 'rxjs';
 import { VehiculoImagenService } from '../../services/vehiculo-imagen.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
@@ -36,6 +36,7 @@ export class CatalogoComponent implements OnInit {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
+    private route: ActivatedRoute,
     private sanitizer: DomSanitizer
   ) {
     this.searchForm = this.fb.group({
@@ -53,7 +54,21 @@ export class CatalogoComponent implements OnInit {
 
   ngOnInit(): void {
     console.log('Inicializando componente de catálogo...');
-    this.loadVehiculos();
+    
+    // Suscribirse a los cambios de la ruta para detectar cambios en la página
+    this.route.params.subscribe(params => {
+      console.log('Parámetros de ruta recibidos:', params);
+      const page = params['page'];
+      if (page) {
+        console.log('Cambiando a página:', page);
+        this.currentPage = parseInt(page);
+      } else {
+        console.log('No hay página especificada, usando página 1');
+        this.currentPage = 1;
+      }
+      this.loadVehiculos();
+    });
+
     if (this.authService.isAuthenticated()) {
       this.loadFavoritos();
       this.favoritosService.getFavoritosState().subscribe(favoritos => {
@@ -68,13 +83,15 @@ export class CatalogoComponent implements OnInit {
   }
 
   loadVehiculos(): void {
+    console.log('Cargando vehículos para la página:', this.currentPage);
     this.loading = true;
-    this.vehiculosService.getVehiculos()
+    this.vehiculosService.getVehiculos(this.currentPage)
       .subscribe({
-        next: (response: any[]) => {
-          this.vehiculos = response;
+        next: (response: any) => {
+          console.log('Respuesta recibida del servicio:', response);
+          this.vehiculos = response.data;
           this.vehiculosFiltrados = [...this.vehiculos];
-          this.totalItems = this.vehiculos.length;
+          this.totalItems = response.total;
           this.loading = false;
           this.loadVehiculosImagenes();
         },
@@ -154,8 +171,8 @@ export class CatalogoComponent implements OnInit {
   }
 
   onPageChange(page: number): void {
-    this.currentPage = page;
-    this.loadVehiculosImagenes();
+    console.log('Solicitando cambio a página:', page);
+    this.router.navigate(['/catalogo/pagina', page]);
   }
 
   loadFavoritos(): void {

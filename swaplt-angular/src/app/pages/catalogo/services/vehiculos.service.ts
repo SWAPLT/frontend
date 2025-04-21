@@ -31,19 +31,22 @@ export class VehiculosService {
     return throwError(() => new Error('Ocurrió un error al procesar la solicitud'));
   }
 
-  getVehiculos(): Observable<any[]> {
-    // Primero obtenemos los vehículos
-    return this.http.get<any[]>(this.apiUrl).pipe(
-      tap(vehiculos => {
+  getVehiculos(page: number = 1): Observable<any> {
+    console.log('Servicio - Solicitando página:', page);
+    const params = new HttpParams().set('page', page.toString());
+    return this.http.get<any>(this.apiUrl, { params }).pipe(
+      tap((response: any) => {
+        console.log('Servicio - Respuesta del backend:', response);
+        const vehiculos = response.data;
         // Inicializamos los vehículos con propietario por defecto
-        const vehiculosIniciales = vehiculos.map(vehiculo => ({
+        const vehiculosIniciales = vehiculos.map((vehiculo: any) => ({
           ...vehiculo,
           propietario: { nombre: 'Cargando...', id: vehiculo.user_id }
         }));
         this.vehiculosConPropietarios.next(vehiculosIniciales);
 
         // Cargamos los propietarios progresivamente
-        vehiculos.forEach((vehiculo, index) => {
+        vehiculos.forEach((vehiculo: any, index: number) => {
           this.usersService.getUser(vehiculo.user_id).subscribe({
             next: (propietario) => {
               const vehiculosActuales = this.vehiculosConPropietarios.value;
@@ -71,7 +74,17 @@ export class VehiculosService {
           });
         });
       }),
-      switchMap(() => this.vehiculosConPropietarios.asObservable()),
+      switchMap((response: any) => this.vehiculosConPropietarios.asObservable().pipe(
+        map(vehiculos => ({
+          data: vehiculos,
+          current_page: response.current_page,
+          last_page: response.last_page,
+          per_page: response.per_page,
+          total: response.total,
+          from: response.from,
+          to: response.to
+        }))
+      )),
       catchError(this.handleError)
     );
   }
