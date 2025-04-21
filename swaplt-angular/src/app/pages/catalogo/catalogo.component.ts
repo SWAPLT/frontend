@@ -5,7 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { FavoritosService } from '../../services/favoritos.service';
 import { AuthService } from '../../services/auth.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Observable, catchError, of } from 'rxjs';
+import { Observable, catchError, of, finalize } from 'rxjs';
 import { VehiculoImagenService } from '../../services/vehiculo-imagen.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
@@ -18,6 +18,7 @@ export class CatalogoComponent implements OnInit {
   vehiculos: any[] = [];
   vehiculosFiltrados: any[] = [];
   loading = true;
+  loadingImages = false;
   error = false;
   currentPage = 1;
   itemsPerPage = 10;
@@ -57,13 +58,10 @@ export class CatalogoComponent implements OnInit {
     
     // Suscribirse a los cambios de la ruta para detectar cambios en la página
     this.route.params.subscribe(params => {
-      console.log('Parámetros de ruta recibidos:', params);
       const page = params['page'];
       if (page) {
-        console.log('Cambiando a página:', page);
         this.currentPage = parseInt(page);
       } else {
-        console.log('No hay página especificada, usando página 1');
         this.currentPage = 1;
       }
       this.loadVehiculos();
@@ -83,12 +81,10 @@ export class CatalogoComponent implements OnInit {
   }
 
   loadVehiculos(): void {
-    console.log('Cargando vehículos para la página:', this.currentPage);
     this.loading = true;
     this.vehiculosService.getVehiculos(this.currentPage)
       .subscribe({
         next: (response: any) => {
-          console.log('Respuesta recibida del servicio:', response);
           this.vehiculos = response.data;
           this.vehiculosFiltrados = [...this.vehiculos];
           this.totalItems = response.total;
@@ -103,12 +99,25 @@ export class CatalogoComponent implements OnInit {
         }
       });
   }
+
   loadVehiculosImagenes(): void {
-    this.paginatedVehiculos.forEach(vehiculo => {
+    if (this.loadingImages) return;
+    
+    this.loadingImages = true;
+    let completedRequests = 0;
+    const totalVehiculos = this.vehiculos.length;
+
+    this.vehiculos.forEach(vehiculo => {
       if (!this.imagenesCache.has(vehiculo.id)) {
         this.vehiculoImagenService.getPrimeraImagen(vehiculo.id)
           .pipe(
-            catchError(() => of(null))
+            catchError(() => of(null)),
+            finalize(() => {
+              completedRequests++;
+              if (completedRequests === totalVehiculos) {
+                this.loadingImages = false;
+              }
+            })
           )
           .subscribe(blob => {
             if (blob) {
@@ -117,6 +126,11 @@ export class CatalogoComponent implements OnInit {
               this.imagenesCache.set(vehiculo.id, safeUrl);
             }
           });
+      } else {
+        completedRequests++;
+        if (completedRequests === totalVehiculos) {
+          this.loadingImages = false;
+        }
       }
     });
   }
@@ -171,7 +185,6 @@ export class CatalogoComponent implements OnInit {
   }
 
   onPageChange(page: number): void {
-    console.log('Solicitando cambio a página:', page);
     this.router.navigate(['/catalogo/pagina', page]);
   }
 

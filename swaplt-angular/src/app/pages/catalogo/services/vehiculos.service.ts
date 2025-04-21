@@ -32,11 +32,9 @@ export class VehiculosService {
   }
 
   getVehiculos(page: number = 1): Observable<any> {
-    console.log('Servicio - Solicitando página:', page);
     const params = new HttpParams().set('page', page.toString());
     return this.http.get<any>(this.apiUrl, { params }).pipe(
       tap((response: any) => {
-        console.log('Servicio - Respuesta del backend:', response);
         const vehiculos = response.data;
         // Inicializamos los vehículos con propietario por defecto
         const vehiculosIniciales = vehiculos.map((vehiculo: any) => ({
@@ -74,17 +72,13 @@ export class VehiculosService {
           });
         });
       }),
-      switchMap((response: any) => this.vehiculosConPropietarios.asObservable().pipe(
-        map(vehiculos => ({
-          data: vehiculos,
-          current_page: response.current_page,
-          last_page: response.last_page,
-          per_page: response.per_page,
-          total: response.total,
-          from: response.from,
-          to: response.to
-        }))
-      )),
+      map((response: any) => ({
+        data: this.vehiculosConPropietarios.value,
+        current_page: response.current_page,
+        last_page: response.last_page,
+        per_page: response.per_page,
+        total: response.total
+      })),
       catchError(this.handleError)
     );
   }
