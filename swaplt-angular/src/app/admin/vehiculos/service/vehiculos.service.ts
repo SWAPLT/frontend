@@ -19,31 +19,29 @@ export class VehiculosService {
   }
 
   // Obtener todos los vehículos con soporte para paginación
-  getVehiculos(page: number = 1, perPage: number = 10): Observable<any> {
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${this.getAuthToken()}`);
-    let params = new HttpParams()
-      .set('page', page.toString())
-      .set('per_page', perPage.toString());
-      
-    return this.http.get<any[]>(this.apiUrl, { headers, params });
+  getVehiculos(page: number = 1): Observable<any> {
+    const params = new HttpParams().set('page', page.toString());
+    return this.http.get<any>(this.apiUrl, { params });
   }
 
   // Crear vehículo
   createVehiculo(vehiculo: any): Observable<any> {
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${this.getAuthToken()}`);
-    return this.http.post<any>(this.apiUrl, vehiculo, { headers });
+    return this.http.post<any>(this.apiUrl, vehiculo);
   }
 
   // Actualizar vehículo
   updateVehiculo(id: number, vehiculo: any): Observable<any> {
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${this.getAuthToken()}`);
-    return this.http.put<any>(`${this.apiUrl}/${id}`, vehiculo, { headers });
+    return this.http.put<any>(`${this.apiUrl}/${id}`, vehiculo);
   }
 
   // Eliminar vehículo
   deleteVehiculo(id: number): Observable<any> {
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${this.getAuthToken()}`);
-    return this.http.delete<any>(`${this.apiUrl}/${id}`, { headers });
+    return this.http.delete<any>(`${this.apiUrl}/${id}`);
+  }
+
+  // Obtener vehículo por ID
+  getVehiculoById(id: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${id}`);
   }
 
   // Obtener usuarios

@@ -61,40 +61,16 @@ export class VehiculosComponent implements OnInit {
   // Carga la lista de vehículos
   loadVehiculos(): void {
     this.isLoading = true;
-    this.vehiculosService.getVehiculos(this.currentPage, this.itemsPerPage).subscribe(
+    this.vehiculosService.getVehiculos(this.currentPage).subscribe(
       (response) => {
-        // Verificar el formato de la respuesta
-        if (Array.isArray(response)) {
-          // Si la respuesta es un array directo de vehículos
-          this.allVehiculos = response;
-          this.totalItems = this.allVehiculos.length;
-          this.applyPagination();
-          this.isLoading = false;
-          this.formMode = 'list';
-          console.log('Total vehículos cargados:', this.totalItems);
-        } else if (response.data && response.meta) {
-          // Si la respuesta tiene el formato esperado con paginación
-          this.displayedVehiculos = response.data;
-          this.vehiculos = this.displayedVehiculos; // Para compatibilidad
-          this.totalItems = response.meta.total;
-          this.currentPage = response.meta.current_page;
-          this.itemsPerPage = response.meta.per_page;
-          this.isLoading = false;
-          this.formMode = 'list';
-          console.log('Vehículos paginados cargados:', this.vehiculos);
-        } else {
-          // Otro formato, tratar de adaptarlo
-          console.log('Formato de respuesta desconocido:', response);
-          if (response.vehiculos) {
-            this.allVehiculos = response.vehiculos;
-          } else {
-            this.allVehiculos = [];
-          }
-          this.totalItems = this.allVehiculos.length;
-          this.applyPagination();
-          this.isLoading = false;
-          this.formMode = 'list';
-        }
+        this.displayedVehiculos = response.data;
+        this.vehiculos = this.displayedVehiculos;
+        this.totalItems = response.total;
+        this.currentPage = response.current_page;
+        this.itemsPerPage = response.per_page;
+        this.isLoading = false;
+        this.formMode = 'list';
+        console.log('Vehículos cargados:', this.vehiculos);
       },
       (error) => {
         this.errorMessage = 'Error al cargar los vehiculos';
@@ -114,23 +90,11 @@ export class VehiculosComponent implements OnInit {
   }
   
   // Manejar cambio de página
-  onPageChange(page: any): void {
-    console.log('Cambiando a página:', page);
-    // Verificar que page sea un número válido
-    const pageNumber = parseInt(page, 10);
-    if (!isNaN(pageNumber) && pageNumber > 0) {
-      this.currentPage = pageNumber;
-      
-      // Si tenemos todos los vehículos, solo aplicamos paginación local
-      if (this.allVehiculos.length > 0) {
-        this.applyPagination();
-      } else {
-        // Si no, hacemos una nueva petición al servidor
-        this.loadVehiculos();
-      }
-    } else {
-      console.error('Número de página inválido:', page);
-    }
+  onPageChange(page: number): void {
+    this.currentPage = page;
+    this.loadVehiculos();
+    // Desplazar la página al principio
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   // Carga los usuarios
