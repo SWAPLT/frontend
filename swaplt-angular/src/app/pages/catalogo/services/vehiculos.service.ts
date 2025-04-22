@@ -5,12 +5,29 @@ import { environment } from '../../../../environments/environment';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { UsersService } from '../../../admin/usuarios/service/users.service';
 
+interface Propietario {
+  nombre: string;
+  id: number;
+}
+
+interface Vehiculo {
+  id: number;
+  user_id: number;
+  propietario: Propietario;
+  [key: string]: any;
+}
+
+interface PropietarioResponse {
+  vehiculoId: number;
+  propietario: Propietario;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class VehiculosService {
   private apiUrl = `${environment.apiUrl}/vehiculos`;
-  private vehiculosConPropietarios = new BehaviorSubject<any[]>([]);
+  private vehiculosConPropietarios = new BehaviorSubject<Vehiculo[]>([]);
 
   constructor(
     private http: HttpClient,
@@ -34,52 +51,62 @@ export class VehiculosService {
   getVehiculos(page: number = 1): Observable<any> {
     const params = new HttpParams().set('page', page.toString());
     return this.http.get<any>(this.apiUrl, { params }).pipe(
-      tap((response: any) => {
+      switchMap((response: any) => {
         const vehiculos = response.data;
         // Inicializamos los vehículos con propietario por defecto
-        const vehiculosIniciales = vehiculos.map((vehiculo: any) => ({
+        const vehiculosIniciales = vehiculos.map((vehiculo: Vehiculo) => ({
           ...vehiculo,
           propietario: { nombre: 'Cargando...', id: vehiculo.user_id }
         }));
         this.vehiculosConPropietarios.next(vehiculosIniciales);
 
-        // Cargamos los propietarios progresivamente
-        vehiculos.forEach((vehiculo: any, index: number) => {
-          this.usersService.getUser(vehiculo.user_id).subscribe({
-            next: (propietario) => {
-              const vehiculosActuales = this.vehiculosConPropietarios.value;
-              vehiculosActuales[index] = {
-                ...vehiculosActuales[index],
-                propietario: {
-                  nombre: propietario?.name || 'Usuario SWAPLT',
-                  id: propietario?.id
-                }
-              };
-              this.vehiculosConPropietarios.next([...vehiculosActuales]);
-            },
-            error: (error) => {
+        // Creamos un array de observables para cargar todos los propietarios
+        const propietariosObservables = vehiculos.map((vehiculo: Vehiculo) => 
+          this.usersService.getUser(vehiculo.user_id).pipe(
+            map(propietario => ({
+              vehiculoId: vehiculo.id,
+              propietario: {
+                nombre: propietario?.name || 'Usuario SWAPLT',
+                id: propietario?.id
+              }
+            })),
+            catchError(error => {
               console.error('Error al cargar propietario:', error);
-              const vehiculosActuales = this.vehiculosConPropietarios.value;
-              vehiculosActuales[index] = {
-                ...vehiculosActuales[index],
+              return of({
+                vehiculoId: vehiculo.id,
                 propietario: {
                   nombre: 'Usuario SWAPLT',
                   id: vehiculo.user_id
                 }
-              };
-              this.vehiculosConPropietarios.next([...vehiculosActuales]);
-            }
-          });
-        });
-      }),
-      map((response: any) => ({
-        data: this.vehiculosConPropietarios.value,
-        current_page: response.current_page,
-        last_page: response.last_page,
-        per_page: response.per_page,
-        total: response.total
-      })),
-      catchError(this.handleError)
+              });
+            })
+          )
+        );
+
+        // Usamos forkJoin para cargar todos los propietarios simultáneamente
+        return forkJoin<PropietarioResponse[]>(propietariosObservables).pipe(
+          map((propietarios: PropietarioResponse[]) => {
+            const vehiculosActuales = this.vehiculosConPropietarios.value;
+            propietarios.forEach(({ vehiculoId, propietario }) => {
+              const index = vehiculosActuales.findIndex(v => v.id === vehiculoId);
+              if (index !== -1) {
+                vehiculosActuales[index] = {
+                  ...vehiculosActuales[index],
+                  propietario
+                };
+              }
+            });
+            this.vehiculosConPropietarios.next([...vehiculosActuales]);
+            return {
+              data: this.vehiculosConPropietarios.value,
+              current_page: response.current_page,
+              last_page: response.last_page,
+              per_page: response.per_page,
+              total: response.total
+            };
+          })
+        );
+      })
     );
   }
 
