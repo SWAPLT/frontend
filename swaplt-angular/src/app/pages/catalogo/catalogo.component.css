@@ -5,71 +5,133 @@
   background-color: var(--background-color);
 }
 
+.catalogo-container h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  color: #34a4b4;
+  margin-bottom: 30px;
+  font-weight: 600;
+  position: relative;
+  padding-bottom: 15px;
+}
+
+.catalogo-container h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 3px;
+  background: linear-gradient(to right, #34a4b4, #7c5c24);
+  border-radius: 2px;
+}
+
 .search-bar {
   margin-bottom: 20px;
+  background-color: var(--card-background);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px var(--shadow-color);
 }
 
 .search-input {
   display: flex;
+  flex-direction: column;
   gap: 10px;
-  flex-wrap: wrap;
 }
 
-.search-input input {
+.search-wrapper {
+  display: flex;
+  gap: 10px;
+  position: relative;
+  width: 100%;
+}
+
+.search-wrapper input {
   flex: 1;
   min-width: 200px;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  padding: 12px 40px 12px 15px;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
   font-size: 16px;
+  transition: all 0.3s ease;
+  background-color: var(--input-background);
+  color: var(--text-color);
 }
 
-.search-input button {
-  padding: 10px 20px;
-  background-color: #34a4b4;
-  color: white;
+.search-wrapper input:focus {
+  border-color: #34a4b4;
+  box-shadow: 0 0 0 2px rgba(52, 164, 180, 0.2);
+  outline: none;
+}
+
+.search-button {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
   border: none;
-  border-radius: 4px;
+  color: #34a4b4;
+  font-size: 1.2rem;
   cursor: pointer;
-  transition: background-color 0.3s;
-  white-space: nowrap;
+  padding: 5px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  z-index: 2;
 }
 
-.search-input button:hover {
-  background-color: #7c5c24;
+.search-button:hover i {
+  font-size: 1.2rem;
+  color: #34a4b4;
 }
 
-.filters {
+.search-button {
+  color: #6c5c3c ;
+}
+
+.search-button:hover i {
+  color: #34a4b4;
+}
+
+.search-hints {
+  color: #666;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.clear-search-container {
+  display: flex;
+  justify-content: center;
   margin-bottom: 20px;
 }
 
-.filter-group {
+.clear-search-button {
   display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.filter-group input {
-  padding: 8px;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: #f8f9fa;
+  color: #666;
   border: 1px solid #ddd;
   border-radius: 4px;
-  flex: 1;
-  min-width: 150px;
-}
-
-.filter-group button {
-  padding: 8px 20px;
-  background-color: #34a4b4;
-  color: white;
-  border: none;
-  border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.3s;
-  white-space: nowrap;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
 }
 
-.filter-group button:hover {
-  background-color: #7c5c24;
+.clear-search-button:hover {
+  background-color: #e9ecef;
+  color: #333;
+}
+
+.clear-search-button i {
+  font-size: 0.8rem;
 }
 
 .vehiculos-grid {
@@ -259,6 +321,11 @@
     width: 100%;
     text-align: center;
   }
+
+  .catalogo-container h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -277,15 +344,6 @@
 
   .search-input input,
   .search-input button {
-    width: 100%;
-  }
-
-  .filter-group {
-    flex-direction: column;
-  }
-
-  .filter-group input,
-  .filter-group button {
     width: 100%;
   }
 
@@ -323,6 +381,11 @@
 
   .vehiculo-actions {
     width: 100%;
+  }
+
+  .catalogo-container h2 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
   }
 }
 
@@ -428,7 +491,7 @@
 }
 
 /* Estilos para los filtros y búsqueda */
-.search-bar, .filters {
+.search-bar {
   background-color: var(--card-background);
   padding: 20px;
   border-radius: 8px;
@@ -436,13 +499,13 @@
   box-shadow: 0 2px 4px var(--shadow-color);
 }
 
-.search-input, .filter-group {
+.search-input {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
 }
 
-.search-input input, .filter-group input {
+.search-input input {
   flex: 1;
   min-width: 200px;
   padding: 10px;
@@ -452,7 +515,7 @@
   color: var(--text-color);
 }
 
-.search-input input::placeholder, .filter-group input::placeholder {
+.search-input input::placeholder {
   color: var(--placeholder-color);
 }
 
@@ -526,13 +589,11 @@ button:hover {
 
 /* Aplicación de la paleta de colores */
 .search-input button,
-.filter-group button,
 .ver-detalles {
     background-color: #34a4b4 !important; /* color1 - azul verdoso */
 }
 
 .search-input button:hover,
-.filter-group button:hover,
 .ver-detalles:hover {
     background-color: #7c5c24 !important; /* color3 - marrón oscuro */
 }

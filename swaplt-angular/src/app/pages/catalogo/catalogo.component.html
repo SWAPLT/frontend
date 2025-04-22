@@ -1,28 +1,36 @@
 <div class="catalogo-container">
+
+  <h2>¿Qué quieres encontrar?</h2>
+
   <!-- Búsqueda -->
   <div class="search-bar">
     <div class="search-input" [formGroup]="searchForm">
-      <input type="text" formControlName="query" placeholder="Buscar vehículos...">
-      <button (click)="onSearch()">Buscar</button>
+      <div class="search-wrapper">
+        <input type="text" 
+               formControlName="query" 
+               placeholder="Buscar por marca o modelo..."
+               (keyup.enter)="onSearch()">
+        <button type="button" (click)="onSearch()" class="search-button">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
+      <div class="search-hints">
+        <small>Ejemplos: Toyota Corolla, Honda, BMW X5</small>
+      </div>
     </div>
   </div>
 
-  <!-- Filtros -->
-  <div class="filters">
-    <div class="filter-group" [formGroup]="filtersForm">
-      <input type="text" formControlName="marca" placeholder="Marca: Ej: Toyota">
-      <input type="text" formControlName="modelo" placeholder="Modelo: Ej: Corolla">
-      <input type="number" formControlName="year" placeholder="Año: Ej: 2020">
-      <input type="number" formControlName="precioMin" placeholder="Precio Mínimo: Ej: 10000">
-      <input type="number" formControlName="precioMax" placeholder="Precio Máximo: Ej: 50000">
-      <button (click)="onFilter()">Filtrar</button>
-    </div>
+  <!-- Botón de limpiar búsqueda -->
+  <div *ngIf="searchForm.get('query')?.value" class="clear-search-container">
+    <button (click)="clearSearch()" class="clear-search-button">
+      <i class="fas fa-times"></i> Limpiar búsqueda
+    </button>
   </div>
 
   <!-- Estado de carga -->
   <div *ngIf="loading" class="loading">
     <div class="spinner"></div>
-    <p>Cargando vehículos...</p>
+    <p>Buscando vehículos...</p>
   </div>
 
   <!-- Estado de error -->
@@ -35,7 +43,10 @@
   <div *ngIf="!loading && !error" class="vehiculos-grid">
     <div *ngFor="let vehiculo of vehiculos" class="vehiculo-card">
       <div class="vehiculo-image">
-        <img [src]="getVehiculoImagen(vehiculo.id) || '/assets/imgs/no-imagen.jpeg'" [alt]="vehiculo.marca + ' ' + vehiculo.modelo">
+        <img [src]="getVehiculoImagen(vehiculo.id)" 
+             [alt]="vehiculo.marca + ' ' + vehiculo.modelo"
+             (error)="onImageError($event)"
+             loading="lazy">
         <button class="favorito-btn" (click)="toggleFavorito(vehiculo.id)" [class.favorito]="isFavorito(vehiculo.id)" [class.animating]="isAnimating(vehiculo.id)">
           <i [class]="isFavorito(vehiculo.id) ? 'fas fa-heart' : 'far fa-heart'"></i>
           <i class="fas fa-heart-broken broken-heart" *ngIf="isAnimating(vehiculo.id)"></i>
@@ -92,7 +103,11 @@
   </app-pagination>
 
   <!-- Mensaje cuando no hay vehículos -->
-  <div *ngIf="!loading && !error && vehiculosFiltrados.length === 0" class="no-vehicles">
+  <div *ngIf="!loading && !error && vehiculos.length === 0" class="no-vehicles">
+    <i class="fas fa-search fa-3x"></i>
     <p>No se encontraron vehículos que coincidan con tu búsqueda.</p>
+    <button (click)="clearSearch()" class="clear-search">
+      <i class="fas fa-times"></i> Limpiar búsqueda
+    </button>
   </div>
 </div>

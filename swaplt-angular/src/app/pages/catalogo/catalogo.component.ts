@@ -16,7 +16,6 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 })
 export class CatalogoComponent implements OnInit {
   vehiculos: any[] = [];
-  vehiculosFiltrados: any[] = [];
   loading = true;
   loadingImages = false;
   error = false;
@@ -24,7 +23,6 @@ export class CatalogoComponent implements OnInit {
   itemsPerPage = 10;
   totalItems = 0;
   searchForm: FormGroup;
-  filtersForm: FormGroup;
   favoritos: number[] = [];
   animatingVehicles: Set<number> = new Set();
   imagenesCache: Map<number, SafeUrl> = new Map();
@@ -43,20 +41,11 @@ export class CatalogoComponent implements OnInit {
     this.searchForm = this.fb.group({
       query: ['']
     });
-
-    this.filtersForm = this.fb.group({
-      marca: [''],
-      modelo: [''],
-      year: [''],
-      precioMin: [''],
-      precioMax: ['']
-    });
   }
 
   ngOnInit(): void {
     console.log('Inicializando componente de catálogo...');
     
-    // Suscribirse a los cambios de la ruta para detectar cambios en la página
     this.route.params.subscribe(params => {
       const page = params['page'];
       if (page) {
@@ -75,18 +64,12 @@ export class CatalogoComponent implements OnInit {
     }
   }
 
-  get paginatedVehiculos(): any[] {
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    return this.vehiculosFiltrados.slice(startIndex, startIndex + this.itemsPerPage);
-  }
-
   loadVehiculos(): void {
     this.loading = true;
     this.vehiculosService.getVehiculos(this.currentPage)
       .subscribe({
         next: (response: any) => {
           this.vehiculos = response.data;
-          this.vehiculosFiltrados = [...this.vehiculos];
           this.totalItems = response.total;
           this.loading = false;
           this.loadVehiculosImagenes();
@@ -111,7 +94,13 @@ export class CatalogoComponent implements OnInit {
       if (!this.imagenesCache.has(vehiculo.id)) {
         this.vehiculoImagenService.getPrimeraImagen(vehiculo.id)
           .pipe(
-            catchError(() => of(null)),
+            catchError(() => {
+              // Si hay error, usar imagen por defecto
+              const defaultImage = '/assets/imgs/no-imagen.jpeg';
+              const safeUrl = this.sanitizer.bypassSecurityTrustUrl(defaultImage);
+              this.imagenesCache.set(vehiculo.id, safeUrl);
+              return of(null);
+            }),
             finalize(() => {
               completedRequests++;
               if (completedRequests === totalVehiculos) {
@@ -121,9 +110,16 @@ export class CatalogoComponent implements OnInit {
           )
           .subscribe(blob => {
             if (blob) {
-              const imageUrl = URL.createObjectURL(blob);
-              const safeUrl = this.sanitizer.bypassSecurityTrustUrl(imageUrl);
-              this.imagenesCache.set(vehiculo.id, safeUrl);
+              try {
+                const imageUrl = URL.createObjectURL(blob);
+                const safeUrl = this.sanitizer.bypassSecurityTrustUrl(imageUrl);
+                this.imagenesCache.set(vehiculo.id, safeUrl);
+              } catch (error) {
+                console.error('Error al procesar la imagen:', error);
+                const defaultImage = '/assets/imgs/no-imagen.jpeg';
+                const safeUrl = this.sanitizer.bypassSecurityTrustUrl(defaultImage);
+                this.imagenesCache.set(vehiculo.id, safeUrl);
+              }
             }
           });
       } else {
@@ -136,58 +132,47 @@ export class CatalogoComponent implements OnInit {
   }
 
   getVehiculoImagen(vehiculoId: number): SafeUrl | null {
-    return this.imagenesCache.get(vehiculoId) || null;
+    const cachedImage = this.imagenesCache.get(vehiculoId);
+    if (cachedImage) {
+      return cachedImage;
+    }
+    // Si no hay imagen en caché, devolver la imagen por defecto
+    return this.sanitizer.bypassSecurityTrustUrl('/assets/imgs/no-imagen.jpeg');
   }
 
   onSearch(): void {
-    const query = this.searchForm.get('query')?.value.toLowerCase();
-    if (query) {
-      this.vehiculosFiltrados = this.vehiculos.filter(vehiculo => 
-        vehiculo.marca.toLowerCase().includes(query) ||
-        vehiculo.modelo.toLowerCase().includes(query) ||
-        vehiculo.anio.toString().includes(query)
-      );
-    } else {
-      this.vehiculosFiltrados = [...this.vehiculos];
+    const query = this.searchForm.get('query')?.value;
+    if (!query) {
+      this.loadVehiculos();
+      return;
     }
-    this.totalItems = this.vehiculosFiltrados.length;
-    this.currentPage = 1;
-    this.loadVehiculosImagenes();
-  }
 
-  onFilter(): void {
-    const filters = this.filtersForm.value;
-    this.vehiculosFiltrados = this.vehiculos.filter(vehiculo => {
-      let cumpleFiltros = true;
-      
-      if (filters.marca && !vehiculo.marca.toLowerCase().includes(filters.marca.toLowerCase())) {
-        cumpleFiltros = false;
+    this.loading = true;
+    this.vehiculosService.searchVehiculos(query).subscribe({
+      next: (resultados) => {
+        this.vehiculos = resultados;
+        this.totalItems = resultados.length;
+        this.currentPage = 1;
+        this.loading = false;
+        this.loadVehiculosImagenes();
+        
+        if (resultados.length === 0) {
+          this.toastr.info('No se encontraron vehículos que coincidan con tu búsqueda');
+        }
+      },
+      error: (error) => {
+        console.error('Error en la búsqueda:', error);
+        this.toastr.error('Error al realizar la búsqueda. Por favor, intente nuevamente.');
+        this.loading = false;
+        // En caso de error, mostrar todos los vehículos
+        this.loadVehiculos();
       }
-      if (filters.modelo && !vehiculo.modelo.toLowerCase().includes(filters.modelo.toLowerCase())) {
-        cumpleFiltros = false;
-      }
-      if (filters.year && vehiculo.anio !== parseInt(filters.year)) {
-        cumpleFiltros = false;
-      }
-      if (filters.precioMin && vehiculo.precio < parseInt(filters.precioMin)) {
-        cumpleFiltros = false;
-      }
-      if (filters.precioMax && vehiculo.precio > parseInt(filters.precioMax)) {
-        cumpleFiltros = false;
-      }
-      
-      return cumpleFiltros;
     });
-    
-    this.totalItems = this.vehiculosFiltrados.length;
-    this.currentPage = 1;
-    this.loadVehiculosImagenes();
   }
 
   onPageChange(page: number): void {
     this.currentPage = page;
     this.router.navigate(['/catalogo/pagina', page]);
-    // Desplazar la página al principio
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -276,5 +261,17 @@ export class CatalogoComponent implements OnInit {
     if (id) {
       window.open(`/vehiculo/${id}`, '_blank');
     }
+  }
+
+  onImageError(event: Event): void {
+    const imgElement = event.target as HTMLImageElement;
+    if (imgElement) {
+      imgElement.src = '/assets/imgs/no-imagen.jpeg';
+    }
+  }
+
+  clearSearch(): void {
+    this.searchForm.reset();
+    this.loadVehiculos();
   }
 }

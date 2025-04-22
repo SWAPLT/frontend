@@ -14,6 +14,8 @@ interface Vehiculo {
   id: number;
   user_id: number;
   propietario: Propietario;
+  marca: string;
+  modelo: string;
   [key: string]: any;
 }
 
@@ -111,9 +113,78 @@ export class VehiculosService {
   }
 
   searchVehiculos(query: string): Observable<any[]> {
-    const params = new HttpParams().set('query', query);
-    return this.http.get<any[]>(`${this.apiUrl}/search`, { params }).pipe(
-      catchError(this.handleError)
+    // Dividir la consulta en palabras
+    const searchTerms = query.toLowerCase().trim().split(/\s+/);
+    
+    // Crear los parámetros de búsqueda
+    let params = new HttpParams();
+    
+    // Si hay dos palabras, asumimos que son marca y modelo
+    if (searchTerms.length === 2) {
+      params = params.set('marca', searchTerms[0])
+                    .set('modelo', searchTerms[1]);
+    } else {
+      // Si es una sola palabra, la usamos como búsqueda general
+      params = params.set('search', searchTerms[0]);
+    }
+
+    return this.http.get<any>(`${this.apiUrl}/search`, { params }).pipe(
+      map(response => {
+        if (response.success && response.data) {
+          return response.data.data || [];
+        }
+        return [];
+      }),
+      switchMap(vehiculos => {
+        // Inicializamos los vehículos con propietario por defecto
+        const vehiculosIniciales = vehiculos.map((vehiculo: Vehiculo) => ({
+          ...vehiculo,
+          propietario: { nombre: 'Cargando...', id: vehiculo.user_id }
+        }));
+
+        // Creamos un array de observables para cargar todos los propietarios
+        const propietariosObservables = vehiculos.map((vehiculo: Vehiculo) => 
+          this.usersService.getUser(vehiculo.user_id).pipe(
+            map(propietario => ({
+              vehiculoId: vehiculo.id,
+              propietario: {
+                nombre: propietario?.name || 'Usuario SWAPLT',
+                id: propietario?.id
+              }
+            })),
+            catchError(error => {
+              console.error('Error al cargar propietario:', error);
+              return of({
+                vehiculoId: vehiculo.id,
+                propietario: {
+                  nombre: 'Usuario SWAPLT',
+                  id: vehiculo.user_id
+                }
+              });
+            })
+          )
+        );
+
+        // Usamos forkJoin para cargar todos los propietarios simultáneamente
+        return forkJoin<PropietarioResponse[]>(propietariosObservables).pipe(
+          map((propietarios: PropietarioResponse[]) => {
+            propietarios.forEach(({ vehiculoId, propietario }) => {
+              const index = vehiculosIniciales.findIndex((v: Vehiculo) => v.id === vehiculoId);
+              if (index !== -1) {
+                vehiculosIniciales[index] = {
+                  ...vehiculosIniciales[index],
+                  propietario
+                };
+              }
+            });
+            return vehiculosIniciales;
+          })
+        );
+      }),
+      catchError(error => {
+        console.error('Error en la búsqueda:', error);
+        return of([]);
+      })
     );
   }
 
