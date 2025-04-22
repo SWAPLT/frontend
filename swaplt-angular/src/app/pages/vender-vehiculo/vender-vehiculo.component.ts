@@ -80,8 +80,8 @@ export class VenderVehiculoComponent implements OnInit {
       numero_serie: ['', Validators.required],
       numero_puertas: ['', [Validators.required, Validators.min(1)]],
       descripcion: ['', [Validators.required, Validators.minLength(50), Validators.maxLength(255)]],
-      vehiculo_robado: [true, Validators.requiredTrue],
-      vehiculo_libre_accidentes: [true, Validators.requiredTrue]
+      vehiculo_robado: ['', Validators.required],
+      vehiculo_libre_accidentes: ['', Validators.required]
     });
   }
 
@@ -106,10 +106,7 @@ export class VenderVehiculoComponent implements OnInit {
       this.loading = true;
       const vehiculoData = {
         ...this.vehiculoForm.value,
-        user_id: this.userId,
-        // Convertir los booleanos a texto según el requisito del backend
-        vehiculo_robado: this.vehiculoForm.value.vehiculo_robado ? 'Sí' : 'No',
-        vehiculo_libre_accidentes: this.vehiculoForm.value.vehiculo_libre_accidentes ? 'Sí' : 'No'
+        user_id: this.userId
       };
 
       console.log('Datos enviados al backend:', vehiculoData);

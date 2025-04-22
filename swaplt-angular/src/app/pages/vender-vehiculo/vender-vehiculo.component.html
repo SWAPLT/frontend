@@ -124,18 +124,22 @@
         <textarea id="descripcion" formControlName="descripcion" class="form-control" rows="4"></textarea>
       </div>
 
-      <div class="form-group checkbox-group">
-        <div class="checkbox-container">
-          <input type="checkbox" id="vehiculo_libre_accidentes" formControlName="vehiculo_libre_accidentes">
-          <label for="vehiculo_libre_accidentes">Certifico que el vehículo está libre de accidentes*</label>
-        </div>
+      <div class="form-group">
+        <label for="vehiculo_libre_accidentes">¿El vehículo está libre de accidentes?*</label>
+        <select id="vehiculo_libre_accidentes" formControlName="vehiculo_libre_accidentes" class="form-control">
+          <option value="">Seleccione una opción</option>
+          <option value="Sí">Sí</option>
+          <option value="No">No</option>
+        </select>
       </div>
 
-      <div class="form-group checkbox-group">
-        <div class="checkbox-container">
-          <input type="checkbox" id="vehiculo_robado" formControlName="vehiculo_robado">
-          <label for="vehiculo_robado">Certifico que el vehículo no es robado*</label>
-        </div>
+      <div class="form-group">
+        <label for="vehiculo_robado">¿El vehículo es robado?*</label>
+        <select id="vehiculo_robado" formControlName="vehiculo_robado" class="form-control">
+          <option value="">Seleccione una opción</option>
+          <option value="No">No</option>
+          <option value="Sí">Sí</option>
+        </select>
       </div>
     </div>
 
