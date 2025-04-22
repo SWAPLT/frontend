@@ -185,7 +185,10 @@ export class CatalogoComponent implements OnInit {
   }
 
   onPageChange(page: number): void {
+    this.currentPage = page;
     this.router.navigate(['/catalogo/pagina', page]);
+    // Desplazar la página al principio
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   loadFavoritos(): void {
