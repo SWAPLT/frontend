@@ -151,8 +151,15 @@
 
   <!-- Estado de carga -->
   <div *ngIf="loading" class="loading">
-    <div class="spinner"></div>
-    <p>Buscando vehículos...</p>
+    <div class="spinner-grow text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <div class="spinner-grow text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <div class="spinner-grow text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
   </div>
 
   <!-- Estado de error -->

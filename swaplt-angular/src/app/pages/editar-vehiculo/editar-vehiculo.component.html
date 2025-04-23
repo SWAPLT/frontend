@@ -2,8 +2,15 @@
   <h2>Editar Vehículo</h2>
 
   <div *ngIf="loading" class="loading">
-    <div class="spinner"></div>
-    <p>Cargando...</p>
+    <div class="spinner-grow text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <div class="spinner-grow text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <div class="spinner-grow text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
   </div>
 
   <form *ngIf="!loading" [formGroup]="vehiculoForm" (ngSubmit)="onSubmit()" class="vehiculo-form">
