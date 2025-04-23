@@ -5,7 +5,8 @@
 export const environment = {
   production: false,
 
-  apiUrl: 'http://127.0.0.1:8000/api'
+  apiUrl: 'http://127.0.0.1:8000/api',
+  googleMapsApiKey: 'AIzaSyCIzQc-xMyVBcN04ZyjRrTSTLQZwVycUe0' // Reemplazar con tu API key real
 };
 
 /*

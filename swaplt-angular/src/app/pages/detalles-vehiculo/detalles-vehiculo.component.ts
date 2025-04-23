@@ -7,6 +7,7 @@ import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { VehiculoReporteService } from '../../services/vehiculo-reporte.service';
 import { VehiculoImagenService } from '../../services/vehiculo-imagen.service';
+import { environment } from '../../../environments/environment';
 
 interface Imagen {
   id: number;
@@ -60,6 +61,13 @@ export class DetallesVehiculoComponent implements OnInit {
   selectedFiles: File[] = [];
   isUploading = false;
   esPropietario = false;
+  
+  // Propiedades para el mapa
+  center: google.maps.LatLngLiteral = { lat: 40.4168, lng: -3.7038 }; // Madrid por defecto
+  zoom = 15;
+  markerPosition: google.maps.LatLngLiteral | null = null;
+  apiLoaded = false;
+  geocoder: google.maps.Geocoder | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -70,7 +78,17 @@ export class DetallesVehiculoComponent implements OnInit {
     private router: Router,
     private reporteService: VehiculoReporteService,
     private vehiculoImagenService: VehiculoImagenService
-  ) {}
+  ) {
+    // Cargar el script de Google Maps de manera asíncrona
+    if (!this.apiLoaded) {
+      const script = document.createElement('script');
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${environment.googleMapsApiKey}&libraries=places&callback=Function.prototype`;
+      script.async = true;
+      script.defer = true;
+      document.head.appendChild(script);
+      this.apiLoaded = true;
+    }
+  }
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -93,6 +111,12 @@ export class DetallesVehiculoComponent implements OnInit {
           const user = JSON.parse(userStr);
           this.esPropietario = user.id === this.vehiculo?.user_id;
         }
+        
+        // Actualizar la ubicación del mapa si hay una ubicación válida
+        if (this.vehiculo?.ubicacion) {
+          this.updateMapLocation(this.vehiculo.ubicacion);
+        }
+        
         this.loading = false;
       },
       error: (error: unknown) => {
@@ -100,6 +124,27 @@ export class DetallesVehiculoComponent implements OnInit {
         this.error = true;
         this.loading = false;
         this.toastr.error('Error al cargar los detalles del vehículo', 'Error');
+      }
+    });
+  }
+
+  updateMapLocation(location: string): void {
+    if (!this.geocoder) {
+      this.geocoder = new google.maps.Geocoder();
+    }
+
+    this.geocoder.geocode({ address: location }, (results, status) => {
+      if (status === 'OK' && results && results[0]) {
+        const location = results[0].geometry.location;
+        this.center = {
+          lat: location.lat(),
+          lng: location.lng()
+        };
+        this.markerPosition = this.center;
+        this.zoom = 15;
+      } else {
+        console.error('Error al geocodificar la ubicación:', status);
+        this.toastr.warning('No se pudo encontrar la ubicación exacta del vehículo');
       }
     });
   }

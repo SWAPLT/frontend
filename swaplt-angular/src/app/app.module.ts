@@ -5,6 +5,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { ToastrModule } from 'ngx-toastr';
+import { GoogleMapsModule } from '@angular/google-maps';
 
 import { AppComponent } from './app.component';
 import { RouterOutlet } from "@angular/router";
@@ -56,6 +57,7 @@ import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password
     SharedModule,
     CatalogoModule,
     AdminModule,
+    GoogleMapsModule,
     ToastrModule.forRoot(),
     RouterModule.forRoot([
       { 
