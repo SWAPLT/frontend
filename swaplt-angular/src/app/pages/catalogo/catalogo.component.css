@@ -660,14 +660,15 @@ button:hover {
   top: 0;
   width: 100%;
   height: 100vh;
-  background-color: white;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  background-color: var(--background-color);
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
   z-index: 1001;
   transition: left 0.3s ease;
   overflow-y: auto;
   padding: 20px;
   display: flex;
   flex-direction: column;
+  color: var(--text-color);
 }
 
 .filters-panel.show {
@@ -680,7 +681,7 @@ button:hover {
   align-items: center;
   margin-bottom: 15px;
   padding-bottom: 10px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .filters-header h3 {
@@ -693,9 +694,14 @@ button:hover {
   background: none;
   border: none;
   font-size: 1.2rem;
-  color: #666;
+  color: var(--text-color);
   cursor: pointer;
   padding: 5px;
+  transition: color 0.3s ease;
+}
+
+.close-filters:hover {
+  color: var(--primary-color);
 }
 
 .filters-form {
@@ -714,7 +720,7 @@ button:hover {
 
 .filter-group h4 {
   margin: 0;
-  color: #333;
+  color: var(--text-color);
   font-size: 0.9rem;
   font-weight: 600;
 }
@@ -726,17 +732,34 @@ button:hover {
 
 .range-inputs input {
   flex: 1;
-  min-width: 0; /* Permite que los inputs se reduzcan más allá de su ancho mínimo por defecto */
+  min-width: 0;
 }
 
 .filter-group input,
 .filter-group select {
   width: 100%;
   padding: 8px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   font-size: 0.85rem;
-  background-color: #f8f9fa;
+  background-color: var(--input-background);
+  color: var(--text-color);
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.filter-group input:focus,
+.filter-group select:focus {
+  border-color: var(--primary-color);
+  outline: none;
+}
+
+.filter-group input::placeholder {
+  color: var(--placeholder-color);
+}
+
+.filter-group select option {
+  background-color: var(--background-color);
+  color: var(--text-color);
 }
 
 .filter-actions {
@@ -745,9 +768,9 @@ button:hover {
   margin-top: 15px;
   position: sticky;
   bottom: 0;
-  background-color: white;
-  padding-top: 10px;
-  border-top: 1px solid #eee;
+  background-color: var(--background-color);
+  padding: 15px;
+  border-top: 1px solid var(--border-color);
 }
 
 .apply-filters,
@@ -759,6 +782,26 @@ button:hover {
   cursor: pointer;
   font-weight: 500;
   font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.apply-filters {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.apply-filters:hover {
+  background-color: var(--primary-color-dark);
+}
+
+.clear-filters {
+  background-color: var(--card-background);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+}
+
+.clear-filters:hover {
+  background-color: var(--card-details-background);
 }
 
 /* Responsive */
@@ -778,7 +821,7 @@ button:hover {
   .filter-group input,
   .filter-group select {
     padding: 10px;
-    font-size: 1rem; /* Aumentar tamaño para mejor usabilidad en móvil */
+    font-size: 1rem;
   }
 
   .filter-actions {
