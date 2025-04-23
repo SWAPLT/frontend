@@ -34,9 +34,8 @@
                [class.active]="i === 0">
             <img [src]="imagen.preview_url || imagen.url" 
                  class="d-block w-100" 
-                 [alt]="vehiculo.marca + ' ' + vehiculo.modelo + ' imagen ' + (i + 1)">
-            <div class="carousel-caption d-none d-md-block">
-              <h5>{{ vehiculo.marca }} {{ vehiculo.modelo }}</h5>
+                 [alt]="' imagen ' + (i + 1)">
+            <div class="carousel-caption d-none">
               <p>Imagen {{ i + 1 }} de {{ vehiculo.imagenes.length }}</p>
             </div>
             <!-- Botón de eliminación para propietarios -->

@@ -2,6 +2,131 @@
 
   <h2>¿Qué quieres encontrar?</h2>
 
+  <!-- Botón de filtros -->
+  <button class="filter-toggle-btn" (click)="toggleFilters()">
+    <i class="fas fa-filter"></i> Filtros
+  </button>
+
+  <!-- Panel de filtros -->
+  <div class="filters-panel" [class.show]="showFilters">
+    <div class="filters-header">
+      <h3>Filtros</h3>
+      <button class="close-filters" (click)="toggleFilters()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <form [formGroup]="filterForm" (ngSubmit)="applyFilters()" class="filters-form">
+      <!-- Precio -->
+      <div class="filter-group">
+        <h4>Precio</h4>
+        <div class="range-inputs">
+          <input type="number" formControlName="precio_min" placeholder="Mínimo">
+          <input type="number" formControlName="precio_max" placeholder="Máximo">
+        </div>
+      </div>
+
+      <!-- Año -->
+      <div class="filter-group">
+        <h4>Año</h4>
+        <div class="range-inputs">
+          <input type="number" formControlName="anio_min" placeholder="Mínimo">
+          <input type="number" formControlName="anio_max" placeholder="Máximo">
+        </div>
+      </div>
+
+      <!-- Kilometraje -->
+      <div class="filter-group">
+        <h4>Kilometraje máximo</h4>
+        <input type="number" formControlName="kilometraje_max" placeholder="Kilometraje máximo">
+      </div>
+
+      <!-- Estado -->
+      <div class="filter-group">
+        <h4>Estado</h4>
+        <select formControlName="estado">
+          <option value="">Todos</option>
+          <option value="nuevo">Nuevo</option>
+          <option value="usado">Usado</option>
+        </select>
+      </div>
+
+      <!-- Transmisión -->
+      <div class="filter-group">
+        <h4>Transmisión</h4>
+        <select formControlName="transmision">
+          <option value="">Todas</option>
+          <option value="manual">Manual</option>
+          <option value="automatica">Automática</option>
+          <option value="cvt">CVT</option>
+          <option value="semi-automatica">Semi-automática</option>
+        </select>
+      </div>
+
+      <!-- Tipo de combustible -->
+      <div class="filter-group">
+        <h4>Tipo de combustible</h4>
+        <select formControlName="tipo_combustible">
+          <option value="">Todos</option>
+          <option value="gasolina">Gasolina</option>
+          <option value="diesel">Diesel</option>
+          <option value="electrico">Eléctrico</option>
+          <option value="hibrido">Híbrido</option>
+        </select>
+      </div>
+
+      <!-- Marca y Modelo -->
+      <div class="filter-group">
+        <h4>Marca</h4>
+        <input type="text" formControlName="marca" placeholder="Marca">
+      </div>
+
+      <div class="filter-group">
+        <h4>Modelo</h4>
+        <input type="text" formControlName="modelo" placeholder="Modelo">
+      </div>
+
+      <!-- Color -->
+      <div class="filter-group">
+        <h4>Color</h4>
+        <input type="text" formControlName="color" placeholder="Color">
+      </div>
+
+      <!-- Ubicación -->
+      <div class="filter-group">
+        <h4>Ubicación</h4>
+        <input type="text" formControlName="ubicacion" placeholder="Ubicación">
+      </div>
+
+      <!-- Número de puertas -->
+      <div class="filter-group">
+        <h4>Número de puertas</h4>
+        <select formControlName="numero_puertas">
+          <option value="">Todos</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+        </select>
+      </div>
+
+      <!-- Libre de accidentes -->
+      <div class="filter-group">
+        <h4>Libre de accidentes</h4>
+        <select formControlName="vehiculo_libre_accidentes">
+          <option value="">Todos</option>
+          <option value="si">Sí</option>
+          <option value="no">No</option>
+        </select>
+      </div>
+
+      <div class="filter-actions">
+        <button type="submit" class="apply-filters">Aplicar filtros</button>
+        <button type="button" class="clear-filters" (click)="clearFilters()">Limpiar filtros</button>
+      </div>
+    </form>
+  </div>
+
   <!-- Búsqueda -->
   <div class="search-bar">
     <div class="search-input" [formGroup]="searchForm">

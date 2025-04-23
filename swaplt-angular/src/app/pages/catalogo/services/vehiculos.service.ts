@@ -131,7 +131,7 @@ export class VehiculosService {
     return this.http.get<any>(`${this.apiUrl}/search`, { params }).pipe(
       map(response => {
         if (response.success && response.data) {
-          return response.data.data || [];
+          return Array.isArray(response.data) ? response.data : [];
         }
         return [];
       }),
@@ -188,14 +188,31 @@ export class VehiculosService {
     );
   }
 
-  filterVehiculos(filters: any): Observable<any[]> {
+  filterVehiculos(filters: any): Observable<any> {
     let params = new HttpParams();
+    
+    // Agregar cada filtro a los parámetros si existe
     Object.keys(filters).forEach(key => {
-      if (filters[key]) {
-        params = params.set(key, filters[key]);
+      if (filters[key] !== null && filters[key] !== undefined && filters[key] !== '') {
+        // Convertir valores numéricos a string
+        const value = typeof filters[key] === 'number' ? filters[key].toString() : filters[key];
+        params = params.set(key, value);
       }
     });
-    return this.http.get<any[]>(`${this.apiUrl}/filter`, { params }).pipe(
+
+    console.log('Parámetros de filtro:', params.toString()); // Para depuración
+
+    return this.http.get(`${this.apiUrl}/filter`, { params }).pipe(
+      map((response: any) => {
+        console.log('Respuesta del servidor:', response); // Para depuración
+        // Asegurarnos de que la respuesta tenga el formato correcto
+        return {
+          data: Array.isArray(response.data.data) ? response.data.data : [],
+          total: response.data.total || 0,
+          current_page: response.data.current_page || 1,
+          per_page: response.data.per_page || 10
+        };
+      }),
       catchError(this.handleError)
     );
   }

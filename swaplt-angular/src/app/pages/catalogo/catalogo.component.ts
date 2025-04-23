@@ -23,9 +23,11 @@ export class CatalogoComponent implements OnInit {
   itemsPerPage = 10;
   totalItems = 0;
   searchForm: FormGroup;
+  filterForm: FormGroup;
   favoritos: number[] = [];
   animatingVehicles: Set<number> = new Set();
   imagenesCache: Map<number, SafeUrl> = new Map();
+  showFilters = false;
 
   constructor(
     private vehiculosService: VehiculosService,
@@ -40,6 +42,23 @@ export class CatalogoComponent implements OnInit {
   ) {
     this.searchForm = this.fb.group({
       query: ['']
+    });
+
+    this.filterForm = this.fb.group({
+      precio_min: [''],
+      precio_max: [''],
+      anio_min: [''],
+      anio_max: [''],
+      kilometraje_max: [''],
+      estado: [''],
+      transmision: [''],
+      tipo_combustible: [''],
+      marca: [''],
+      modelo: [''],
+      color: [''],
+      ubicacion: [''],
+      numero_puertas: [''],
+      vehiculo_libre_accidentes: ['']
     });
   }
 
@@ -69,8 +88,8 @@ export class CatalogoComponent implements OnInit {
     this.vehiculosService.getVehiculos(this.currentPage)
       .subscribe({
         next: (response: any) => {
-          this.vehiculos = response.data;
-          this.totalItems = response.total;
+          this.vehiculos = Array.isArray(response.data) ? response.data : [];
+          this.totalItems = response.total || 0;
           this.loading = false;
           this.loadVehiculosImagenes();
         },
@@ -84,7 +103,7 @@ export class CatalogoComponent implements OnInit {
   }
 
   loadVehiculosImagenes(): void {
-    if (this.loadingImages) return;
+    if (this.loadingImages || !Array.isArray(this.vehiculos)) return;
     
     this.loadingImages = true;
     let completedRequests = 0;
@@ -95,7 +114,6 @@ export class CatalogoComponent implements OnInit {
         this.vehiculoImagenService.getPrimeraImagen(vehiculo.id)
           .pipe(
             catchError(() => {
-              // Si hay error, usar imagen por defecto
               const defaultImage = '/assets/imgs/no-imagen.jpeg';
               const safeUrl = this.sanitizer.bypassSecurityTrustUrl(defaultImage);
               this.imagenesCache.set(vehiculo.id, safeUrl);
@@ -150,13 +168,13 @@ export class CatalogoComponent implements OnInit {
     this.loading = true;
     this.vehiculosService.searchVehiculos(query).subscribe({
       next: (resultados) => {
-        this.vehiculos = resultados;
-        this.totalItems = resultados.length;
+        this.vehiculos = Array.isArray(resultados) ? resultados : [];
+        this.totalItems = this.vehiculos.length;
         this.currentPage = 1;
         this.loading = false;
         this.loadVehiculosImagenes();
         
-        if (resultados.length === 0) {
+        if (this.vehiculos.length === 0) {
           this.toastr.info('No se encontraron vehículos que coincidan con tu búsqueda');
         }
       },
@@ -272,6 +290,51 @@ export class CatalogoComponent implements OnInit {
 
   clearSearch(): void {
     this.searchForm.reset();
+    this.loadVehiculos();
+  }
+
+  toggleFilters(): void {
+    this.showFilters = !this.showFilters;
+  }
+
+  applyFilters(): void {
+    this.loading = true;
+    const filters = this.filterForm.value;
+    
+    // Convertir valores de precio a números
+    if (filters.precio_min) {
+      filters.precio_min = Number(filters.precio_min);
+    }
+    if (filters.precio_max) {
+      filters.precio_max = Number(filters.precio_max);
+    }
+    
+    console.log('Filtros aplicados:', filters); // Para depuración
+    
+    this.vehiculosService.filterVehiculos(filters).subscribe({
+      next: (response: any) => {
+        console.log('Respuesta procesada:', response); // Para depuración
+        // Asegurarnos de que vehiculos sea un array
+        this.vehiculos = Array.isArray(response.data) ? response.data : [];
+        this.totalItems = response.total || 0;
+        this.loading = false;
+        
+        if (this.vehiculos.length > 0) {
+          this.loadVehiculosImagenes();
+        } else {
+          this.toastr.info('No se encontraron vehículos que coincidan con los filtros');
+        }
+      },
+      error: (error) => {
+        console.error('Error al aplicar filtros:', error);
+        this.toastr.error('Error al aplicar los filtros. Por favor, intente nuevamente.');
+        this.loading = false;
+      }
+    });
+  }
+
+  clearFilters(): void {
+    this.filterForm.reset();
     this.loadVehiculos();
   }
 }
