@@ -171,7 +171,7 @@
         La descripción debe tener al menos 0 caracteres
       </div>
       <div *ngIf="f['descripcion'].touched && f['descripcion'].errors?.['maxlength']" class="validation-error">
-        La descripción no puede exceder los 100000 caracteres
+        La descripción no puede exceder los 255 caracteres
       </div>
     </div>
   </form>
