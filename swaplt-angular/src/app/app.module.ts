@@ -21,7 +21,7 @@ import { SharedModule } from './shared/shared.module';
 import { VenderVehiculoComponent } from './pages/vender-vehiculo/vender-vehiculo.component';
 import { CatalogoModule } from './pages/catalogo/catalogo.module';
 import { AdminModule } from './admin/admin.module';
-import { ThemeToggleComponent } from './components/theme-toggle/theme-toggle.component';
+import { ThemeToggleComponent } from './services/vehiculos/theme-toggle/theme-toggle.component';
 import { MisVehiculosComponent } from './pages/mis-vehiculos/mis-vehiculos.component';
 import { EditarVehiculoComponent } from './pages/editar-vehiculo/editar-vehiculo.component';
 import { AuthGuard } from './guards/auth.guard';

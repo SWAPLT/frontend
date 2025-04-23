@@ -3,7 +3,7 @@ import { MensajeService } from '../../services/mensaje.service';
 import { Mensaje } from '../../models/mensaje.model';
 import { AuthService } from '../../services/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UsuariosService } from '../../services/usuarios.service';
+import { UsuariosService } from '../../services/user/usuarios.service';
 import { Usuario } from 'src/app/models/usuario.model';
 import { interval, Subscription } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';

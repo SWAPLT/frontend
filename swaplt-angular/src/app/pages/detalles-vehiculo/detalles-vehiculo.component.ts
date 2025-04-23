@@ -5,8 +5,8 @@ import { ToastrService } from 'ngx-toastr';
 import { FavoritosService } from '../../services/favoritos.service';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
-import { VehiculoReporteService } from '../../services/vehiculo-reporte.service';
-import { VehiculoImagenService } from '../../services/vehiculo-imagen.service';
+import { VehiculoReporteService } from '../../services/vehiculos/vehiculo-reporte.service';
+import { VehiculoImagenService } from '../../services/vehiculos/vehiculo-imagen.service';
 import { environment } from '../../../environments/environment';
 
 interface Imagen {

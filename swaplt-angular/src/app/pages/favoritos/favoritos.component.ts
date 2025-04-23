@@ -4,7 +4,7 @@ import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Favorito } from '../../models/favorito.model';
-import { VehiculoImagenService } from '../../services/vehiculo-imagen.service';
+import { VehiculoImagenService } from '../../services/vehiculos/vehiculo-imagen.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { catchError, of } from 'rxjs';
 

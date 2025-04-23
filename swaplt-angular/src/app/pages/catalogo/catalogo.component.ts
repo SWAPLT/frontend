@@ -6,7 +6,7 @@ import { FavoritosService } from '../../services/favoritos.service';
 import { AuthService } from '../../services/auth.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, catchError, of, finalize } from 'rxjs';
-import { VehiculoImagenService } from '../../services/vehiculo-imagen.service';
+import { VehiculoImagenService } from '../../services/vehiculos/vehiculo-imagen.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 @Component({

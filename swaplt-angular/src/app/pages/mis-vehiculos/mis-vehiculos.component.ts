@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { VehiculoService, Vehiculo } from '../../services/vehiculos/vehiculo.service';
 import { ToastrService } from 'ngx-toastr';
-import { VehiculoImagenService } from '../../services/vehiculo-imagen.service';
+import { VehiculoImagenService } from '../../services/vehiculos/vehiculo-imagen.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { catchError, of } from 'rxjs';
 
