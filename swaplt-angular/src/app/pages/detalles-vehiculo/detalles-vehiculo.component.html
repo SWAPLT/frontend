@@ -238,30 +238,39 @@
     <div class="details-section">
       <h2>Calcula Seguro</h2>
       <div class="insurance-section">
-        <img src="assets/imgs/seguros.jpg" alt="Seguros" class="insurance-image">
+        <img src="assets/imgs/seguros.jpg" alt="Seguros" class="insurance-image small-insurance-image">
         <div class="insurance-buttons">
           <div class="insurance-button-container">
             <button class="insurance-btn" (click)="redirectToInsurance('mapfre')">
               Mapfre
             </button>
-            <div class="insurance-info">
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            <div class="insurance-dropdown" (click)="toggleDropdown($event)">
+              <span class="dropdown-icon">+</span>
+              <div class="dropdown-content">
+                <p>Descubre las mejores coberturas y precios competitivos con Mapfre. Protege tu vehículo con una de las aseguradoras más confiables del mercado.</p>
+              </div>
             </div>
           </div>
           <div class="insurance-button-container">
             <button class="insurance-btn" (click)="redirectToInsurance('linea-directa')">
-              LINEA DIRECTA
+              Línea Directa
             </button>
-            <div class="insurance-info">
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            <div class="insurance-dropdown" (click)="toggleDropdown($event)">
+              <span class="dropdown-icon">+</span>
+              <div class="dropdown-content">
+                <p>Línea Directa te ofrece seguros personalizados con la mejor relación calidad-precio. Obtén tu presupuesto en minutos.</p>
+              </div>
             </div>
           </div>
           <div class="insurance-button-container">
             <button class="insurance-btn" (click)="redirectToInsurance('mutua')">
-              MUTUA
+              Mutua
             </button>
-            <div class="insurance-info">
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            <div class="insurance-dropdown" (click)="toggleDropdown($event)">
+              <span class="dropdown-icon">+</span>
+              <div class="dropdown-content">
+                <p>Mutua Madrileña te brinda la tranquilidad que necesitas con coberturas completas y un servicio excepcional. Cotiza ahora.</p>
+              </div>
             </div>
           </div>
         </div>

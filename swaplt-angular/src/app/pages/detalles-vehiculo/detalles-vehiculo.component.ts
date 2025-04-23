@@ -350,4 +350,9 @@ export class DetallesVehiculoComponent implements OnInit {
       window.open(url, '_blank');
     }
   }
+
+  toggleDropdown(event: Event): void {
+    const dropdown = event.currentTarget as HTMLElement;
+    dropdown.classList.toggle('active');
+  }
 } 

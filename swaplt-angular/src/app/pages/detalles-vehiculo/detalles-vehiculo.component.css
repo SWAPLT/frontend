@@ -578,64 +578,139 @@
 }
 
 .insurance-section {
-  margin-top: 2rem;
+  margin: 2rem auto;
   text-align: center;
+  max-width: 1000px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .insurance-image {
-  width: 500px;
-  height: 100px;
-  margin-bottom: 2rem;
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+  margin: 0 auto 2rem;
+  display: block;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  object-fit: cover;
+}
+
+.small-insurance-image {
+  max-width: 300px;
+  margin: 0 auto 1rem;
 }
 
 .insurance-buttons {
   display: flex;
-  flex-direction: row;
-  gap: 1rem;
   justify-content: center;
+  gap: 2rem;
+  margin-top: 2rem;
+  width: 100%;
   max-width: 800px;
-  margin: 0 auto;
 }
 
 .insurance-button-container {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  width: 120px;
+  align-items: center;
+  width: 200px;
+  margin: 0 auto;
 }
 
 .insurance-btn {
-  padding: 0.5rem 1rem;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: background-color 0.3s ease;
   width: 100%;
+  padding: 0.8rem 1.5rem;
+  background-color: transparent;
+  color: var(--text-color);
+  border: 2px solid #dcbc7c;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  margin-bottom: 1rem;
 }
 
 .insurance-btn:hover {
-  background-color: #0056b3;
+  background-color: #dcbc7c;
+  color: white;
 }
 
-.insurance-info {
-  background-color: #f8f9fa;
+.insurance-dropdown {
+  position: relative;
+  cursor: pointer;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #dcbc7c;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  margin: 0 auto;
+}
+
+.insurance-dropdown:hover {
+  transform: scale(1.1);
+  background-color: #c5a86c;
+}
+
+.dropdown-icon {
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  transition: transform 0.3s ease;
+  line-height: 1;
+}
+
+.insurance-dropdown.active .dropdown-icon {
+  transform: rotate(45deg);
+}
+
+.dropdown-content {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 250px;
   padding: 1rem;
-  border-radius: 4px;
-  margin-top: 0.5rem;
+  background-color: var(--card-background);
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   display: none;
+  z-index: 10;
 }
 
-.insurance-info.active {
+.insurance-dropdown.active .dropdown-content {
   display: block;
 }
 
-.insurance-info p {
+.dropdown-content p {
   margin: 0;
-  color: #6c757d;
+  color: var(--text-color);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .insurance-buttons {
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .insurance-button-container {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .dropdown-content {
+    width: 200px;
+  }
+
+  .insurance-image {
+    max-width: 100%;
+  }
 } 
