@@ -575,4 +575,67 @@
 .location-text span {
   color: var(--text-color);
   font-size: 1rem;
+}
+
+.insurance-section {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.insurance-image {
+  width: 500px;
+  height: 100px;
+  margin-bottom: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  object-fit: cover;
+}
+
+.insurance-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  justify-content: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.insurance-button-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 120px;
+}
+
+.insurance-btn {
+  padding: 0.5rem 1rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s ease;
+  width: 100%;
+}
+
+.insurance-btn:hover {
+  background-color: #0056b3;
+}
+
+.insurance-info {
+  background-color: #f8f9fa;
+  padding: 1rem;
+  border-radius: 4px;
+  margin-top: 0.5rem;
+  display: none;
+}
+
+.insurance-info.active {
+  display: block;
+}
+
+.insurance-info p {
+  margin: 0;
+  color: #6c757d;
 } 

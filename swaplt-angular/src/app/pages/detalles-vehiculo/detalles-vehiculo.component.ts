@@ -69,6 +69,12 @@ export class DetallesVehiculoComponent implements OnInit {
   apiLoaded = false;
   geocoder: google.maps.Geocoder | null = null;
 
+  private insuranceUrls = {
+    'linea-directa': 'https://www.lineadirecta.com/presupuesto/presupuesto_coches.init.faces?from=B270011&idServicio=&utm_source=milanuncios.com&utm_medium=dis&utm_term=N491203.1920497MILANUNCIOS.COM&utm_content=bnr_1x1_coche_marketplace_01-24&utm_campaign=linea-directa_fijos_ao_02-01-2025&dclid=CM3Xj6OB7owDFSohBgAdHkU44Q&gad_source=7',
+    'mutua': 'https://www.mutua.es/seguros-coche/calcular/?dis=dis:redes:auto2025:mejorprecio:coche:adevinta:milanuncios:ros:pp:l:mejorprecio:marketplacepc:noneroscotizadorga&utm_source=dis&utm_medium=milanuncios&utm_campaign=coche&utm_content=marketplace_mejorprecio_textlink_pc&dclid=CO_EyqiB7owDFR9dHQkdsY8xCw&gad_source=7',
+    'mapfre': 'https://segurosdecoche.mapfre.es/?origen=PADEVMI&utm_campaign=mapfrees_coche_generica-prospecting_orig-padevmi&utm_source=milanuncios&utm_medium=acquisition-prospecting&utm_term=&utm_content=calcula-emailing&dclid=COXRlKuB7owDFRFIHQkdGwYfLQ&gad_source=7'
+  };
+
   constructor(
     private route: ActivatedRoute,
     private vehiculosService: VehiculosService,
@@ -335,6 +341,13 @@ export class DetallesVehiculoComponent implements OnInit {
           this.toastr.error('Error al eliminar la imagen');
         }
       });
+    }
+  }
+
+  redirectToInsurance(provider: 'linea-directa' | 'mutua' | 'mapfre'): void {
+    const url = this.insuranceUrls[provider];
+    if (url) {
+      window.open(url, '_blank');
     }
   }
 } 
