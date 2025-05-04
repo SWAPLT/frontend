@@ -230,16 +230,42 @@
   font-size: 1.5rem;
 }
 
+.seller-details {
+  flex: 1;
+}
+
 .seller-details h3 {
+  margin: 0 0 10px 0;
   color: var(--text-color);
-  margin: 0 0 5px 0;
   font-size: 1.2rem;
 }
 
 .seller-details p {
-  color: var(--tertiary-color);
-  margin: 0;
+  margin: 0 0 15px 0;
+  color: var(--text-color);
+  opacity: 0.8;
+}
+
+.ver-perfil-btn {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.3s;
   font-size: 0.9rem;
+}
+
+.ver-perfil-btn:hover {
+  background-color: var(--primary-color-dark);
+}
+
+.ver-perfil-btn i {
+  font-size: 1rem;
 }
 
 /* Botones */

@@ -29,6 +29,7 @@ import { DetallesVehiculoComponent } from './pages/detalles-vehiculo/detalles-ve
 import { MensajesComponent } from './pages/mensajes/mensajes.component';
 import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
 import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
+import { PerfilUsuarioModule } from './pages/perfil-usuario/perfil-usuario.module';
 
 @NgModule({
   declarations: [
@@ -79,7 +80,8 @@ import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password
         component: MensajesComponent,
         canActivate: [AuthGuard]
       }
-    ])
+    ]),
+    PerfilUsuarioModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }

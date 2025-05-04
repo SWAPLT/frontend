@@ -12,6 +12,7 @@ import { EditarVehiculoComponent } from './pages/editar-vehiculo/editar-vehiculo
 import { MensajesComponent } from './pages/mensajes/mensajes.component';
 import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
 import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
+import { PerfilUsuarioComponent } from './pages/perfil-usuario/perfil-usuario.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/catalogo', pathMatch: 'full' }, // Redirigir a catálogo por defecto
@@ -32,6 +33,7 @@ const routes: Routes = [
   { path: 'mensajes/:usuarioId', component: MensajesComponent, canActivate: [AuthGuard] },
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
+  { path: 'perfil-usuario/:id', component: PerfilUsuarioComponent },
   { path: '**', redirectTo: '/catalogo' }  // Redirige a catálogo si la ruta no existe
 ];
 

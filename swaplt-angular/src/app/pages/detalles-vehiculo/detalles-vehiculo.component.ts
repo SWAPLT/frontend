@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { VehiculosService } from '../catalogo/services/vehiculos.service';
 import { ToastrService } from 'ngx-toastr';
 import { FavoritosService } from '../../services/favoritos.service';
 import { AuthService } from '../../services/auth.service';
-import { Router } from '@angular/router';
 import { VehiculoReporteService } from '../../services/vehiculos/vehiculo-reporte.service';
 import { VehiculoImagenService } from '../../services/vehiculos/vehiculo-imagen.service';
+import { UsuariosService } from '../../services/usuarios/usuarios.service';
 import { environment } from '../../../environments/environment';
 
 interface Imagen {
@@ -78,12 +78,13 @@ export class DetallesVehiculoComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private vehiculosService: VehiculosService,
-    private favoritosService: FavoritosService,
     private toastr: ToastrService,
-    public authService: AuthService,
+    private favoritosService: FavoritosService,
+    private authService: AuthService,
     private router: Router,
-    private reporteService: VehiculoReporteService,
-    private vehiculoImagenService: VehiculoImagenService
+    private vehiculoReporteService: VehiculoReporteService,
+    private vehiculoImagenService: VehiculoImagenService,
+    private usuariosService: UsuariosService
   ) {
     // Cargar el script de Google Maps de manera asíncrona
     if (!this.apiLoaded) {
@@ -261,7 +262,7 @@ export class DetallesVehiculoComponent implements OnInit {
       return;
     }
 
-    this.reporteService.generarReporte(this.vehiculo.id).subscribe({
+    this.vehiculoReporteService.generarReporte(this.vehiculo.id).subscribe({
       next: (blob) => {
         // Crear un blob URL
         const blobUrl = window.URL.createObjectURL(blob);
@@ -354,5 +355,11 @@ export class DetallesVehiculoComponent implements OnInit {
   toggleDropdown(event: Event): void {
     const dropdown = event.currentTarget as HTMLElement;
     dropdown.classList.toggle('active');
+  }
+
+  verPerfil(): void {
+    if (this.vehiculo?.user_id) {
+      this.router.navigate(['/perfil-usuario', this.vehiculo.user_id]);
+    }
   }
 } 
