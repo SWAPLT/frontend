@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { UsuariosService } from '../../services/usuarios/usuarios.service';
+import { UserBlockService } from '../../services/usuarios/user-block.service';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -24,10 +25,14 @@ export class PerfilUsuarioComponent implements OnInit {
   userId: number | null = null;
   usuarioLogueadoId: number | null = null;
   valoraciones: any[] = [];
+  estaBloqueado: boolean = false;
+  meHaBloqueado: boolean = false;
+  razonBloqueo: string = '';
 
   constructor(
     private route: ActivatedRoute,
     private usuariosService: UsuariosService,
+    private userBlockService: UserBlockService,
     private toastr: ToastrService
   ) { }
 
@@ -38,6 +43,7 @@ export class PerfilUsuarioComponent implements OnInit {
       this.loadUserProfile(this.userId);
       this.loadUserValoraciones(this.userId);
       this.checkPuedeValorar();
+      this.verificarEstadoBloqueo();
     }
   }
 
@@ -115,6 +121,46 @@ export class PerfilUsuarioComponent implements OnInit {
       },
       error: (err) => {
         this.valoracionError = err?.error?.message || 'Error al enviar la valoración';
+      }
+    });
+  }
+
+  verificarEstadoBloqueo(): void {
+    if (!this.userId) return;
+    this.userBlockService.verificarBloqueo(this.userId).subscribe({
+      next: (response) => {
+        this.estaBloqueado = response.yo_lo_he_bloqueado;
+        this.meHaBloqueado = response.el_me_ha_bloqueado;
+      },
+      error: (error) => {
+        console.error('Error al verificar estado de bloqueo:', error);
+      }
+    });
+  }
+
+  bloquearUsuario(): void {
+    if (!this.userId) return;
+    this.userBlockService.bloquearUsuario(this.userId, this.razonBloqueo).subscribe({
+      next: () => {
+        this.estaBloqueado = true;
+        this.toastr.success('Usuario bloqueado exitosamente');
+        this.razonBloqueo = '';
+      },
+      error: (error) => {
+        this.toastr.error(error.error.message || 'Error al bloquear usuario');
+      }
+    });
+  }
+
+  desbloquearUsuario(): void {
+    if (!this.userId) return;
+    this.userBlockService.desbloquearUsuario(this.userId).subscribe({
+      next: () => {
+        this.estaBloqueado = false;
+        this.toastr.success('Usuario desbloqueado exitosamente');
+      },
+      error: (error) => {
+        this.toastr.error(error.error.message || 'Error al desbloquear usuario');
       }
     });
   }

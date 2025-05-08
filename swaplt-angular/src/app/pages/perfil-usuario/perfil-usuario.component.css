@@ -566,4 +566,76 @@
   .valoraciones-section {
     padding: 1.2rem 0.7rem;
   }
+}
+
+/* Estilos para bloqueo de usuarios */
+.block-actions {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: var(--card-details-background);
+  border-radius: 8px;
+  box-shadow: 0 1px 4px var(--shadow-color);
+}
+
+.block-form {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.block-reason-input {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background-color: var(--input-background);
+  color: var(--text-color);
+}
+
+.block-button {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background-color 0.2s;
+}
+
+.block-button:hover {
+  background-color: #c82333;
+}
+
+.unblock-button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background-color 0.2s;
+}
+
+.unblock-button:hover {
+  background-color: #218838;
+}
+
+.block-status {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.blocked-by-user {
+  color: #dc3545;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
 } 

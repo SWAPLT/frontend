@@ -10,6 +10,7 @@ import { AdminRoutingModule } from './admin-routing.module';
 import {VehiculosComponent} from "./vehiculos/vehiculos.component";
 import { AccesoDenegadoComponent } from './acceso-denegado/acceso-denegado.component';
 import { SharedModule } from '../shared/shared.module';
+import { BloqueosComponent } from './bloqueos/bloqueos.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { SharedModule } from '../shared/shared.module';
     UsersComponent,
     VehiculosComponent,
     CategoriasComponent,
-    AccesoDenegadoComponent
+    AccesoDenegadoComponent,
+    BloqueosComponent
   ],
   imports: [
     CommonModule,

@@ -1,0 +1,34 @@
+<div class="container">
+  <h2>Gestión de Bloqueos</h2>
+  <!-- Listado de bloqueos existentes -->
+  <div class="bloqueos-list">
+    <table>
+      <thead>
+        <tr>
+          <th>Usuario que bloquea</th>
+          <th>Usuario bloqueado</th>
+          <th>Razón</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let b of displayedBloqueos">
+          <td>{{ b.usuario_bloqueante.nombre }}</td>
+          <td>{{ b.usuario_bloqueado.nombre }}</td>
+          <td>{{ b.razon || 'Sin motivo aparente' }}</td>
+          <td>
+            <button (click)="eliminarBloqueo(b)">Eliminar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <app-pagination
+      *ngIf="totalItems > itemsPerPage"
+      [totalItems]="totalItems"
+      [itemsPerPage]="itemsPerPage"
+      [currentPage]="currentPage"
+      (pageChange)="onPageChange($event)">
+    </app-pagination>
+    <div *ngIf="bloqueos.length === 0" class="no-data">No hay bloqueos registrados.</div>
+  </div>
+</div> 

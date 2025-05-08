@@ -1,0 +1,110 @@
+/* Contenedor principal */
+.container {
+  max-width: 900px;
+  margin: 2rem auto;
+  background: var(--card-background);
+  border-radius: 12px;
+  box-shadow: 0 2px 10px var(--shadow-color);
+  padding: 2rem;
+}
+
+h2, h3 {
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+}
+
+.bloqueo-form {
+  background: var(--card-details-background);
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.form-group select, .form-group input {
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  background: var(--input-background);
+  color: var(--text-color);
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.form-actions button {
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1.2rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.form-actions button:hover {
+  background: var(--quaternary-color);
+}
+
+.verificacion-resultado {
+  margin-top: 1rem;
+  background: #f8f9fa;
+  border-radius: 6px;
+  padding: 1rem;
+  color: var(--primary-color);
+}
+
+.bloqueos-list table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.bloqueos-list th, .bloqueos-list td {
+  padding: 0.7rem 1rem;
+  border-bottom: 1px solid var(--border-color);
+  text-align: left;
+}
+
+.bloqueos-list th {
+  background: var(--quaternary-color);
+  color: white;
+}
+
+.bloqueos-list tr:nth-child(even) {
+  background: var(--hover-color);
+}
+
+.bloqueos-list button {
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.3rem 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.bloqueos-list button:hover {
+  background: #b52a37;
+}
+
+.no-data {
+  text-align: center;
+  color: var(--tertiary-color);
+  margin-top: 1rem;
+  font-style: italic;
+} 

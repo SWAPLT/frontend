@@ -7,6 +7,7 @@ import { VehiculosComponent } from './vehiculos/vehiculos.component';
 import { CategoriasComponent } from './categorias/categorias.component';
 import { AdminPanelComponent } from './admin-panel/admin-panel.component';
 import { AuthGuard } from './auth.guard';
+import { BloqueosComponent } from './bloqueos/bloqueos.component';
 
 const routes: Routes = [
   {
@@ -17,6 +18,7 @@ const routes: Routes = [
       { path: 'usuarios', component: UsersComponent },
       { path: 'vehiculos', component: VehiculosComponent },
       { path: 'categorias', component: CategoriasComponent },
+      { path: 'bloqueos', component: BloqueosComponent },
     ]
   }
 ];

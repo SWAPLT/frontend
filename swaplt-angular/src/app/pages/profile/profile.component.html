@@ -15,6 +15,19 @@
       <span class="detail-value">{{ user.name }}</span>
     </div>
 
+    <div class="detail-item" *ngIf="valoracionMedia !== null">
+      <span class="detail-label">Valoración media:</span>
+      <span class="detail-value">
+        <span class="rating-stars">
+          <ng-container *ngFor="let star of [1,2,3,4,5]">
+            <i class="fas" [ngClass]="star <= valoracionMedia ? 'fa-star' : (star - valoracionMedia < 1 && star - valoracionMedia > 0 ? 'fa-star-half-alt' : 'fa-star-o')"></i>
+          </ng-container>
+        </span>
+        <span class="rating-value">{{ valoracionMedia | number:'1.1-2' }}/5</span>
+        <span class="rating-count">({{ totalValoraciones }} valoraciones)</span>
+      </span>
+    </div>
+
     <div class="detail-item">
       <span class="detail-label">Email:</span>
       <span class="detail-value">{{ user.email }}</span>
@@ -34,6 +47,31 @@
     <button (click)="goToMyVehicles()" class="my-vehicles-button">
       <i class="fas fa-car"></i> Mis Vehículos
     </button>
+
+    <!-- Botón para usuarios bloqueados -->
+    <div class="blocked-users-section">
+      <button (click)="toggleUsuariosBloqueados()" class="my-vehicles-button blocked-users-button">        <i class="fas fa-ban"></i> Usuarios Bloqueados
+        <span class="blocked-count" *ngIf="usuariosBloqueados.length > 0">
+          ({{ usuariosBloqueados.length }})
+        </span>
+      </button>
+
+      <!-- Lista de usuarios bloqueados -->
+      <div *ngIf="mostrarUsuariosBloqueados" class="blocked-users-list">
+        <div *ngIf="usuariosBloqueados.length === 0" class="no-blocked-users">
+          No tienes usuarios bloqueados
+        </div>
+        <div *ngFor="let usuario of usuariosBloqueados" class="blocked-user-item">
+          <div class="blocked-user-info">
+            <span class="blocked-user-name">{{ usuario.name }}</span>
+            <span class="blocked-user-email">{{ usuario.email }}</span>
+          </div>
+          <button (click)="desbloquearUsuario(usuario.id)" class="unblock-button">
+            <i class="fas fa-unlock"></i> Desbloquear
+          </button>
+        </div>
+      </div>
+    </div>
 
     <button (click)="enableEdit()" class="edit-button">Editar Perfil</button>
   </div>

@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/services/auth.service';
 import { Router } from '@angular/router'; // Para redirigir a otras páginas
+import { UsuariosService } from 'src/app/services/usuarios/usuarios.service';
+import { UserBlockService } from 'src/app/services/usuarios/user-block.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-profile',
@@ -12,11 +15,23 @@ export class ProfileComponent implements OnInit {
   userData: any = {}; // Datos que se van a actualizar
   isEditing: boolean = false; // Para controlar el estado de edición
   isAdmin: boolean = false; // Para saber si el usuario es un admin
+  valoracionMedia: number | null = null;
+  totalValoraciones: number = 0;
+  usuariosBloqueados: any[] = [];
+  mostrarUsuariosBloqueados: boolean = false;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private usuariosService: UsuariosService,
+    private userBlockService: UserBlockService,
+    private router: Router,
+    private toastr: ToastrService
+  ) {}
 
   ngOnInit(): void {
     this.loadProfile();
+    this.loadValoracionMedia();
+    this.cargarUsuariosBloqueados();
   }
 
   // Cargar el perfil del usuario
@@ -33,6 +48,28 @@ export class ProfileComponent implements OnInit {
         console.error('Error al obtener perfil', error);
       }
     );
+  }
+
+  loadValoracionMedia() {
+    const token = localStorage.getItem('token');
+    let userId: number | null = null;
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        userId = payload.sub || payload.user_id || payload.id;
+      } catch (e) {}
+    }
+    if (!userId) return;
+    this.usuariosService.getUserValoraciones(userId).subscribe({
+      next: (response: any) => {
+        this.valoracionMedia = response.media_valoracion;
+        this.totalValoraciones = response.total_valoraciones;
+      },
+      error: () => {
+        this.valoracionMedia = null;
+        this.totalValoraciones = 0;
+      }
+    });
   }
 
   // Activar el modo de edición
@@ -70,5 +107,33 @@ export class ProfileComponent implements OnInit {
   // Redirigir a la vista de mis vehículos
   goToMyVehicles() {
     this.router.navigate(['/mis-vehiculos']);
+  }
+
+  cargarUsuariosBloqueados(): void {
+    this.userBlockService.obtenerUsuariosBloqueados().subscribe({
+      next: (response) => {
+        this.usuariosBloqueados = response.usuarios_bloqueados;
+      },
+      error: (error) => {
+        console.error('Error al cargar usuarios bloqueados:', error);
+        this.toastr.error('Error al cargar usuarios bloqueados');
+      }
+    });
+  }
+
+  desbloquearUsuario(usuarioId: number): void {
+    this.userBlockService.desbloquearUsuario(usuarioId).subscribe({
+      next: () => {
+        this.usuariosBloqueados = this.usuariosBloqueados.filter(u => u.id !== usuarioId);
+        this.toastr.success('Usuario desbloqueado exitosamente');
+      },
+      error: (error) => {
+        this.toastr.error(error.error.message || 'Error al desbloquear usuario');
+      }
+    });
+  }
+
+  toggleUsuariosBloqueados(): void {
+    this.mostrarUsuariosBloqueados = !this.mostrarUsuariosBloqueados;
   }
 }

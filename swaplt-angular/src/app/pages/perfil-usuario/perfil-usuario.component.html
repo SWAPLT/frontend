@@ -47,6 +47,26 @@
           <p class="user-email">{{ usuario.email }}</p>
           <p class="user-role">Rol: {{ usuario.rol }}</p>
           <p class="user-date">Miembro desde: {{ usuario.fecha_registro | date:'longDate' }}</p>
+          
+          <!-- Botones de bloqueo -->
+          <div *ngIf="usuarioLogueadoId && usuarioLogueadoId !== userId" class="block-actions">
+            <div *ngIf="!estaBloqueado && !meHaBloqueado" class="block-form">
+              <input type="text" [(ngModel)]="razonBloqueo" placeholder="Razón del bloqueo (opcional)" class="block-reason-input">
+              <button (click)="bloquearUsuario()" class="block-button">
+                <i class="fas fa-ban"></i> Bloquear Usuario
+              </button>
+            </div>
+            <div *ngIf="estaBloqueado" class="block-status">
+              <button (click)="desbloquearUsuario()" class="unblock-button">
+                <i class="fas fa-unlock"></i> Desbloquear Usuario
+              </button>
+            </div>
+            <div *ngIf="meHaBloqueado" class="block-status">
+              <span class="blocked-by-user">
+                <i class="fas fa-exclamation-triangle"></i> Este usuario te ha bloqueado
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
