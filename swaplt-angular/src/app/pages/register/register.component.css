@@ -19,45 +19,75 @@ body {
   margin: 100px auto;
 }
 
-h2 {
-  color: var(--primary-color);
+/* Encabezado */
+.auth-header {
   text-align: center;
-  margin: 0 0 1.5rem 0;
+  margin-bottom: 1.5rem;
+}
+
+.auth-header h2 {
+  color: var(--primary-color);
+  margin: 0 0 0.5rem 0;
   font-size: 1.5rem;
 }
 
-/* Campos del formulario */
-.mb-3 {
+.auth-header p {
+  color: var(--text-color);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* Campos de formulario */
+.input-group {
   margin-bottom: 1rem;
 }
 
-.form-label {
+.input-group label {
   display: block;
   color: var(--text-color);
   font-size: 0.9rem;
   margin-bottom: 0.5rem;
 }
 
-.form-control {
+.input-group input {
   width: 100%;
   padding: 0.75rem;
   border: 2px solid var(--border-color);
   border-radius: 6px;
   font-size: 0.95rem;
-  transition: border-color 0.2s;
+  transition: all 0.2s ease;
   background-color: var(--input-background);
   color: var(--text-color);
   box-sizing: border-box;
 }
 
-.form-control:focus {
+.input-group input:focus {
   border-color: var(--primary-color);
   outline: none;
   box-shadow: 0 0 0 2px rgba(52, 164, 180, 0.1);
 }
 
-/* Botón principal */
-.btn-primary {
+.input-group input.error {
+  border-color: #dc3545;
+  background-color: rgba(220, 53, 69, 0.05);
+}
+
+.input-group input:disabled {
+  background-color: var(--disabled-background);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.password-hint {
+  display: block;
+  color: var(--text-color);
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+  opacity: 0.7;
+}
+
+/* Botón */
+.btn {
   width: 100%;
   padding: 0.75rem;
   background-color: var(--primary-color);
@@ -66,57 +96,105 @@ h2 {
   border-radius: 6px;
   font-size: 1rem;
   cursor: pointer;
-  transition: background-color 0.2s;
-  margin-top: 0.5rem;
+  transition: all 0.2s ease;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 44px;
 }
 
-.btn-primary:hover {
+.btn:hover:not(:disabled) {
   background-color: var(--quaternary-color);
 }
 
-/* Enlaces y texto */
-p {
+.btn:disabled {
+  background-color: var(--disabled-background);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Loading spinner */
+.loading-spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Enlace login */
+.login-section {
   text-align: center;
-  margin: 1.5rem 0 0 0;
+  margin-top: 1.5rem;
   font-size: 0.9rem;
   color: var(--text-color);
 }
 
-.buttom {
+.login-link {
   color: var(--secondary-color);
   text-decoration: none;
   font-weight: 500;
   transition: color 0.2s;
 }
 
-.buttom:hover {
+.login-link:hover {
   color: var(--tertiary-color);
 }
 
-b {
-  color: var(--primary-color);
-}
-
-/* Mensajes de estado */
-.text-danger {
+/* Mensajes de error y éxito */
+.error-message {
   color: #d32f2f;
-  font-size: 0.9rem;
-  margin: 1rem 0 0 0;
   padding: 0.75rem;
+  margin-top: 1rem;
   border-radius: 6px;
   background-color: rgba(220, 53, 69, 0.1);
-}
-
-.text-success {
-  color: #28a745;
   font-size: 0.9rem;
-  margin: 1rem 0 0 0;
-  padding: 0.75rem;
-  border-radius: 6px;
-  background-color: rgba(40, 167, 69, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  animation: fadeIn 0.3s ease-in-out;
 }
 
-/* Responsive */
+.success-message {
+  color: #2e7d32;
+  padding: 0.75rem;
+  margin-top: 1rem;
+  border-radius: 6px;
+  background-color: rgba(46, 125, 50, 0.1);
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.error-message .icon,
+.success-message .icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+/* Mobile */
 @media (max-width: 480px) {
   .container {
     padding: 1.5rem;
@@ -129,9 +207,5 @@ b {
   body {
     background: var(--background-color);
     align-items: flex-start;
-  }
-
-  h2 {
-    font-size: 1.5rem;
   }
 }

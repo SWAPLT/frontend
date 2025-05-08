@@ -55,7 +55,7 @@ body {
   border: 2px solid var(--border-color);
   border-radius: 6px;
   font-size: 0.95rem;
-  transition: border-color 0.2s;
+  transition: all 0.2s ease;
   background-color: var(--input-background);
   color: var(--text-color);
   box-sizing: border-box;
@@ -65,6 +65,17 @@ body {
   border-color: var(--primary-color);
   outline: none;
   box-shadow: 0 0 0 2px rgba(52, 164, 180, 0.1);
+}
+
+.input-group input.error {
+  border-color: #dc3545;
+  background-color: rgba(220, 53, 69, 0.05);
+}
+
+.input-group input:disabled {
+  background-color: var(--disabled-background);
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 
 /* Botón */
@@ -77,11 +88,38 @@ body {
   border-radius: 6px;
   font-size: 1rem;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.2s ease;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 44px;
 }
 
-.btn:hover {
+.btn:hover:not(:disabled) {
   background-color: var(--quaternary-color);
+}
+
+.btn:disabled {
+  background-color: var(--disabled-background);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Loading spinner */
+.loading-spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Enlace registro */
@@ -114,12 +152,41 @@ body {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .error-message .icon {
   width: 18px;
   height: 18px;
   flex-shrink: 0;
+}
+
+/* Forgot password link */
+.forgot-password {
+  text-align: right;
+  margin-bottom: 1rem;
+}
+
+.forgot-password-link {
+  color: var(--secondary-color);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s;
+}
+
+.forgot-password-link:hover {
+  color: var(--tertiary-color);
 }
 
 /* Mobile */
@@ -136,20 +203,4 @@ body {
     background: var(--background-color);
     align-items: flex-start;
   }
-}
-
-.forgot-password {
-  text-align: right;
-  margin-bottom: 1rem;
-}
-
-.forgot-password-link {
-  color: var(--secondary-color);
-  text-decoration: none;
-  font-size: 0.9rem;
-  transition: color 0.2s;
-}
-
-.forgot-password-link:hover {
-  color: var(--tertiary-color);
 }
