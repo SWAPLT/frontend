@@ -27,6 +27,7 @@ export interface Vehiculo {
   vehiculo_robado: string;
   vehiculo_libre_accidentes: string;
   imagenes?: any[];
+  mostrarEstadisticas?: boolean;
 }
 
 @Injectable({

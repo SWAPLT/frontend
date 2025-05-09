@@ -57,6 +57,12 @@
           <button class="action-button delete-vehicle" (click)="eliminarVehiculo(vehiculo.id!)" [disabled]="!vehiculo.id">
             <i class="fas fa-trash"></i> Eliminar
           </button>
+          <button class="action-button stats-vehicle" (click)="irAEstadisticas(vehiculo.id)">
+            <i class="fas fa-chart-line"></i> Estadísticas
+          </button>
+        </div>
+        <div *ngIf="vehiculo.mostrarEstadisticas">
+          <app-estadisticas-vehiculo [vehiculoId]="vehiculo.id" [propietarioId]="vehiculo.user_id"></app-estadisticas-vehiculo>
         </div>
       </div>
     </div>

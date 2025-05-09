@@ -13,6 +13,7 @@ import { MensajesComponent } from './pages/mensajes/mensajes.component';
 import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
 import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
 import { PerfilUsuarioComponent } from './pages/perfil-usuario/perfil-usuario.component';
+import { DetalleVehiculoPropioComponent } from './pages/mis-vehiculos/detalle-vehiculo-propio/detalle-vehiculo-propio.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/catalogo', pathMatch: 'full' }, // Redirigir a catálogo por defecto
@@ -25,6 +26,7 @@ const routes: Routes = [
   { path: 'profile', component: ProfileComponent }, // Asegúrate de tener la ruta para el perfil
   { path: 'vender-vehiculo', component: VenderVehiculoComponent },
   { path: 'mis-vehiculos', component: MisVehiculosComponent, canActivate: [AuthGuard] },
+  { path: 'mis-vehiculos/:id', component: DetalleVehiculoPropioComponent, canActivate: [AuthGuard] },
   { path: 'catalogo', loadChildren: () => import('./pages/catalogo/catalogo.module').then(m => m.CatalogoModule), canActivate: [AuthGuard] },
   { path: 'favoritos', loadChildren: () => import('./pages/favoritos/favoritos.module').then(m => m.FavoritosModule), canActivate: [AuthGuard] },
   { path: 'static', loadChildren: () => import('./pages/static/static.module').then(m => m.StaticModule) },

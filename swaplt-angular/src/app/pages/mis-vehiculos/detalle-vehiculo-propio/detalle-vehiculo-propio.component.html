@@ -1,0 +1,17 @@
+<div class="detalle-vehiculo-container">
+  <button class="btn btn-secondary" (click)="volver()">&larr; Volver a mis vehículos</button>
+
+  <div *ngIf="loading" class="loading">
+    <div class="spinner-grow text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+  </div>
+  <div *ngIf="error && !loading" class="error">
+    <p>{{ error }}</p>
+  </div>
+  <div *ngIf="vehiculo && !loading && !error">
+    <h2>{{ vehiculo.marca }} {{ vehiculo.modelo }} ({{ vehiculo.anio }})</h2>
+    <hr>
+    <app-estadisticas-vehiculo [vehiculoId]="vehiculo.id" [propietarioId]="vehiculo.user_id"></app-estadisticas-vehiculo>
+  </div>
+</div>

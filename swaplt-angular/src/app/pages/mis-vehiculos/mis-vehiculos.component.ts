@@ -41,7 +41,7 @@ export class MisVehiculosComponent implements OnInit {
 
     this.vehiculoService.getUserVehicles().subscribe({
       next: (vehiculos: Vehiculo[]) => {
-        this.vehiculos = vehiculos;
+        this.vehiculos = vehiculos.map(v => ({ ...v, mostrarEstadisticas: false }));
         this.totalItems = vehiculos.length;
         this.applyPagination();
         this.loading = false;
@@ -121,5 +121,9 @@ export class MisVehiculosComponent implements OnInit {
         });
       }
     }
+  }
+
+  irAEstadisticas(id: number): void {
+    this.router.navigate(['/mis-vehiculos', id]);
   }
 } 

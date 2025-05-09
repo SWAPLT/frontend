@@ -6,6 +6,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { ToastrModule } from 'ngx-toastr';
 import { GoogleMapsModule } from '@angular/google-maps';
+import { NgChartsModule } from 'ng2-charts';
 
 import { AppComponent } from './app.component';
 import { RouterOutlet } from "@angular/router";
@@ -30,6 +31,8 @@ import { MensajesComponent } from './pages/mensajes/mensajes.component';
 import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
 import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
 import { PerfilUsuarioModule } from './pages/perfil-usuario/perfil-usuario.module';
+import { EstadisticasVehiculoComponent } from './pages/mis-vehiculos/estadisticas-vehiculo/estadisticas-vehiculo.component';
+import { DetalleVehiculoPropioComponent } from './pages/mis-vehiculos/detalle-vehiculo-propio/detalle-vehiculo-propio.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +47,9 @@ import { PerfilUsuarioModule } from './pages/perfil-usuario/perfil-usuario.modul
     DetallesVehiculoComponent,
     MensajesComponent,
     ResetPasswordComponent,
-    ForgotPasswordComponent
+    ForgotPasswordComponent,
+    EstadisticasVehiculoComponent,
+    DetalleVehiculoPropioComponent
   ],
   imports: [
     BrowserModule,
@@ -81,7 +86,8 @@ import { PerfilUsuarioModule } from './pages/perfil-usuario/perfil-usuario.modul
         canActivate: [AuthGuard]
       }
     ]),
-    PerfilUsuarioModule
+    PerfilUsuarioModule,
+    NgChartsModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
