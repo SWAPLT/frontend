@@ -125,6 +125,15 @@ export class AuthService {
     );
   }
 
+  loginWithGoogle(): void {
+    window.location.href = `${this.apiUrl}/auth/google`;
+  }
+
+  handleGoogleCallback(token: string): Observable<any> {
+    localStorage.setItem('token', token);
+    return this.getProfile();
+  }
+
   private getAuthHeaders() {
     const token = this.getToken();
     return {

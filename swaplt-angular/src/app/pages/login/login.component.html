@@ -35,6 +35,15 @@
       <span *ngIf="isLoading" class="loading-spinner"></span>
     </button>
 
+    <div class="divider">
+      <span>o</span>
+    </div>
+
+    <button type="button" class="btn btn-google" (click)="loginWithGoogle()" [disabled]="isLoading">
+      <img src="assets/google-icon.svg" alt="Google Icon" class="google-icon">
+      Ingresar con Google
+    </button>
+
     <div class="register-section">
       <p>¿No tienes una cuenta? <a href="/register" class="register-link">Crear cuenta</a></p>
     </div>

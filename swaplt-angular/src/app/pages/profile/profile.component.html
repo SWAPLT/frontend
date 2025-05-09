@@ -1,7 +1,14 @@
 <div class="profile-container">
   <div class="profile-header">
     <h2 class="profile-title">
-      <span class="profile-icon">👤</span>
+      <span class="profile-avatar">
+        <img *ngIf="user?.avatar; else defaultAvatar" [src]="user.avatar" alt="Avatar" />
+        <ng-template #defaultAvatar>
+          <svg class="default-avatar-icon" viewBox="0 0 24 24">
+            <path fill="#6c63ff" d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z"/>
+          </svg>
+        </ng-template>
+      </span>
       Perfil de Usuario
     </h2>
     <div class="profile-status" [class.verified]="user.email_verified_at">

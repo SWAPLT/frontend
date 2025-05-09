@@ -33,6 +33,7 @@ import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password
 import { PerfilUsuarioModule } from './pages/perfil-usuario/perfil-usuario.module';
 import { EstadisticasVehiculoComponent } from './pages/mis-vehiculos/estadisticas-vehiculo/estadisticas-vehiculo.component';
 import { DetalleVehiculoPropioComponent } from './pages/mis-vehiculos/detalle-vehiculo-propio/detalle-vehiculo-propio.component';
+import { GoogleCallbackComponent } from './pages/auth/google-callback/google-callback.component';
 
 @NgModule({
   declarations: [
@@ -49,7 +50,8 @@ import { DetalleVehiculoPropioComponent } from './pages/mis-vehiculos/detalle-ve
     ResetPasswordComponent,
     ForgotPasswordComponent,
     EstadisticasVehiculoComponent,
-    DetalleVehiculoPropioComponent
+    DetalleVehiculoPropioComponent,
+    GoogleCallbackComponent
   ],
   imports: [
     BrowserModule,
