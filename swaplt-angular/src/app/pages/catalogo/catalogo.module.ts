@@ -6,6 +6,7 @@ import { CatalogoRoutingModule } from './catalogo-routing.module';
 import { SharedModule } from '../../shared/shared.module';
 import { ToastrModule } from 'ngx-toastr';
 import { DetallesVehiculoComponent } from '../detalles-vehiculo/detalles-vehiculo.component';
+import { GoogleAdsComponent } from '../../components/google-ads/google-ads.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { DetallesVehiculoComponent } from '../detalles-vehiculo/detalles-vehicul
     ReactiveFormsModule,
     CatalogoRoutingModule,
     SharedModule,
-    ToastrModule.forRoot()
+    ToastrModule.forRoot(),
+    GoogleAdsComponent
   ]
 })
 export class CatalogoModule { }

@@ -836,3 +836,44 @@ button:hover {
   }
 }
 
+.catalogo-layout {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.catalogo-container {
+  flex: 1;
+  background-color: var(--background-color);
+}
+
+.catalogo-sidebar {
+  position: fixed;
+  right: 20px;
+  top: 100px;
+  min-width: 250px;
+  max-width: 320px;
+  height: fit-content;
+  background-color: var(--background-color);
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px var(--shadow-color);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Responsive: ocultar sidebar en pantallas pequeñas */
+@media (max-width: 1200px) {
+  .catalogo-layout {
+    flex-direction: column;
+  }
+  .catalogo-sidebar {
+    display: none;
+  }
+}
+

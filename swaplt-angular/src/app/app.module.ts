@@ -34,6 +34,7 @@ import { PerfilUsuarioModule } from './pages/perfil-usuario/perfil-usuario.modul
 import { EstadisticasVehiculoComponent } from './pages/mis-vehiculos/estadisticas-vehiculo/estadisticas-vehiculo.component';
 import { DetalleVehiculoPropioComponent } from './pages/mis-vehiculos/detalle-vehiculo-propio/detalle-vehiculo-propio.component';
 import { GoogleCallbackComponent } from './pages/auth/google-callback/google-callback.component';
+import { GoogleAdsComponent } from './components/google-ads/google-ads.component';
 
 @NgModule({
   declarations: [
@@ -67,6 +68,7 @@ import { GoogleCallbackComponent } from './pages/auth/google-callback/google-cal
     AdminModule,
     GoogleMapsModule,
     ToastrModule.forRoot(),
+    GoogleAdsComponent,
     RouterModule.forRoot([
       { 
         path: 'editar-vehiculo/:id', 

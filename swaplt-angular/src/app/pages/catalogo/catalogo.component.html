@@ -1,240 +1,247 @@
-<div class="catalogo-container">
+<div class="catalogo-layout">
+  <!-- Contenido principal -->
+  <div class="catalogo-container">
+    <h2>¿Qué quieres encontrar?</h2>
 
-  <h2>¿Qué quieres encontrar?</h2>
+    <!-- Botón de filtros -->
+    <button class="filter-toggle-btn" (click)="toggleFilters()">
+      <i class="fas fa-filter"></i>
+    </button>
 
-  <!-- Botón de filtros -->
-  <button class="filter-toggle-btn" (click)="toggleFilters()">
-    <i class="fas fa-filter"></i>
-  </button>
+    <!-- Panel de filtros -->
+    <div class="filters-panel" [class.show]="showFilters">
+      <div class="filters-header">
+        <h3>Filtros</h3>
+        <button class="close-filters" (click)="toggleFilters()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
 
-  <!-- Panel de filtros -->
-  <div class="filters-panel" [class.show]="showFilters">
-    <div class="filters-header">
-      <h3>Filtros</h3>
-      <button class="close-filters" (click)="toggleFilters()">
-        <i class="fas fa-times"></i>
+      <form [formGroup]="filterForm" (ngSubmit)="applyFilters()" class="filters-form">
+        <!-- Precio -->
+        <div class="filter-group">
+          <h4>Precio</h4>
+          <div class="range-inputs">
+            <input type="number" formControlName="precio_min" placeholder="Mínimo">
+            <input type="number" formControlName="precio_max" placeholder="Máximo">
+          </div>
+        </div>
+
+        <!-- Año -->
+        <div class="filter-group">
+          <h4>Año</h4>
+          <div class="range-inputs">
+            <input type="number" formControlName="anio_min" placeholder="Mínimo">
+            <input type="number" formControlName="anio_max" placeholder="Máximo">
+          </div>
+        </div>
+
+        <!-- Kilometraje -->
+        <div class="filter-group">
+          <h4>Kilometraje máximo</h4>
+          <input type="number" formControlName="kilometraje_max" placeholder="Kilometraje máximo">
+        </div>
+
+        <!-- Estado -->
+        <div class="filter-group">
+          <h4>Estado</h4>
+          <select formControlName="estado">
+            <option value="">Todos</option>
+            <option value="nuevo">Nuevo</option>
+            <option value="usado">Usado</option>
+          </select>
+        </div>
+
+        <!-- Transmisión -->
+        <div class="filter-group">
+          <h4>Transmisión</h4>
+          <select formControlName="transmision">
+            <option value="">Todas</option>
+            <option value="manual">Manual</option>
+            <option value="automatica">Automática</option>
+          </select>
+        </div>
+
+        <!-- Tipo de combustible -->
+        <div class="filter-group">
+          <h4>Tipo de combustible</h4>
+          <select formControlName="tipo_combustible">
+            <option value="">Todos</option>
+            <option value="gasolina">Gasolina</option>
+            <option value="diesel">Diesel</option>
+            <option value="electrico">Eléctrico</option>
+            <option value="hibrido">Híbrido</option>
+          </select>
+        </div>
+
+        <!-- Marca y Modelo -->
+        <div class="filter-group">
+          <h4>Marca</h4>
+          <input type="text" formControlName="marca" placeholder="Marca">
+        </div>
+
+        <div class="filter-group">
+          <h4>Modelo</h4>
+          <input type="text" formControlName="modelo" placeholder="Modelo">
+        </div>
+
+        <!-- Color -->
+        <div class="filter-group">
+          <h4>Color</h4>
+          <input type="text" formControlName="color" placeholder="Color">
+        </div>
+
+        <!-- Ubicación -->
+        <div class="filter-group">
+          <h4>Ubicación</h4>
+          <input type="text" formControlName="ubicacion" placeholder="Ubicación">
+        </div>
+
+        <!-- Número de puertas -->
+        <div class="filter-group">
+          <h4>Número de puertas</h4>
+          <select formControlName="numero_puertas">
+            <option value="">Todos</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select>
+        </div>
+
+        <!-- Libre de accidentes -->
+        <div class="filter-group">
+          <h4>Libre de accidentes</h4>
+          <select formControlName="vehiculo_libre_accidentes">
+            <option value="">Todos</option>
+            <option value="si">Sí</option>
+            <option value="no">No</option>
+          </select>
+        </div>
+
+        <div class="filter-actions">
+          <button type="submit" class="apply-filters">Aplicar filtros</button>
+          <button type="button" class="clear-filters" (click)="clearFilters()">Limpiar filtros</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Búsqueda -->
+    <div class="search-bar">
+      <div class="search-input" [formGroup]="searchForm">
+        <div class="search-wrapper">
+          <input type="text" 
+                 formControlName="query" 
+                 placeholder="Buscar por marca o modelo..."
+                 (keyup.enter)="onSearch()">
+          <button type="button" (click)="onSearch()" class="search-button">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botón de limpiar búsqueda -->
+    <div *ngIf="searchForm.get('query')?.value" class="clear-search-container">
+      <button (click)="clearSearch()" class="clear-search-button">
+        <i class="fas fa-times"></i> Limpiar búsqueda
       </button>
     </div>
 
-    <form [formGroup]="filterForm" (ngSubmit)="applyFilters()" class="filters-form">
-      <!-- Precio -->
-      <div class="filter-group">
-        <h4>Precio</h4>
-        <div class="range-inputs">
-          <input type="number" formControlName="precio_min" placeholder="Mínimo">
-          <input type="number" formControlName="precio_max" placeholder="Máximo">
+    <!-- Estado de carga -->
+    <div *ngIf="loading" class="loading">
+      <div class="spinner-grow text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <div class="spinner-grow text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <div class="spinner-grow text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+
+    <!-- Estado de error -->
+    <div *ngIf="error && !loading" class="error">
+      <p>Error al cargar los vehículos. Por favor, intente nuevamente.</p>
+      <button (click)="loadVehiculos()">Reintentar</button>
+    </div>
+
+    <!-- Lista de vehículos -->
+    <div *ngIf="!loading && !error" class="vehiculos-grid">
+      <div *ngFor="let vehiculo of vehiculos" class="vehiculo-card">
+        <div class="vehiculo-image">
+          <img [src]="getVehiculoImagen(vehiculo.id)" 
+               [alt]="vehiculo.marca + ' ' + vehiculo.modelo"
+               (error)="onImageError($event)"
+               loading="lazy">
+          <button class="favorito-btn" (click)="toggleFavorito(vehiculo.id)" [class.favorito]="isFavorito(vehiculo.id)" [class.animating]="isAnimating(vehiculo.id)">
+            <i [class]="isFavorito(vehiculo.id) ? 'fas fa-heart' : 'far fa-heart'"></i>
+            <i class="fas fa-heart-broken broken-heart" *ngIf="isAnimating(vehiculo.id)"></i>
+          </button>
         </div>
-      </div>
-
-      <!-- Año -->
-      <div class="filter-group">
-        <h4>Año</h4>
-        <div class="range-inputs">
-          <input type="number" formControlName="anio_min" placeholder="Mínimo">
-          <input type="number" formControlName="anio_max" placeholder="Máximo">
-        </div>
-      </div>
-
-      <!-- Kilometraje -->
-      <div class="filter-group">
-        <h4>Kilometraje máximo</h4>
-        <input type="number" formControlName="kilometraje_max" placeholder="Kilometraje máximo">
-      </div>
-
-      <!-- Estado -->
-      <div class="filter-group">
-        <h4>Estado</h4>
-        <select formControlName="estado">
-          <option value="">Todos</option>
-          <option value="nuevo">Nuevo</option>
-          <option value="usado">Usado</option>
-        </select>
-      </div>
-
-      <!-- Transmisión -->
-      <div class="filter-group">
-        <h4>Transmisión</h4>
-        <select formControlName="transmision">
-          <option value="">Todas</option>
-          <option value="manual">Manual</option>
-          <option value="automatica">Automática</option>
-        </select>
-      </div>
-
-      <!-- Tipo de combustible -->
-      <div class="filter-group">
-        <h4>Tipo de combustible</h4>
-        <select formControlName="tipo_combustible">
-          <option value="">Todos</option>
-          <option value="gasolina">Gasolina</option>
-          <option value="diesel">Diesel</option>
-          <option value="electrico">Eléctrico</option>
-          <option value="hibrido">Híbrido</option>
-        </select>
-      </div>
-
-      <!-- Marca y Modelo -->
-      <div class="filter-group">
-        <h4>Marca</h4>
-        <input type="text" formControlName="marca" placeholder="Marca">
-      </div>
-
-      <div class="filter-group">
-        <h4>Modelo</h4>
-        <input type="text" formControlName="modelo" placeholder="Modelo">
-      </div>
-
-      <!-- Color -->
-      <div class="filter-group">
-        <h4>Color</h4>
-        <input type="text" formControlName="color" placeholder="Color">
-      </div>
-
-      <!-- Ubicación -->
-      <div class="filter-group">
-        <h4>Ubicación</h4>
-        <input type="text" formControlName="ubicacion" placeholder="Ubicación">
-      </div>
-
-      <!-- Número de puertas -->
-      <div class="filter-group">
-        <h4>Número de puertas</h4>
-        <select formControlName="numero_puertas">
-          <option value="">Todos</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-        </select>
-      </div>
-
-      <!-- Libre de accidentes -->
-      <div class="filter-group">
-        <h4>Libre de accidentes</h4>
-        <select formControlName="vehiculo_libre_accidentes">
-          <option value="">Todos</option>
-          <option value="si">Sí</option>
-          <option value="no">No</option>
-        </select>
-      </div>
-
-      <div class="filter-actions">
-        <button type="submit" class="apply-filters">Aplicar filtros</button>
-        <button type="button" class="clear-filters" (click)="clearFilters()">Limpiar filtros</button>
-      </div>
-    </form>
-  </div>
-
-  <!-- Búsqueda -->
-  <div class="search-bar">
-    <div class="search-input" [formGroup]="searchForm">
-      <div class="search-wrapper">
-        <input type="text" 
-               formControlName="query" 
-               placeholder="Buscar por marca o modelo..."
-               (keyup.enter)="onSearch()">
-        <button type="button" (click)="onSearch()" class="search-button">
-          <i class="fas fa-search"></i>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Botón de limpiar búsqueda -->
-  <div *ngIf="searchForm.get('query')?.value" class="clear-search-container">
-    <button (click)="clearSearch()" class="clear-search-button">
-      <i class="fas fa-times"></i> Limpiar búsqueda
-    </button>
-  </div>
-
-  <!-- Estado de carga -->
-  <div *ngIf="loading" class="loading">
-    <div class="spinner-grow text-primary" role="status">
-      <span class="visually-hidden">Loading...</span>
-    </div>
-    <div class="spinner-grow text-primary" role="status">
-      <span class="visually-hidden">Loading...</span>
-    </div>
-    <div class="spinner-grow text-primary" role="status">
-      <span class="visually-hidden">Loading...</span>
-    </div>
-  </div>
-
-  <!-- Estado de error -->
-  <div *ngIf="error && !loading" class="error">
-    <p>Error al cargar los vehículos. Por favor, intente nuevamente.</p>
-    <button (click)="loadVehiculos()">Reintentar</button>
-  </div>
-
-  <!-- Lista de vehículos -->
-  <div *ngIf="!loading && !error" class="vehiculos-grid">
-    <div *ngFor="let vehiculo of vehiculos" class="vehiculo-card">
-      <div class="vehiculo-image">
-        <img [src]="getVehiculoImagen(vehiculo.id)" 
-             [alt]="vehiculo.marca + ' ' + vehiculo.modelo"
-             (error)="onImageError($event)"
-             loading="lazy">
-        <button class="favorito-btn" (click)="toggleFavorito(vehiculo.id)" [class.favorito]="isFavorito(vehiculo.id)" [class.animating]="isAnimating(vehiculo.id)">
-          <i [class]="isFavorito(vehiculo.id) ? 'fas fa-heart' : 'far fa-heart'"></i>
-          <i class="fas fa-heart-broken broken-heart" *ngIf="isAnimating(vehiculo.id)"></i>
-        </button>
-      </div>
-      <div class="vehiculo-info">
-        <div class="vehiculo-header">
-          <h3>{{ vehiculo.marca }} {{ vehiculo.modelo }}</h3>
-          <p class="precio">${{ vehiculo.precio | number:'1.0-0' }}</p>
-        </div>
-        
-        <div class="vehiculo-detalles-container">
-          <div class="vehiculo-details">
-            <div class="detail-item">
-              <i class="fas fa-calendar"></i>
-              <span>{{ vehiculo.anio }}</span>
+        <div class="vehiculo-info">
+          <div class="vehiculo-header">
+            <h3>{{ vehiculo.marca }} {{ vehiculo.modelo }}</h3>
+            <p class="precio">${{ vehiculo.precio | number:'1.0-0' }}</p>
+          </div>
+          
+          <div class="vehiculo-detalles-container">
+            <div class="vehiculo-details">
+              <div class="detail-item">
+                <i class="fas fa-calendar"></i>
+                <span>{{ vehiculo.anio }}</span>
+              </div>
+              <div class="detail-item">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>{{ vehiculo.kilometraje | number }} km</span>
+              </div>
+              <div class="detail-item">
+                <i class="fas fa-cog"></i>
+                <span>{{ vehiculo.transmision }}</span>
+              </div>
             </div>
-            <div class="detail-item">
-              <i class="fas fa-tachometer-alt"></i>
-              <span>{{ vehiculo.kilometraje | number }} km</span>
+          </div>
+
+          <div class="vehiculo-footer">
+            <div class="propietario">
+              <i class="fas fa-user"></i>
+              <span>{{ vehiculo.propietario?.nombre }}</span>
             </div>
-            <div class="detail-item">
-              <i class="fas fa-cog"></i>
-              <span>{{ vehiculo.transmision }}</span>
+            <div class="vehiculo-actions">
+              <button class="ver-detalles" (click)="verDetalles(vehiculo.id)">
+                <i class="fas fa-eye"></i> Ver Detalles
+              </button>
+              <button class="contactar" (click)="contactar(vehiculo)">
+                <i class="fas fa-comment"></i> Contactar
+              </button>
             </div>
           </div>
         </div>
-
-        <div class="vehiculo-footer">
-          <div class="propietario">
-            <i class="fas fa-user"></i>
-            <span>{{ vehiculo.propietario?.nombre }}</span>
-          </div>
-          <div class="vehiculo-actions">
-            <button class="ver-detalles" (click)="verDetalles(vehiculo.id)">
-              <i class="fas fa-eye"></i> Ver Detalles
-            </button>
-            <button class="contactar" (click)="contactar(vehiculo)">
-              <i class="fas fa-comment"></i> Contactar
-            </button>
-          </div>
-        </div>
       </div>
+    </div>
+
+    <!-- Paginación -->
+    <app-pagination
+      *ngIf="!loading && !error && totalItems > 0"
+      [currentPage]="currentPage"
+      [totalItems]="totalItems"
+      [itemsPerPage]="itemsPerPage"
+      (pageChange)="onPageChange($event)">
+    </app-pagination>
+
+    <!-- Mensaje cuando no hay vehículos -->
+    <div *ngIf="!loading && !error && vehiculos.length === 0" class="no-vehicles">
+      <i class="fas fa-search fa-3x"></i>
+      <p>No se encontraron vehículos que coincidan con tu búsqueda.</p>
+      <button (click)="clearSearch()" class="clear-search">
+        <i class="fas fa-times"></i> Limpiar búsqueda
+      </button>
     </div>
   </div>
 
-  <!-- Paginación -->
-  <app-pagination
-    *ngIf="!loading && !error && totalItems > 0"
-    [currentPage]="currentPage"
-    [totalItems]="totalItems"
-    [itemsPerPage]="itemsPerPage"
-    (pageChange)="onPageChange($event)">
-  </app-pagination>
-
-  <!-- Mensaje cuando no hay vehículos -->
-  <div *ngIf="!loading && !error && vehiculos.length === 0" class="no-vehicles">
-    <i class="fas fa-search fa-3x"></i>
-    <p>No se encontraron vehículos que coincidan con tu búsqueda.</p>
-    <button (click)="clearSearch()" class="clear-search">
-      <i class="fas fa-times"></i> Limpiar búsqueda
-    </button>
+  <!-- Sidebar con anuncio -->
+  <div class="catalogo-sidebar">
+    <app-google-ads></app-google-ads>
   </div>
 </div>
