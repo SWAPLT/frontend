@@ -51,11 +51,19 @@ export class FavoritosService {
   // Eliminar un favorito
   removeFavorito(vehiculoId: number): Observable<any> {
     const headers = this.getHeaders();
-    return this.http.delete(`${this.apiUrl}/${vehiculoId}`, { headers }).pipe(
-      tap(() => this.loadFavoritos()),
-      catchError(error => {
-        console.error('Error removing favorite:', error);
-        return throwError(() => error);
+    return this.getFavoritos().pipe(
+      switchMap(favoritos => {
+        const favorito = favoritos.find(f => f.vehiculo_id === vehiculoId);
+        if (!favorito) {
+          return throwError(() => new Error('Favorito no encontrado'));
+        }
+        return this.http.delete(`${this.apiUrl}/${favorito.id}`, { headers }).pipe(
+          tap(() => this.loadFavoritos()),
+          catchError(error => {
+            console.error('Error removing favorite:', error);
+            return throwError(() => error);
+          })
+        );
       })
     );
   }
