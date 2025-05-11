@@ -853,11 +853,11 @@ button:hover {
 .catalogo-sidebar {
   position: fixed;
   right: 20px;
-  top: 100px;
+  top: 180px;
   min-width: 250px;
   max-width: 320px;
   height: fit-content;
-  background-color: var(--background-color);
+  background-color: transparent;
   padding: 15px;
   border-radius: 8px;
   box-shadow: 0 2px 4px var(--shadow-color);
