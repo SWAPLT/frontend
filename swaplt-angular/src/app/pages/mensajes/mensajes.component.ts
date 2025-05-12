@@ -7,6 +7,7 @@ import { UsuariosService } from '../../services/user/usuarios.service';
 import { Usuario } from 'src/app/models/usuario.model';
 import { interval, Subscription } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
+import { UserBlockService } from '../../services/usuarios/user-block.service';
 
 @Component({
   selector: 'app-mensajes',
@@ -30,6 +31,8 @@ export class MensajesComponent implements OnInit, OnDestroy {
     mensaje: null as Mensaje | null
   };
   mensajesNoLeidos: Map<number, number> = new Map(); // userId -> cantidad de mensajes no leídos
+  usuariosBloqueados: number[] = []; // Lista de IDs de usuarios bloqueados
+  usuariosQueMeBloquearon: number[] = []; // Lista de IDs de usuarios que me bloquearon
 
   constructor(
     private mensajeService: MensajeService,
@@ -37,7 +40,8 @@ export class MensajesComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private usuariosService: UsuariosService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private userBlockService: UserBlockService
   ) {
     // Cerrar el menú contextual al hacer clic fuera
     document.addEventListener('click', () => {
@@ -48,7 +52,7 @@ export class MensajesComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.usuarioActual = this.authService.getCurrentUser();
     if (this.usuarioActual) {
-      this.cargarUsuariosConConversacion();
+      this.cargarBloqueos();
     }
 
     // Verificar si hay un usuarioId en la ruta
@@ -86,14 +90,45 @@ export class MensajesComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Carga la información de usuarios bloqueados y que han bloqueado al usuario actual
+   */
+  cargarBloqueos(): void {
+    // Cargar usuarios bloqueados por el usuario actual
+    this.userBlockService.obtenerUsuariosBloqueados().subscribe({
+      next: (response) => {
+        this.usuariosBloqueados = response.usuarios_bloqueados.map((usuario: any) => usuario.id);
+        this.cargarUsuariosConConversacion();
+      },
+      error: (error) => {
+        console.error('Error al cargar usuarios bloqueados:', error);
+        this.cargarUsuariosConConversacion(); // Intentar cargar usuarios de todas formas
+      }
+    });
+
+    // Cargar usuarios que han bloqueado al usuario actual
+    this.userBlockService.obtenerUsuariosQueMeBloquearon().subscribe({
+      next: (response) => {
+        this.usuariosQueMeBloquearon = response.usuarios_que_me_bloquearon.map((usuario: any) => usuario.id);
+      },
+      error: (error) => {
+        console.error('Error al cargar usuarios que me bloquearon:', error);
+      }
+    });
+  }
+
   cargarUsuariosConConversacion(): void {
     if (!this.usuarioActual) return;
 
     // Primero cargamos todos los usuarios
     this.usuariosService.getUsuarios().subscribe({
       next: (usuarios: Usuario[]) => {
-        // Filtramos el usuario actual
-        this.usuarios = usuarios.filter(u => u.id !== this.usuarioActual?.id);
+        // Filtramos el usuario actual y los usuarios bloqueados o que nos han bloqueado
+        this.usuarios = usuarios.filter(u => 
+          u.id !== this.usuarioActual?.id && 
+          !this.usuariosBloqueados.includes(u.id) && 
+          !this.usuariosQueMeBloquearon.includes(u.id)
+        );
         
         // Para cada usuario, verificamos si hay mensajes
         const promesas = this.usuarios.map(usuario => 
@@ -112,7 +147,10 @@ export class MensajesComponent implements OnInit, OnDestroy {
                 }
                 resolve();
               },
-              error: () => resolve()
+              error: (error) => {
+                console.error(`Error al cargar mensajes con usuario ${usuario.id}:`, error);
+                resolve();
+              }
             });
           })
         );
@@ -131,6 +169,12 @@ export class MensajesComponent implements OnInit, OnDestroy {
   }
 
   seleccionarUsuario(usuarioId: number): void {
+    // Verificar si el usuario está bloqueado o nos ha bloqueado
+    if (this.usuariosBloqueados.includes(usuarioId) || this.usuariosQueMeBloquearon.includes(usuarioId)) {
+      this.toastr.error('No puedes enviar mensajes a este usuario');
+      return;
+    }
+
     const usuario = this.usuarios.find(u => u.id === usuarioId);
     if (usuario) {
       this.usuarioSeleccionado = usuario;
@@ -141,6 +185,12 @@ export class MensajesComponent implements OnInit, OnDestroy {
       // Si el usuario no está en la lista, obtener sus datos
       this.usuariosService.getUsuarioById(usuarioId).subscribe({
         next: (usuario: Usuario) => {
+          // Verificar nuevamente si el usuario está bloqueado o nos ha bloqueado
+          if (this.usuariosBloqueados.includes(usuario.id) || this.usuariosQueMeBloquearon.includes(usuario.id)) {
+            this.toastr.error('No puedes enviar mensajes a este usuario');
+            return;
+          }
+          
           this.usuarioSeleccionado = usuario;
           this.mostrarChat = true;
           if (!this.usuarios.find(u => u.id === usuario.id)) {
@@ -151,81 +201,118 @@ export class MensajesComponent implements OnInit, OnDestroy {
         },
         error: (error: any) => {
           console.error('Error al cargar usuario:', error);
+          this.toastr.error('No se pudo cargar el usuario');
         }
       });
     }
   }
 
-  iniciarActualizacionAutomatica(receptor_id: number): void {
-    // Detener cualquier suscripción anterior
+  iniciarActualizacionAutomatica(usuarioId: number): void {
+    // Cancelar cualquier suscripción previa
     if (this.actualizarMensajesSubscription) {
       this.actualizarMensajesSubscription.unsubscribe();
     }
 
-    // Crear un nuevo intervalo que se ejecute cada 3 segundos
-    this.actualizarMensajesSubscription = interval(3000).subscribe(() => {
-      if (this.usuarioActual && this.usuarioSeleccionado) {
-        this.mensajeService.getMensajes(this.usuarioActual.id, receptor_id)
-          .subscribe(mensajes => {
+    this.actualizarMensajesSubscription = interval(5000).subscribe(() => {
+      // Verificar si el usuario está bloqueado o nos ha bloqueado
+      if (this.usuariosBloqueados.includes(usuarioId) || 
+          this.usuariosQueMeBloquearon.includes(usuarioId)) {
+        // Si hay un bloqueo, detener la actualización automática
+        if (this.actualizarMensajesSubscription) {
+          this.actualizarMensajesSubscription.unsubscribe();
+        }
+        this.toastr.error('No puedes ver mensajes de este usuario');
+        this.volverALista();
+        return;
+      }
+
+      // Verificar si tenemos un usuario actual y seleccionado
+      if (this.usuarioActual && this.usuarioSeleccionado && this.usuarioSeleccionado.id === usuarioId) {
+        this.mensajeService.getMensajes(this.usuarioActual.id, usuarioId).subscribe({
+          next: (mensajes: Mensaje[]) => {
             // Verificar si hay mensajes nuevos
-            if (mensajes.length > this.mensajes.length) {
-              const nuevos = mensajes.filter(m => !this.mensajes.find(existente => existente.id === m.id));
-              if (nuevos.length > 0) {
-                this.mensajes = mensajes;
-                // Si el chat está abierto, marcar como leídos
-                if (this.usuarioSeleccionado?.id === receptor_id) {
-                  this.marcarMensajesComoLeidos();
-                } else {
-                  // Si el chat no está abierto, incrementar contador de no leídos
-                  const mensajesNoLeidos = nuevos.filter(m => 
-                    !m.leido && m.receptor_id === this.usuarioActual?.id
-                  ).length;
-                  if (mensajesNoLeidos > 0) {
-                    const totalNoLeidos = (this.mensajesNoLeidos.get(receptor_id) || 0) + mensajesNoLeidos;
-                    this.mensajesNoLeidos.set(receptor_id, totalNoLeidos);
-                  }
-                }
-                // Hacer scroll al último mensaje
-                setTimeout(() => {
-                  const container = document.querySelector('.messages-container');
-                  if (container) {
-                    container.scrollTop = container.scrollHeight;
-                  }
-                }, 100);
-              }
+            if (mensajes.length > 0 && this.ultimoMensajeId < Math.max(...mensajes.map(m => m.id))) {
+              this.mensajes = mensajes;
+              
+              // Marcar los mensajes nuevos como leídos
+              const mensajesNoLeidos = mensajes.filter(
+                m => !m.leido && m.receptor_id === this.usuarioActual?.id
+              );
+              
+              mensajesNoLeidos.forEach(m => {
+                this.mensajeService.marcarLeido(m.id).subscribe();
+              });
+              
+              // Actualizar el id del último mensaje
+              this.ultimoMensajeId = Math.max(...mensajes.map(m => m.id));
             }
-          });
+          },
+          error: (error) => {
+            console.error('Error al actualizar mensajes:', error);
+            
+            // Si recibimos un 403, puede ser porque hay un bloqueo
+            if (error.status === 403) {
+              // Detener actualizaciones y volver a la lista
+              if (this.actualizarMensajesSubscription) {
+                this.actualizarMensajesSubscription.unsubscribe();
+              }
+              this.cargarBloqueos(); // Actualizar la información de bloqueos
+              this.toastr.error('No puedes ver mensajes de este usuario');
+              this.volverALista();
+            }
+          }
+        });
       }
     });
   }
 
-  cargarMensajes(receptor_id: number): void {
-    if (this.usuarioActual) {
-      this.mensajeService.getMensajes(this.usuarioActual.id, receptor_id)
-        .subscribe(mensajes => {
+  cargarMensajes(usuarioId: number): void {
+    if (!this.usuarioActual) return;
+    
+    // Verificar si el usuario está bloqueado o nos ha bloqueado
+    if (this.usuariosBloqueados.includes(usuarioId) || this.usuariosQueMeBloquearon.includes(usuarioId)) {
+      this.mensajes = [];
+      this.toastr.error('No puedes ver mensajes de este usuario');
+      return;
+    }
+
+    this.mensajeService.getMensajes(this.usuarioActual.id, usuarioId)
+      .subscribe({
+        next: (mensajes: Mensaje[]) => {
           this.mensajes = mensajes;
           
-          // Contar mensajes no leídos antes de marcarlos como leídos
-          const mensajesNoLeidos = mensajes.filter(m => 
-            !m.leido && m.receptor_id === this.usuarioActual?.id
-          ).length;
+          // Marcar mensajes como leídos
+          const mensajesNoLeidos = mensajes.filter(
+            m => !m.leido && m.receptor_id === this.usuarioActual?.id
+          );
           
-          if (mensajesNoLeidos > 0) {
-            this.mensajesNoLeidos.set(receptor_id, mensajesNoLeidos);
+          mensajesNoLeidos.forEach(m => {
+            this.mensajeService.marcarLeido(m.id).subscribe();
+          });
+          
+          // Actualizar contador de mensajes no leídos
+          if (mensajesNoLeidos.length > 0 && this.usuarioSeleccionado) {
+            this.mensajesNoLeidos.set(this.usuarioSeleccionado.id, 0);
           }
           
-          this.marcarMensajesComoLeidos();
-          this.ordenarUsuariosPorUltimoMensaje();
+          // Actualizar el id del último mensaje para futuras actualizaciones
+          if (mensajes.length > 0) {
+            this.ultimoMensajeId = Math.max(...mensajes.map(m => m.id));
+          }
+        },
+        error: (error) => {
+          console.error('Error al cargar mensajes:', error);
           
-          // Hacer scroll al último mensaje
-          setTimeout(() => {
-            const container = document.querySelector('.messages-container');
-            if (container) {
-              container.scrollTop = container.scrollHeight;
-            }
-          }, 100);
-        });
-    }
+          // Si recibimos un 403, puede ser porque hay un bloqueo
+          if (error.status === 403) {
+            this.cargarBloqueos(); // Actualizar la información de bloqueos
+            this.toastr.error('No puedes ver mensajes de este usuario');
+            this.volverALista();
+          } else {
+            this.toastr.error('Error al cargar los mensajes');
+          }
+        }
+      });
   }
 
   ordenarUsuariosPorUltimoMensaje(): void {
@@ -248,6 +335,13 @@ export class MensajesComponent implements OnInit, OnDestroy {
 
   enviarMensaje(): void {
     if (this.nuevoMensaje.trim() && this.usuarioSeleccionado && this.usuarioActual) {
+      // Verificar si el usuario está bloqueado o nos ha bloqueado
+      if (this.usuariosBloqueados.includes(this.usuarioSeleccionado.id) || 
+          this.usuariosQueMeBloquearon.includes(this.usuarioSeleccionado.id)) {
+        this.toastr.error('No puedes enviar mensajes a este usuario');
+        return;
+      }
+
       const mensaje: any = {
         emisor_id: this.usuarioActual.id,
         receptor_id: this.usuarioSeleccionado.id,
@@ -273,7 +367,14 @@ export class MensajesComponent implements OnInit, OnDestroy {
           },
           error: (error) => {
             console.error('Error al enviar mensaje:', error);
-            this.toastr.error('Error al enviar el mensaje');
+            
+            // Si recibimos un 403, puede ser porque hay un bloqueo
+            if (error.status === 403) {
+              this.cargarBloqueos(); // Actualizar la información de bloqueos
+              this.toastr.error('No puedes enviar mensajes a este usuario');
+            } else {
+              this.toastr.error('Error al enviar el mensaje');
+            }
           }
         });
     }
@@ -296,18 +397,24 @@ export class MensajesComponent implements OnInit, OnDestroy {
     }
   }
 
-  esMensajePropio(mensaje: Mensaje | null): boolean {
-    if (!mensaje) return false;
+  esMensajePropio(mensaje: Mensaje): boolean {
     return mensaje.emisor_id === this.usuarioActual?.id;
   }
 
   tieneConversacion(usuarioId: number): boolean {
+    // No mostrar usuarios bloqueados o que nos han bloqueado
+    if (this.usuariosBloqueados.includes(usuarioId) || this.usuariosQueMeBloquearon.includes(usuarioId)) {
+      return false;
+    }
     return this.usuariosConConversacion.has(usuarioId);
   }
 
   tieneMensajesNoLeidos(usuarioId: number): boolean {
-    const cantidad = this.mensajesNoLeidos.get(usuarioId) || 0;
-    return cantidad > 0;
+    // No mostrar indicador de mensajes no leídos para usuarios bloqueados
+    if (this.usuariosBloqueados.includes(usuarioId) || this.usuariosQueMeBloquearon.includes(usuarioId)) {
+      return false;
+    }
+    return (this.mensajesNoLeidos.get(usuarioId) || 0) > 0;
   }
 
   volverALista(): void {
@@ -317,36 +424,22 @@ export class MensajesComponent implements OnInit, OnDestroy {
   }
 
   mostrarMenuContextual(event: MouseEvent, mensaje: Mensaje): void {
-    event.preventDefault(); // Prevenir el menú contextual por defecto
+    event.preventDefault();
     
-    // Solo mostrar el menú para mensajes propios
-    if (!this.esMensajePropio(mensaje)) {
+    // No mostrar el menú contextual si el usuario está bloqueado
+    if (this.usuarioSeleccionado && (
+      this.usuariosBloqueados.includes(this.usuarioSeleccionado.id) || 
+      this.usuariosQueMeBloquearon.includes(this.usuarioSeleccionado.id)
+    )) {
       return;
     }
-
+    
     this.menuContextual = {
       mostrar: true,
       x: event.clientX,
       y: event.clientY,
       mensaje: mensaje
     };
-
-    // Ajustar posición si el menú se sale de la pantalla
-    setTimeout(() => {
-      const menu = document.querySelector('.context-menu') as HTMLElement;
-      if (menu) {
-        const rect = menu.getBoundingClientRect();
-        const viewportHeight = window.innerHeight;
-        const viewportWidth = window.innerWidth;
-
-        if (rect.bottom > viewportHeight) {
-          this.menuContextual.y = event.clientY - rect.height;
-        }
-        if (rect.right > viewportWidth) {
-          this.menuContextual.x = event.clientX - rect.width;
-        }
-      }
-    });
   }
 
   eliminarMensaje(mensaje: Mensaje | null): void {
