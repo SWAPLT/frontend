@@ -2,7 +2,10 @@
   <!-- Lista de chats -->
   <div class="chat-list" [class.active]="!mostrarChat">
     <div class="chat-header">
-      <h2>Mensajes</h2>
+      <h2><i class="fas fa-comments"></i> Mensajes</h2>
+      <div class="header-actions">
+        <span class="header-badge" *ngIf="mensajesNoLeidos.size > 0">{{ getTotalMensajesNoLeidos() }}</span>
+      </div>
     </div>
     <div class="chat-users">
       <ng-container *ngFor="let usuario of usuarios">
@@ -10,28 +13,38 @@
              [class.active]="usuarioSeleccionado?.id === usuario.id"
              (click)="seleccionarUsuario(usuario.id)"
              *ngIf="tieneConversacion(usuario.id)">
-          <div class="user-avatar">
+          <div class="user-avatar" [attr.data-initial]="getInitials(usuario.name)">
             <span class="avatar-icon">👤</span>
           </div>
           <div class="user-info">
             <div class="user-name">
               <span>{{ usuario.name }}</span>
-              <span class="unread-indicator" *ngIf="tieneMensajesNoLeidos(usuario.id)"></span>
+              <span class="unread-indicator" *ngIf="tieneMensajesNoLeidos(usuario.id)" 
+                    [attr.data-count]="mensajesNoLeidos.get(usuario.id)"></span>
             </div>
+            <div class="user-email">{{ usuario.email }}</div>
           </div>
         </div>
       </ng-container>
+      
+      <div *ngIf="usuarios.length === 0" class="no-conversations">
+        <div class="empty-conversations">
+          <i class="fas fa-inbox"></i>
+          <p>No tienes conversaciones activas</p>
+          <small>Explora el catálogo para contactar a otros usuarios</small>
+        </div>
+      </div>
     </div>
   </div>
 
   <!-- Área de chat -->
   <div class="chat-area" *ngIf="usuarioSeleccionado" [class.active]="mostrarChat">
     <div class="chat-header">
-      <button class="back-to-list" (click)="volverALista()">
+      <button class="back-to-list" (click)="volverALista()" title="Volver a la lista">
         <i class="fas fa-chevron-left"></i>
       </button>
       <div class="chat-user-info">
-        <div class="user-avatar">
+        <div class="user-avatar" [attr.data-initial]="getInitials(usuarioSeleccionado.name)">
           <span class="avatar-icon">👤</span>
         </div>
         <div class="user-details">
@@ -39,21 +52,40 @@
           <div class="user-email">{{ usuarioSeleccionado.email }}</div>
         </div>
       </div>
+      <div class="chat-actions">
+        <button class="action-button" title="Opciones">
+          <i class="fas fa-ellipsis-v"></i>
+        </button>
+      </div>
     </div>
     
     <div class="messages-container">
+      <div class="date-separator" *ngIf="mensajes.length > 0">
+        <span>{{ mensajes[0].created_at | date:'EEEE, d MMMM' }}</span>
+      </div>
+      
       <div *ngFor="let mensaje of mensajes" 
            [class.message-sent]="esMensajePropio(mensaje)"
            [class.message-received]="!esMensajePropio(mensaje)"
            (contextmenu)="mostrarMenuContextual($event, mensaje)"
            [id]="'mensaje-' + mensaje.id">
+        
         <div class="message-content">
           {{ mensaje.contenido }}
         </div>
         <div class="message-time">
           {{ mensaje.created_at | date:'shortTime' }}
-          <span *ngIf="esMensajePropio(mensaje) && mensaje.leido" class="read-status">✓✓</span>
+          <span *ngIf="esMensajePropio(mensaje) && mensaje.leido" class="read-status">
+            <i class="fas fa-check-double"></i>
+          </span>
         </div>
+      </div>
+      
+      <!-- Estado de escritura simulado -->
+      <div class="typing-indicator" *ngIf="false">
+        <div class="typing-bubble"></div>
+        <div class="typing-bubble"></div>
+        <div class="typing-bubble"></div>
       </div>
     </div>
 
@@ -76,7 +108,7 @@
              [(ngModel)]="nuevoMensaje" 
              placeholder="Escribe un mensaje..."
              (keyup.enter)="enviarMensaje()">
-      <button (click)="enviarMensaje()" [disabled]="!nuevoMensaje.trim()">
+      <button (click)="enviarMensaje()" [disabled]="!nuevoMensaje.trim()" title="Enviar mensaje">
         <i class="fas fa-paper-plane"></i>
       </button>
     </div>
@@ -86,8 +118,13 @@
   <div class="no-chat-selected" *ngIf="!usuarioSeleccionado">
     <div class="empty-state">
       <img src="/assets/imgs/logo.png" alt="SWAPLT Logo" class="empty-logo">
-      <h3>Selecciona un chat</h3>
-      <p>Elige un usuario de la lista para comenzar a conversar</p>
+      <h3>Mensajería SWAPLT</h3>
+      <p>Conecta directamente con otros usuarios para consultar detalles sobre los vehículos o negociar condiciones de compra.</p>
+      <div class="empty-buttons" *ngIf="usuarios.length === 0">
+        <button class="btn-browse" routerLink="/catalogo">
+          <i class="fas fa-search"></i> Explorar catálogo
+        </button>
+      </div>
     </div>
   </div>
 </div> 

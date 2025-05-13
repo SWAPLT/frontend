@@ -417,6 +417,31 @@ export class MensajesComponent implements OnInit, OnDestroy {
     return (this.mensajesNoLeidos.get(usuarioId) || 0) > 0;
   }
 
+  /**
+   * Obtiene el total de mensajes no leídos de todos los usuarios
+   */
+  getTotalMensajesNoLeidos(): number {
+    let total = 0;
+    this.mensajesNoLeidos.forEach(cantidad => {
+      total += cantidad;
+    });
+    return total;
+  }
+
+  /**
+   * Obtiene las iniciales del nombre de un usuario
+   */
+  getInitials(name: string): string {
+    if (!name) return '';
+    
+    const parts = name.split(' ');
+    if (parts.length === 1) {
+      return name.substring(0, 2).toUpperCase();
+    }
+    
+    return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+  }
+
   volverALista(): void {
     this.usuarioSeleccionado = null;
     this.mostrarChat = false;
