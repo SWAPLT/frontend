@@ -229,3 +229,90 @@ button[type="submit"]:hover {
   height: 1rem;
   margin: 0;
 }
+
+/* Estilos para los indicadores de traducción */
+.translation-loading {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #3498db;
+  margin-left: 4px;
+  animation: pulse-blue 1s infinite;
+  position: relative;
+  vertical-align: super;
+  font-size: 70%;
+}
+
+@keyframes pulse-blue {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(52, 152, 219, 0.7);
+  }
+  
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 5px rgba(52, 152, 219, 0);
+  }
+  
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(52, 152, 219, 0);
+  }
+}
+
+[appTranslate] {
+  position: relative;
+}
+
+/* Estilos para elementos que están siendo traducidos */
+.translating {
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+}
+
+/* Estilos para el selector de idiomas */
+.language-selector {
+  position: relative;
+}
+
+.language-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.offline-indicator {
+  display: inline-block;
+  margin-left: 5px;
+  color: #f39c12;
+  font-size: 11px;
+  font-weight: bold;
+  background-color: rgba(243, 156, 18, 0.1);
+  padding: 2px 5px;
+  border-radius: 3px;
+}
+
+.offline-mode .language-btn {
+  border: 1px solid #f39c12;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.25em 0.6em;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 0.25rem;
+}
+
+.bg-warning {
+  background-color: #f39c12 !important;
+}
+
+.text-dark {
+  color: #000 !important;
+}

@@ -1,0 +1,25 @@
+<div class="language-selector" [class.translating]="isTranslating" [class.offline-mode]="isOfflineMode">
+  <div class="dropdown">
+    <button class="btn btn-sm dropdown-toggle language-btn" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false" [disabled]="isTranslating">
+      <span class="flag-icon flag-icon-{{selectedLanguage.flag}}"></span>
+      <span class="language-name d-none d-md-inline-block">{{ selectedLanguage.name }}</span>
+      <span *ngIf="isTranslating" class="ms-1 spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      <span *ngIf="isOfflineMode" class="offline-indicator" title="Modo offline activo (usando traducciones locales)">⚠ Offline</span>
+    </button>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="languageDropdown">
+      <li *ngFor="let language of languages">
+        <button class="dropdown-item" [class.active]="language.code === selectedLanguage.code" (click)="changeLanguage(language)">
+          <span class="flag-icon flag-icon-{{language.flag}}"></span>
+          <span class="ms-2">{{ language.name }}</span>
+        </button>
+      </li>
+      <li><hr class="dropdown-divider"></li>
+      <li>
+        <button class="dropdown-item mode-toggle" (click)="toggleOfflineMode($event)" data-no-translate="true">
+          <i class="fa" [ngClass]="{'fa-cloud': !isOfflineMode, 'fa-cloud-slash': isOfflineMode}"></i>
+          <span class="ms-2" data-no-translate="true">{{ isOfflineMode ? 'Intentar usar modo online' : 'Usar modo offline' }}</span>
+        </button>
+      </li>
+    </ul>
+  </div>
+</div> 

@@ -1,0 +1,146 @@
+.language-selector {
+  display: inline-block;
+  position: relative;
+}
+
+.language-btn {
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 0.35rem 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.language-btn:hover, .language-btn:focus {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.dropdown-menu {
+  min-width: 10rem;
+  padding: 0.5rem 0;
+  border-radius: 0.25rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  background-color: white;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  z-index: 1050;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  transition: background-color 0.15s ease-in-out;
+}
+
+.dropdown-item:hover {
+  background-color: #f8f9fa;
+}
+
+.dropdown-item.active {
+  background-color: #34a4b4;
+  color: white;
+}
+
+.flag-icon {
+  width: 1.2rem;
+  height: 0.9rem;
+  background-size: cover;
+  display: inline-block;
+  position: relative;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  border-radius: 2px;
+}
+
+/* Animación para cambio de idioma */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.language-selector.translating .flag-icon {
+  animation: pulse 1s infinite;
+}
+
+/* Definiciones específicas de banderas */
+.flag-icon-es {
+  background-image: url('https://flagcdn.com/es.svg');
+}
+
+.flag-icon-gb {
+  background-image: url('https://flagcdn.com/gb.svg');
+}
+
+.flag-icon-fr {
+  background-image: url('https://flagcdn.com/fr.svg');
+}
+
+.flag-icon-de {
+  background-image: url('https://flagcdn.com/de.svg');
+}
+
+.flag-icon-it {
+  background-image: url('https://flagcdn.com/it.svg');
+}
+
+.flag-icon-pt {
+  background-image: url('https://flagcdn.com/pt.svg');
+}
+
+/* Estilo específico para dispositivos móviles */
+@media (max-width: 768px) {
+  .language-selector-mobile .dropdown-menu {
+    width: 100%;
+  }
+  
+  .language-selector-mobile .language-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+  }
+  
+  .language-name {
+    display: inline-block !important;
+    margin-left: 0.5rem;
+  }
+}
+
+.offline-indicator {
+  color: #f39c12;
+  font-size: 14px;
+  margin-left: 5px;
+  display: inline-block;
+  animation: pulse-warning 2s infinite;
+}
+
+@keyframes pulse-warning {
+  0% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.5;
+  }
+}
+
+.offline-mode .language-btn {
+  background-color: rgba(243, 156, 18, 0.2);
+  border-color: rgba(243, 156, 18, 0.4);
+}
+
+.mode-toggle {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.mode-toggle:hover {
+  background-color: #f8f9fa;
+  color: #333;
+} 

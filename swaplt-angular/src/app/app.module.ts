@@ -35,6 +35,7 @@ import { EstadisticasVehiculoComponent } from './pages/mis-vehiculos/estadistica
 import { DetalleVehiculoPropioComponent } from './pages/mis-vehiculos/detalle-vehiculo-propio/detalle-vehiculo-propio.component';
 import { GoogleCallbackComponent } from './pages/auth/google-callback/google-callback.component';
 import { GoogleAdsComponent } from './components/google-ads/google-ads.component';
+import { LanguageSelectorComponent } from './components/language-selector/language-selector.component';
 
 @NgModule({
   declarations: [
@@ -52,7 +53,8 @@ import { GoogleAdsComponent } from './components/google-ads/google-ads.component
     ForgotPasswordComponent,
     EstadisticasVehiculoComponent,
     DetalleVehiculoPropioComponent,
-    GoogleCallbackComponent
+    GoogleCallbackComponent,
+    LanguageSelectorComponent
   ],
   imports: [
     BrowserModule,
@@ -67,7 +69,14 @@ import { GoogleAdsComponent } from './components/google-ads/google-ads.component
     CatalogoModule,
     AdminModule,
     GoogleMapsModule,
-    ToastrModule.forRoot(),
+    ToastrModule.forRoot({
+      timeOut: 3000,
+      positionClass: 'toast-bottom-right',
+      preventDuplicates: true,
+      closeButton: true,
+      progressBar: true,
+      maxOpened: 2
+    }),
     GoogleAdsComponent,
     RouterModule.forRoot([
       { 

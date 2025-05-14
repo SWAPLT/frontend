@@ -3,8 +3,8 @@
   <!-- Left: Brand/Logo -->
   <div class="brand-section">
     <button class="brand-button" (click)="navigateToHome()">
-      <img alt="SWAPLT Logo" src="../assets/imgs/logo.png" />
-      <span class="app-name">SWAPLT</span>
+      <img alt="SWAPLT Logo" src="../assets/imgs/logo.png" data-no-translate="true" />
+      <span class="app-name" data-no-translate="true">SWAPLT</span>
     </button>
   </div>
 
@@ -21,6 +21,8 @@
 
     <!-- Right: Action Buttons -->
     <div class="action-buttons">
+      <!-- Selector de idiomas para desktop -->
+      <app-language-selector class="language-selector-desktop"></app-language-selector>
       <button class="sell-button" routerLink="/vender-vehiculo">Vender</button>
       <div class="profile-container">
         <button class="profile-button" (click)="toggleDropdown()">
@@ -48,6 +50,8 @@
         <a routerLink="/mensajes" class="mobile-nav-link">Mensajes</a>
       </div>
       <div class="mobile-action-buttons">
+        <!-- Selector de idiomas para móvil -->
+        <app-language-selector class="language-selector-mobile"></app-language-selector>
         <button class="mobile-sell-button" routerLink="/vender-vehiculo">Vender</button>
         <button class="mobile-profile-button" (click)="toggleDropdown()">
           <span class="profile-icon">👤</span> Mi Perfil
@@ -100,7 +104,7 @@
   </div>
 
   <p class="copyright">
-    © 2025 SWAPLT. Todos los derechos reservados
+    © 2025 <span data-no-translate="true">SWAPLT</span>. Todos los derechos reservados
   </p>
 </footer>
 <!------------------------------------------------------------------------------>

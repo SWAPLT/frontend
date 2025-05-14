@@ -3,10 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { PaginationComponent } from './components/pagination/pagination.component';
+import { TranslateDirective } from '../directives/translate.directive';
 
 @NgModule({
   declarations: [
-    PaginationComponent
+    PaginationComponent,
+    TranslateDirective
   ],
   imports: [
     CommonModule,
@@ -19,7 +21,8 @@ import { PaginationComponent } from './components/pagination/pagination.componen
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
-    PaginationComponent
+    PaginationComponent,
+    TranslateDirective
   ]
 })
 export class SharedModule { }

@@ -117,8 +117,8 @@
   <!-- Vista cuando no hay chat seleccionado -->
   <div class="no-chat-selected" *ngIf="!usuarioSeleccionado">
     <div class="empty-state">
-      <img src="/assets/imgs/logo.png" alt="SWAPLT Logo" class="empty-logo">
-      <h3>Mensajería SWAPLT</h3>
+      <img src="/assets/imgs/logo.png" alt="SWAPLT Logo" class="empty-logo" data-no-translate="true">
+      <h3>Mensajería <span data-no-translate="true">SWAPLT</span></h3>
       <p>Conecta directamente con otros usuarios para consultar detalles sobre los vehículos o negociar condiciones de compra.</p>
       <div class="empty-buttons" *ngIf="usuarios.length === 0">
         <button class="btn-browse" routerLink="/catalogo">

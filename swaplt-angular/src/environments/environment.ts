@@ -5,8 +5,9 @@
 export const environment = {
   production: false,
 
-  apiUrl: 'http://127.0.0.1:8000/api',
-  googleMapsApiKey: 'AIzaSyCIzQc-xMyVBcN04ZyjRrTSTLQZwVycUe0' // Reemplazar con tu API key real
+  apiUrl: 'http://laravel.swaplt-compraventa.duckdns.org/api', // Ajustar a la URL real de producción
+  googleMapsApiKey: 'AIzaSyCIzQc-xMyVBcN04ZyjRrTSTLQZwVycUe0', // Usar la misma clave que en desarrollo
+  googleTranslateApiKey: 'AIzaSyAMY8sX9zAq2pKrREO_mByynsbVAsfOaJ0' // Debes reemplazar con tu clave real de Google Translate API
 };
 
 /*
