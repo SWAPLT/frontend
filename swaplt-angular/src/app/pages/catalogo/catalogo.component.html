@@ -126,28 +126,6 @@
       </form>
     </div>
 
-    <!-- Búsqueda -->
-    <div class="search-bar">
-      <div class="search-input" [formGroup]="searchForm">
-        <div class="search-wrapper">
-          <input type="text" 
-                 formControlName="query" 
-                 placeholder="Buscar por marca o modelo..."
-                 (keyup.enter)="onSearch()">
-          <button type="button" (click)="onSearch()" class="search-button">
-            <i class="fas fa-search"></i>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Botón de limpiar búsqueda -->
-    <div *ngIf="searchForm.get('query')?.value" class="clear-search-container">
-      <button (click)="clearSearch()" class="clear-search-button">
-        <i class="fas fa-times"></i> Limpiar búsqueda
-      </button>
-    </div>
-
     <!-- Estado de carga -->
     <div *ngIf="loading" class="loading">
       <div class="spinner-grow text-primary" role="status">

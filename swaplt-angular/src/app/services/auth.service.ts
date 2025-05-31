@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import {environment} from "../../environments/environment";
+import { ToastrService } from 'ngx-toastr';
 
 interface UserProfile {
   id: number;
@@ -25,7 +26,7 @@ interface Vehicle {
 export class AuthService {
   private apiUrl = `${environment.apiUrl}`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private toastr: ToastrService) {}
 
   login(email: string, password: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/login`, { email, password }).pipe(
@@ -126,7 +127,12 @@ export class AuthService {
   }
 
   loginWithGoogle(): void {
-    window.location.href = `${this.apiUrl}/auth/google`;
+    try {
+      window.location.href = `${this.apiUrl}/auth/google`;
+    } catch (error) {
+      this.toastr.error('Error al iniciar sesión con Google');
+      console.error('Error en login con Google:', error);
+    }
   }
 
   handleGoogleCallback(token: string): Observable<any> {
