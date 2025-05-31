@@ -44,4 +44,5 @@
 - **Desarrollo de Aplicaciones Web**  
   **Centro Educativo**: IES Castelar  
 
-![Captura de pantalla 2025-04-08 224537](https://github.com/user-attachments/assets/a063be4b-8ae8-4432-aa41-8c1f8328ed6b)
+![Captura de pantalla 2025-04-08 224537]![Editor _ Mermaid Chart-2025-05-20-175441](https://github.com/user-attachments/assets/077b2768-28f2-489a-86f6-a3bdf913bb15)
+()
